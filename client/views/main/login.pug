@@ -1,0 +1,62 @@
+extends ../template/index
+block content
+    div(style='background-color: #f6eded !important; height: 100%;')
+        .loginColumns.animated.fadeInDown
+            #login_allwrap
+                .row
+                    .col-md-6
+                        h2.font-bold
+                            | ISIS Project
+                            small  (Beta)
+                        p
+                        p DW(Data Warehouse) 구축을 목표로 진행 중인 프로젝트로
+                        p
+                            | 현단계에서는 기존
+                            a(href='http://isis.interpark.com/isis/loginMgr.do', target='_blank') ISIS
+                            | 의 기능통합에 중점을 두고
+                            |                     있습니다.
+                        p(style='margin-top: 49px;') * 참고사항
+                        ul
+                            li
+                                | 지원브라우져 -
+                                a(href='https://www.google.co.kr/chrome/browser/desktop/index.html', target='_blank') Chrome 최신버전(62+)
+                            li 문의사항 - DB관리팀
+                    .col-md-6
+                        .ibox-content
+                            #login_brws_valid
+                                #login_parsley_msgAll
+                                form#login_form.m-t(data-parsley-validate='')
+                                    .form-group
+                                        input#login_inputt_userId.form-control(type='text', placeholder='사번', required='')
+                                    .form-group
+                                        input#login_inputt_userPw.form-control(type='password', placeholder='비밀번호', required='')
+                                    .form-group
+                                        label
+                                            input#login_inputc_saveId.login_icheck(type='checkbox', value='saveId', checked='checked', style='margin-right: 5px;')
+                                            |                                     ID 저장
+                                    button#login_btn_req.btn.btn-primary.block.full-width.m-b(type='button')
+                                        | 로그인
+                                    a(href='#')
+                                        small
+                                            s 비밀번호 찾기
+                            #login_brws_invalid(style='display: none;')
+                                h3.font-bold
+                                    | [ 협조 요청
+                                    i.fa.fa-smile-o.fa-lg
+                                    |  ]
+                                p 현재 Chrome 이외의 브라우저로 접속하셨습니다.
+                                p(style='margin-bottom: 48px;')
+                                    | 사이트의 원활한 사용을 위해
+                                    a(href='https://www.google.co.kr/chrome/browser/desktop/index.html', target='_blank')
+                                        | Chrome
+                                        | 브라우저
+                                    | 를 이용해 주세요.
+                                label#login_label_chrome.btn.btn-primary.block.full-width.m-b(for='login_a_chrome')
+                                    a#login_a_chrome(style='color: #ffffff', href='https://www.google.co.kr/chrome/browser/desktop/index.html', target='_blank') Chrome 다운로드
+                // <hr/>
+                .row(style='margin-top: 10px;')
+                    .col-md-6
+                        | Interpark - ISIS Project by DB-M Team
+                    .col-md-6.text-right
+                        small © 2017-2018
+                #login_toast

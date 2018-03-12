@@ -1,0 +1,872 @@
+{
+	"data": [
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170401,
+			"tOrdclmAmt": 1251161412,
+			"yOrdclmAmt": 1162203513
+			,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170402,
+			"tOrdclmAmt": 1467017322,
+			"yOrdclmAmt": 1630023400
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170403,
+			"tOrdclmAmt": 2660789818,
+			"yOrdclmAmt": 2829208027
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170404,
+			"tOrdclmAmt": 2644733497,
+			"yOrdclmAmt": 2463209895
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170405,
+			"tOrdclmAmt": 2705367271,
+			"yOrdclmAmt": 2337300109
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170406,
+			"tOrdclmAmt": 2469375646,
+			"yOrdclmAmt": 2245296246
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170407,
+			"tOrdclmAmt": 2004823662,
+			"yOrdclmAmt": 2052162195
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170408,
+			"tOrdclmAmt": 1203678070,
+			"yOrdclmAmt": 1176351154
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170409,
+			"tOrdclmAmt": 1623528731,
+			"yOrdclmAmt": 1611498689
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170410,
+			"tOrdclmAmt": 2782739017,
+			"yOrdclmAmt": 2693347930
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170411,
+			"tOrdclmAmt": 2817028106,
+			"yOrdclmAmt": 2208649068
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170412,
+			"tOrdclmAmt": 2749554260,
+			"yOrdclmAmt": 2398340321
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170413,
+			"tOrdclmAmt": 2633406907,
+			"yOrdclmAmt": 2357925619
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170414,
+			"tOrdclmAmt": 2231982170,
+			"yOrdclmAmt": 1871246641
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170415,
+			"tOrdclmAmt": 1331061663,
+			"yOrdclmAmt": 1217333322
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170416,
+			"tOrdclmAmt": 1587319731,
+			"yOrdclmAmt": 1482311352
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170417,
+			"tOrdclmAmt": 2965955500,
+			"yOrdclmAmt": 2719478547
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170418,
+			"tOrdclmAmt": 2906888272,
+			"yOrdclmAmt": 2584699465
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170419,
+			"tOrdclmAmt": 2835058400,
+			"yOrdclmAmt": 2398340321
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170420,
+			"tOrdclmAmt": 2841685917,
+			"yOrdclmAmt": 2291887786
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170421,
+			"tOrdclmAmt": 2292545406,
+			"yOrdclmAmt": 1870510562
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170422,
+			"tOrdclmAmt": 1243497619,
+			"yOrdclmAmt": 1185351866
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170423,
+			"tOrdclmAmt": 1580264859,
+			"yOrdclmAmt": 1533224254
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170424,
+			"tOrdclmAmt": 3364995767,
+			"yOrdclmAmt": 2990275953
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170425,
+			"tOrdclmAmt": 3517078741,
+			"yOrdclmAmt": 2626910864
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170426,
+			"tOrdclmAmt": 3337040661,
+			"yOrdclmAmt": 2554005427
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170427,
+			"tOrdclmAmt": 2878905458,
+			"yOrdclmAmt": 2376299056
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170428,
+			"tOrdclmAmt": 2196778716,
+			"yOrdclmAmt": 1935561189
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170429,
+			"tOrdclmAmt": 1178114650,
+			"yOrdclmAmt": 1372652664
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170430,
+			"tOrdclmAmt": 1470800824,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "02",
+			"dmComTpNm": "쇼핑",
+			"stdRevDt": 20170501,
+			"tOrdclmAmt": 2361386932,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170401,
+			"tOrdclmAmt": 252098814,
+			"yOrdclmAmt": 233587760
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170402,
+			"tOrdclmAmt": 288939264,
+			"yOrdclmAmt": 313373434
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170403,
+			"tOrdclmAmt": 536805286,
+			"yOrdclmAmt": 562480152
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170404,
+			"tOrdclmAmt": 478907836,
+			"yOrdclmAmt": 546508736
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170405,
+			"tOrdclmAmt": 508202791,
+			"yOrdclmAmt": 462811592
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170406,
+			"tOrdclmAmt": 453914643,
+			"yOrdclmAmt": 484346057
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170407,
+			"tOrdclmAmt": 380139672,
+			"yOrdclmAmt": 381156157
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170408,
+			"tOrdclmAmt": 191842359,
+			"yOrdclmAmt": 207906181
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170409,
+			"tOrdclmAmt": 241669806,
+			"yOrdclmAmt": 283460241
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170410,
+			"tOrdclmAmt": 264124790,
+			"yOrdclmAmt": 566746501
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170411,
+			"tOrdclmAmt": 444898094,
+			"yOrdclmAmt": 450606349
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170412,
+			"tOrdclmAmt": 525974640,
+			"yOrdclmAmt": 437197058
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170413,
+			"tOrdclmAmt": 373348502,
+			"yOrdclmAmt": 469191249
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170414,
+			"tOrdclmAmt": 350926654,
+			"yOrdclmAmt": 392003296
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170415,
+			"tOrdclmAmt": 168572448,
+			"yOrdclmAmt": 213906581
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170416,
+			"tOrdclmAmt": 199870526,
+			"yOrdclmAmt": 254501722
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170417,
+			"tOrdclmAmt": 454399442,
+			"yOrdclmAmt": 517444769
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170418,
+			"tOrdclmAmt": 436369796,
+			"yOrdclmAmt": 449879168
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170419,
+			"tOrdclmAmt": 412622515,
+			"yOrdclmAmt": 437197058
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170420,
+			"tOrdclmAmt": 418565974,
+			"yOrdclmAmt": 450672495
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170421,
+			"tOrdclmAmt": 371995787,
+			"yOrdclmAmt": 405912074
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170422,
+			"tOrdclmAmt": 158430296,
+			"yOrdclmAmt": 183842598
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170423,
+			"tOrdclmAmt": 193400851,
+			"yOrdclmAmt": 217763046
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170424,
+			"tOrdclmAmt": 457999402,
+			"yOrdclmAmt": 581248157
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170425,
+			"tOrdclmAmt": 498611424,
+			"yOrdclmAmt": 510278004
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170426,
+			"tOrdclmAmt": 457281371,
+			"yOrdclmAmt": 596700465
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170427,
+			"tOrdclmAmt": 367009599,
+			"yOrdclmAmt": 641862566
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170428,
+			"tOrdclmAmt": 520381181,
+			"yOrdclmAmt": 472904377
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170429,
+			"tOrdclmAmt": 173680178,
+			"yOrdclmAmt": 222608704
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170430,
+			"tOrdclmAmt": 191434577,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "03",
+			"dmComTpNm": "도서",
+			"stdRevDt": 20170501,
+			"tOrdclmAmt": 321804375,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170401,
+			"tOrdclmAmt": 2304587426,
+			"yOrdclmAmt": 2298186250
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170402,
+			"tOrdclmAmt": 1171559222,
+			"yOrdclmAmt": 1528646150
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170403,
+			"tOrdclmAmt": 36103500,
+			"yOrdclmAmt": 21018600
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170404,
+			"tOrdclmAmt": 1803766750,
+			"yOrdclmAmt": 590103020
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170405,
+			"tOrdclmAmt": 231665280,
+			"yOrdclmAmt": 311614334
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170406,
+			"tOrdclmAmt": 302813400,
+			"yOrdclmAmt": 262287840
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170407,
+			"tOrdclmAmt": 372646648,
+			"yOrdclmAmt": 479607798
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170408,
+			"tOrdclmAmt": 1387160261,
+			"yOrdclmAmt": 1882213460
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170409,
+			"tOrdclmAmt": 1200736796,
+			"yOrdclmAmt": 1311064048
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170410,
+			"tOrdclmAmt": 36591250,
+			"yOrdclmAmt": 124250700
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170411,
+			"tOrdclmAmt": 283855095,
+			"yOrdclmAmt": 345534890
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170412,
+			"tOrdclmAmt": 356978709,
+			"yOrdclmAmt": 371731850
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170413,
+			"tOrdclmAmt": 348380357,
+			"yOrdclmAmt": 385648200
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170414,
+			"tOrdclmAmt": 673166240,
+			"yOrdclmAmt": 560491894
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170415,
+			"tOrdclmAmt": 4557474410,
+			"yOrdclmAmt": 1530255288
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170416,
+			"tOrdclmAmt": 3068497790,
+			"yOrdclmAmt": 1017436092
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170417,
+			"tOrdclmAmt": 32830850,
+			"yOrdclmAmt": 25824150
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170418,
+			"tOrdclmAmt": 254259313,
+			"yOrdclmAmt": 262414500
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170419,
+			"tOrdclmAmt": 271962783,
+			"yOrdclmAmt": 371731850
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170420,
+			"tOrdclmAmt": 289495050,
+			"yOrdclmAmt": 362563290
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170421,
+			"tOrdclmAmt": 757970700,
+			"yOrdclmAmt": 608332562
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170422,
+			"tOrdclmAmt": 2494659000,
+			"yOrdclmAmt": 1920842514
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170423,
+			"tOrdclmAmt": 1950271750,
+			"yOrdclmAmt": 1309761244
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170424,
+			"tOrdclmAmt": 36426700,
+			"yOrdclmAmt": 26216700
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170425,
+			"tOrdclmAmt": 309340800,
+			"yOrdclmAmt": 249816572
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170426,
+			"tOrdclmAmt": 426398800,
+			"yOrdclmAmt": 457242410
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170427,
+			"tOrdclmAmt": 305904550,
+			"yOrdclmAmt": 278037398
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170428,
+			"tOrdclmAmt": 918540342,
+			"yOrdclmAmt": 752553420
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170429,
+			"tOrdclmAmt": 2469071177,
+			"yOrdclmAmt": 2034268950
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170430,
+			"tOrdclmAmt": 1748155542,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "04",
+			"dmComTpNm": "ENT",
+			"stdRevDt": 20170501,
+			"tOrdclmAmt": 264079350,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170401,
+			"tOrdclmAmt": 2153743730,
+			"yOrdclmAmt": 2144190236
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170402,
+			"tOrdclmAmt": 2174779689,
+			"yOrdclmAmt": 2131743894
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170403,
+			"tOrdclmAmt": 1664595513,
+			"yOrdclmAmt": 1539406031
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170404,
+			"tOrdclmAmt": 1389537752,
+			"yOrdclmAmt": 1320727998
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170405,
+			"tOrdclmAmt": 1512223215,
+			"yOrdclmAmt": 1101801349
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170406,
+			"tOrdclmAmt": 1311325321,
+			"yOrdclmAmt": 1291657491
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170407,
+			"tOrdclmAmt": 1656323001,
+			"yOrdclmAmt": 1601135248
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170408,
+			"tOrdclmAmt": 2240767342,
+			"yOrdclmAmt": 2286129363
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170409,
+			"tOrdclmAmt": 2199217864,
+			"yOrdclmAmt": 1984210061
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170410,
+			"tOrdclmAmt": 1688110851,
+			"yOrdclmAmt": 1629259385
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170411,
+			"tOrdclmAmt": 1404016066,
+			"yOrdclmAmt": 1850242145
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170412,
+			"tOrdclmAmt": 1348074969,
+			"yOrdclmAmt": 1291537791
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170413,
+			"tOrdclmAmt": 1310114320,
+			"yOrdclmAmt": 1378657103
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170414,
+			"tOrdclmAmt": 1870819817,
+			"yOrdclmAmt": 1761001020
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170415,
+			"tOrdclmAmt": 2345618274,
+			"yOrdclmAmt": 2592225614
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170416,
+			"tOrdclmAmt": 2141640186,
+			"yOrdclmAmt": 2477156330
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170417,
+			"tOrdclmAmt": 1767986286,
+			"yOrdclmAmt": 1609827485
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170418,
+			"tOrdclmAmt": 1510545575,
+			"yOrdclmAmt": 1337416494
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170419,
+			"tOrdclmAmt": 1487633836,
+			"yOrdclmAmt": 1291537791
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170420,
+			"tOrdclmAmt": 1300518746,
+			"yOrdclmAmt": 1322468085
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170421,
+			"tOrdclmAmt": 1884034770,
+			"yOrdclmAmt": 1671678016
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170422,
+			"tOrdclmAmt": 2361537791,
+			"yOrdclmAmt": 2316304273
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170423,
+			"tOrdclmAmt": 2159649338,
+			"yOrdclmAmt": 1989695503
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170424,
+			"tOrdclmAmt": 1897221401,
+			"yOrdclmAmt": 1540673421
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170425,
+			"tOrdclmAmt": 1534336364,
+			"yOrdclmAmt": 1384583714
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170426,
+			"tOrdclmAmt": 1601503704,
+			"yOrdclmAmt": 1273732547
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170427,
+			"tOrdclmAmt": 1593645210,
+			"yOrdclmAmt": 1408524943
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170428,
+			"tOrdclmAmt": 1875705619,
+			"yOrdclmAmt": 1528801083
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170429,
+			"tOrdclmAmt": 2499461920,
+			"yOrdclmAmt": 2306491547
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170430,
+			"tOrdclmAmt": 3404803045,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535},
+		{
+			"dmComTp": "05",
+			"dmComTpNm": "투어",
+			"stdRevDt": 20170501,
+			"tOrdclmAmt": 3284143761,
+			"yOrdclmAmt": 0
+		,"dmComUV": 1110953,"dmComPV": 3692535}
+	]
+}

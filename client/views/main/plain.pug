@@ -1,0 +1,11 @@
+extends ../template/index
+block content
+    #wrapper(style='min-width:768px; overflow:hidden')
+        include ../template/menuLeft
+        #page-wrapper.gray-bg
+            include ../template/menuTop
+            .wrapper.wrapper-content
+                #tabs
+                #plain_toast
+                #plain_loadpanel
+            include ../template/footer

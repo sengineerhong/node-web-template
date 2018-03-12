@@ -1,0 +1,405 @@
+#dashboard_allwrap
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.dashbd-ibox-margin
+                    .ibox-title.color-black
+                        .inline
+                            select#dashboard_select_comTp.form-control(style='width: 85px; height: 25px; padding: 0px 6px;')
+                                option(value='02') SHOP
+                                option(value='03') BOOK
+                                // <option value="04">ENT</option>
+                                // <option value="05">TOUR</option>
+                        .inline
+                            h5(style='float: none;') 부문 실시간 매출 
+                        .inline
+                            h5(style='float: none;')
+                                | [ 
+                                #revDt.inline
+                                    i.fa.fa-spinner.fa-pulse.fa-fw
+                                #dayNm.inline
+                                    i.fa.fa-spinner.fa-pulse.fa-fw
+                                #revHms.inline
+                                    i.fa.fa-spinner.fa-pulse.fa-fw
+                                |  ]
+                        .inline(style='float: right;margin-top: 3px;')
+                            .dropdown
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-info-circle.fa-lg
+                                    |  집계정보
+                                ul.dropdown-menu.dropdown-menu-right.animated.fadeInRight
+                                    li
+                                        a(href='#')
+                                            .inline [당일]
+                                            #tRevDt.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            #tDayNm.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            .inline /
+                                            #tRemark.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                    li.divider
+                                    li
+                                        a(href='#')
+                                            .inline [전주]
+                                            #wRevDt.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            #wDayNm.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            .inline /
+                                            #wRemark.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                    li.divider
+                                    li
+                                        a(href='#')
+                                            .inline [YOY]
+                                            #yRevDt.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            #yDayNm.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                                            .inline /
+                                            #yRemark.inline
+                                                i.fa.fa-spinner.fa-pulse.fa-fw
+                        #dashboard_toast_position.inline.pull-right
+            // 거래금액기준
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.dashbd-ibox-margin
+                    .ibox-title
+                        // <span class="label dashbd-la-total pull-right">거래액</span>
+                        h5 거래금액 기준
+                        .inline
+                            .dropdown.dropup
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-question-circle.fa-lg
+                                ul.dropdown-menu.animated.fadeInRight
+                                    li
+                                        a(href='#') 기준:주문=결제완료, 클레임=클레임 확정
+                                    li
+                                        a(href='#') *실시간 처리를 목적으로 주문DB 기반으로 생성된 수치임으로 마감DB와 약간의 차이가 있을 수 있습니다.
+                        .inline.dashbd-float-r
+                            .ibox-tools
+                                a.collapse-link
+                                    i.fa.fa-chevron-up
+                    .ibox-content.dashbd-ibox-content
+                        .row
+                            .col-sm-4.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tSaleTotAmt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-total.inline 거래액
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wSaleTotAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wSaleTotAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#ySaleTotAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #ySaleTotAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-4.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tSaleOrdAmt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-order.inline 주문액
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wSaleOrdAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wSaleOrdAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#ySaleOrdAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #ySaleOrdAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-4
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tSaleClmAmt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-claim.inline 클레임액
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wSaleClmAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wSaleClmAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#ySaleClmAmt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #ySaleClmAmtRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+            // 주문건수기준
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.dashbd-ibox-margin
+                    .ibox-title
+                        // <span class="label dashbd-la-total pull-right">거래액</span>
+                        h5 주문건수 기준
+                        .inline
+                            .dropdown.dropup
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-question-circle.fa-lg
+                                ul.dropdown-menu.animated.fadeInRight
+                                    li
+                                        a(href='#') 기준:주문=결제완료, 클레임=클레임 확정
+                                    li
+                                        a(href='#') *실시간 처리를 목적으로 주문DB 기반으로 생성된 수치임으로 마감DB와 약간의 차이가 있을 수 있습니다.
+                        .inline.dashbd-float-r
+                            .ibox-tools
+                                a.collapse-link
+                                    i.fa.fa-chevron-up
+                    .ibox-content.dashbd-ibox-content
+                        .row
+                            .col-sm-4.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tCntTotCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-total.inline 실주문건
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wCntTotCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wCntTotCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yCntTotCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yCntTotCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-4.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tCntOrdCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-order.inline 주문건
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wCntOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wCntOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yCntOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yCntOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-4
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tCntClmCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-claim.inline 클레임건
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wCntClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wCntClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yCntClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yCntClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+            // 주문회원기준
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox
+                    .ibox-title
+                        // <span class="label dashbd-la-total pull-right">거래액</span>
+                        h5 주문회원 기준
+                        .inline
+                            .dropdown.dropup
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-question-circle.fa-lg
+                                ul.dropdown-menu.animated.fadeInRight
+                                    li
+                                        a(href='#') 기준:주문=결제완료, 클레임=클레임 확정
+                                    li
+                                        a(href='#') *실시간 처리를 목적으로 주문DB 기반으로 생성된 수치임으로 마감DB와 약간의 차이가 있을 수 있습니다.
+                        .inline.dashbd-float-r
+                            .ibox-tools
+                                a.collapse-link
+                                    i.fa.fa-chevron-up
+                    .ibox-content.dashbd-ibox-content
+                        .row
+                            .col-sm-3.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tMemOrdCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-total.inline 주문회원수
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wMemOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wMemOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yMemOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yMemOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-3.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tNonMemOrdCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-total.inline 주문비회원수
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wNonMemOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wNonMemOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yNonMemOrdCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yNonMemOrdCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-3.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tMemClmCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-claim.inline 클레임회원수
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wMemClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wMemClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yMemClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yMemClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                            .col-sm-3.dashbd-col-area
+                                .dashbd-wrapper-area
+                                    .dashbd-maindata
+                                        h1#tNonMemClmCnt.no-margins.pull-right.inline
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        span.label.dashbd-la-claim.inline 클레임비회원수
+                                    .dashbd-subdata
+                                        small 전주 대비 (
+                                        small#wNonMemClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #wNonMemClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                    div
+                                        small YOY 대비 (
+                                        small#yNonMemClmCnt
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+                                        small  )
+                                        #yNonMemClmCntRt.stat-percent.font-bold
+                                            i.fa.fa-spinner.fa-pulse.fa-fw
+        .row
+            .col-md-12.col-sm-12.col-xs-12
+                .ibox.float-e-margins
+                    .ibox-title.color-black
+                        .inline
+                            h5(style='float: none;') 전부문 매출 현황
+                        .inline
+                            h5(style='float: none;')
+                                // <i class='fa fa-spinner fa-pulse fa-fw'></i>
+                                | [ 
+                                #dashboard_allsales_date.inline
+                                    i.fa.fa-spinner.fa-pulse.fa-fw
+                                #dashboard_allsales_weekd.inline
+                                    i.fa.fa-spinner.fa-pulse.fa-fw
+                                | 						 ~  
+                                .inline -1Week
+                                |  ]
+                        .inline
+                            .dropdown
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-question-circle.fa-lg
+                                ul.dropdown-menu.animated.fadeInRight
+                                    li
+                                        a(href='#')
+                                            .inline 쇼핑, 도서, ENT, 투어 부문의 매출 현황을 비교함
+                                    li
+                                        a(href='#')
+                                            .inline 지난 1주일간의 데이터(일주일 전 ~ 어제)
+                        .inline.dashbd-float-r
+                            .ibox-tools
+                                a.collapse-link
+                                    i.fa.fa-chevron-up
+                    .ibox-content
+                        .row
+                            .col-md-9.col-sm-9.col-xs-9
+                                #dashboard_allsales_bar
+                            .col-md-3.col-sm-3.col-xs-3
+                                // <h4>부문별 비중</h4>
+                                .doughnut-content.dashboard-bottom.performance-title
+                                    .performance-text
+                                        #dashboard_allsales_pieText
+                                #dashboard_allsales_pie
+        .row
+            .col-md-6.col-sm-6.col-xs-12
+                .ibox.float-e-margins
+                    .ibox-title.color-black
+                        .inline
+                            h5(style='float: none;') 회원 현황
+                        .inline
+                            .dropdown
+                                a.dropdown-toggle.dashbd-icon(data-toggle='dropdown')
+                                    i.fa.fa-question-circle.fa-lg
+                                ul.dropdown-menu.animated.fadeInRight
+                                    li
+                                        a(href='#')
+                                            .inline 전월 데이터는 당월 10일 이후에 집계됨
+                                    li
+                                        a(href='#')
+                                            .inline ex> 12월 10일 기준 조회(5 ~ 10월)
+                                        a(href='#')
+                                            .inline ex> 12월 11일 기준 조회(6 ~ 11월)
+                        .inline.dashbd-float-r
+                            .ibox-tools
+                                a.collapse-link
+                                    i.fa.fa-chevron-up
+                                //
+                                  <a class="fullscreen-link">
+                                  <i class="fa fa-expand"></i>
+                                  </a>
+                                  <a class="close-link">
+                                  <i class="fa fa-times"></i>
+                                  </a>
+                    .ibox-content
+                        #dashboard_allmember_bar
+    // loadpanel
+    #dashboard_loadpanel
+    // toast
+    #dashboard_toast
+script(src='/js/tab/all/dashboard.js' type='text/javascript')

@@ -1,0 +1,44 @@
+#loginpath_allwrap
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row.plain
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .control-group
+                            #loginpath_parsley_msgAll
+                            form#loginpath_form(data-parsley-validate='')
+                                .row(style='padding: 10px 0px;')
+                                    .col-lg-3.col-md-3.col-sm-3.col-xs-3
+                                        form.form-horizontal
+                                            label#loginpath_label_strEndDate(for='loginpath_drp_strEndDate') 조회시작일 - 조회종료일
+                                            .control-group
+                                                .controls
+                                                    .input-prepend.input-group
+                                                        span.add-on.input-group-addon
+                                                            i.glyphicon.glyphicon-calendar.fa.fa-calendar
+                                                        input#loginpath_drp_strEndDate.datepicker.form-control(type='text')
+                                    .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
+                                        button#loginpath_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
+                            .x_content
+                                // grid start
+                                #loginpath_gridwrap.table-responsive
+                                    table#test1.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
+                                        thead
+                                            tr
+                                                th regTime
+                                                th peerIpSrc
+                                                th ifaceIn
+                                                th ifaceOut
+                                                th ipSrc
+                                                th ipDst
+                                                th ipProto
+                                                th lcomms
+                                                th portSrc
+                                                th portDst
+                                                th tcpFlag
+                                                th packets
+                                                th byteSum
+                                // grid end
+                                #loginpath_chartwrap(style='width: 50%;')
+                                    canvas#test2
+script(src='/js/tab/acct/test1.js' type='text/javascript')
