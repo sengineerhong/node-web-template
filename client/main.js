@@ -1,7 +1,7 @@
 /* css */
 // use webpack.ProvidePlugin - bootstrap
 import '../node_modules/font-awesome/css/font-awesome.min.css';
-//import '../node_modules/animate.css/animate.min.css';
+// import '../node_modules/animate.css/animate.min.css';
 import './src/css/animate.css';
 import '../node_modules/nprogress/nprogress.css';
 import '../node_modules/icheck/skins/flat/green.css';
@@ -11,24 +11,25 @@ import '../node_modules/bootstrap-datetimepicker-npm/build/css/bootstrap-datetim
 import '../node_modules/devextreme/dist/css/dx.common.css';
 import '../node_modules/devextreme/dist/css/generic.light-compact.custom_1120.css';
 /* datatable */
-//import '../node_modules/datatables.net-dt/css/jquery.dataTables.css';
-import '../node_modules/datatables.net-bs/css/dataTables.bootstrap.css'
-import '../node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.css'
-//import '../node_modules/datatables.net-responsive-bs/css/responsive.bootstrap.min.css'
+// import '../node_modules/datatables.net-dt/css/jquery.dataTables.css';
+import '../node_modules/datatables.net-bs/css/dataTables.bootstrap.css';
+import '../node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.css';
+// import '../node_modules/datatables.net-responsive-bs/css/responsive.bootstrap.min.css'
 import './src/css/custom.css';
+import './src/css/pmacct.css';
 
 /* js */
 // use webpack.ProvidePlugin - jquery, bootstrap, moment && ...
-import jquery from '../node_modules/jquery/dist/jquery';                                                              // moment korean
-import moment from '../node_modules/moment/min/moment.min';                                                              // moment korean
+import jquery from '../node_modules/jquery/dist/jquery';                                                // moment korean
+import moment from '../node_modules/moment/min/moment.min';                                             // moment korean
 import '../node_modules/moment/locale/ko';                                                              // moment korean
 import '../node_modules/twix/dist/twix.min';                                                            // twix
 import '../node_modules/jquery-ui-dist/jquery-ui.min';                                                  // jquery-ui
 import '../node_modules/metismenu/dist/metisMenu.min';                                                  // metisMenu
 import '../node_modules/nestable2/dist/jquery.nestable.min';                                            // nestable2
-import './src/vender/jquery.slimscroll/jquery.slimscroll.min';                                              // jquery.slimscroll
-//import '../node_modules/slimscroll/lib/slimscroll'                                                    // jquery.slimscroll
-import NProgress from '../node_modules/nprogress/nprogress';                                                           // nprogress
+import './src/vender/jquery.slimscroll/jquery.slimscroll.min';                                          // jquery.slimscroll
+// import '../node_modules/slimscroll/lib/slimscroll';                                                  // jquery.slimscroll
+import NProgress from '../node_modules/nprogress/nprogress';                                            // nprogress
 import '../node_modules/bootstrap-daterangepicker/daterangepicker';                                     // bootstrap-daterangepicker
 import '../node_modules/bootstrap-datetimepicker-npm/build/js/bootstrap-datetimepicker.min';            // bootstrap-datetimepicker-npm
 import '../node_modules/jquery-knob/dist/jquery.knob.min';                                              // jquery-knob
@@ -36,6 +37,7 @@ import '../node_modules/icheck/icheck.min';                                     
 import '../node_modules/parsleyjs/dist/parsley.min';                                                    // parsleyjs
 import '../node_modules/parsleyjs/src/i18n/ko';                                                         // parsleyjs korean
 import '../node_modules/switchery-npm/index';                                                           // switchery
+import '../node_modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min';                   // loading-overlay
 import Logger from '../node_modules/js-logger/src/logger.min';                                          // logger
 import Dexie from '../node_modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 
@@ -45,11 +47,12 @@ import '../node_modules/devextreme/dist/js/dx.all'
 
 /* datatables */
 // import '../node_modules/datatables.net/js/jquery.dataTables';
-import '../node_modules/datatables.net-bs/js/dataTables.bootstrap'
-import '../node_modules/datatables.net-buttons-bs/js/buttons.bootstrap'
-import '../node_modules/datatables.net-buttons/js/buttons.html5'
-import '../node_modules/datatables.net-buttons/js/buttons.print'
-//import '../node_modules/datatables.net-responsive-bs/js/responsive.bootstrap.min'
+import '../node_modules/datatables.net-bs/js/dataTables.bootstrap';
+import '../node_modules/datatables.net-buttons-bs/js/buttons.bootstrap';
+import '../node_modules/datatables.net-buttons/js/buttons.html5';
+import '../node_modules/datatables.net-buttons/js/buttons.print';
+import '../node_modules/datatables.net-plugins/api/fnReloadAjax';
+// import '../node_modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import Chart from 'chart.js';
 
@@ -61,19 +64,19 @@ import './src/js/common/utils.dx';
 import CSRequester from './src/js/common/csrequester.js';
 import './src/js/common/custom.js';
 
-/* for external accessing*/
+/* for external accessing */
 window.jquery = jquery;
-//window.jQuery = Jquery;
-//window.$ = jquery;
+// window.jQuery = Jquery;
+// window.$ = jquery;
 window.moment = moment;
 window.Logger = Logger;
 window.Logger = Logger;
 window.Dexie = Dexie;
 window.CSRequester = CSRequester;
 window.NProgress = NProgress;
-//window.Chart = Chart;
+// window.Chart = Chart;
 
-//import hi from '../app/hello';
+// import hi from '../app/hello';
 // import who from '../app/hong';
 
 /* for dev  */
@@ -106,14 +109,14 @@ window.devconfig_login_fake = false;
 window.devconfig_memstatus_csr = false;
 window.devconfig_memstatus_fake = false;
 
-
 /*
 var dttest = $('#dttest').DataTable();
-console.log("dttest=>"+dttest );*/
+console.log("dttest=>"+dttest );
+*/
 
 /* set main page function */
 /* deploy version  */
-window.deploy_version = "v0.5.8";
+window.deploy_version = 'v0.5.8';
 
 /* CS requester init for indexedDB request - hong */
 var csrOpt = { /* can use custom schema & handler(csrOpt.schema, csrOpt.handler) */ };
@@ -125,34 +128,33 @@ Logger.useDefaults();
 Logger.setLevel(Logger.INFO);
 var consoleHandler = Logger.createDefaultHandler();
 var serverHandler = function (messages, context) {
-
-    if ("INFO" == context.level.name && "[weblog]"== messages[0]) {
-        var param = { msg : messages[1]};
+    if (context.level.name === 'INFO' && messages[0] === '[weblog]') {
+        var param = {msg: messages[1]};
         $.ajax({
-            url: "/isis/admin/weblog/update",
+            url: '/isis/admin/weblog/update',
             data: $.param(param),
-            type: "get",
-            dataType : "json",
-            contentType: "application/json;charset=UTF-8"
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8'
         });
     }
 };
 
 Logger.setHandler(function (messages, context) {
     consoleHandler(messages, context);
-    serverHandler(messages, context);
+    // serverHandler(messages, context);
 });
 
 /* tab - hong */
 var tabs = $('#tabs').bootstrapDynamicTabs();
 
 /* common toast */
-var plainToast = UtilsDx.initToast($("#plain_toast"), { message:"plain error" });
+var plainToast = UtilsDx.initToast($('#plain_toast'), {message: 'plain error'});
 
 /* for Parsley validations */
 window.ParsleyConfig = {
-    //errorsWrapper: '<li class="alert-box-item"></li>',
-    //errorTemplate: '<span></span>',
+    // errorsWrapper: '<li class="alert-box-item"></li>',
+    // errorTemplate: '<span></span>',
     excluded:
     // Defaults
     'input[type=button],' +
@@ -165,25 +167,24 @@ window.ParsleyConfig = {
     '[data-parsley-disabled],' +  // Exclude specific input/select/radio/checkbox/etc
     '[data-parsley-disabled] *'   // Exclude all nesting inputs/selects/radios/checkboxes/etc
 };
-Parsley.setLocale('ko');
+window.Parsley.setLocale('ko');
 /* add validator (only number & comma seperation)   */
-Parsley.addValidator("numcommasepearate", {
-    messages: {ko: "숫자입력(구분자 ,)"},
-    validateString: function(value) {
-        if ($.trim(value) == "")	return true;
-        else 						return UtilsIsis.isValidNumAndCommaSeperate(value);
+window.Parsley.addValidator('numcommasepearate', {
+    messages: {ko: '숫자입력(구분자 ,)'},
+    validateString: function (value) {
+        if ($.trim(value) === '')   return true;
+        else                        return UtilsIsis.isValidNumAndCommaSeperate(value);
     }
 });
 
-
-
-$(document).ready(function() {
+$(document).ready(function () {
 
     // test
-    addTabContents("all_bn_dailysales", "[매출]일별", "/view/all/dailysales");
+    // addTabContents("all_bn_dailysales", "[매출]일별", "/view/all/dailysales");
 
     // default tab
-    /*var dashboard =
+/*
+    var dashboard =
         {
             id : "all_dashboard",
             title: "dashboard",
@@ -191,11 +192,11 @@ $(document).ready(function() {
         }
 */
     /* 임시 for beta test */
-    //addTabContents("dev_demoinfo", "page info", "/isis/dev/demoinfo");
+    // addTabContents("dev_demoinfo", "page info", "/isis/dev/demoinfo");
     /* tab home */
     // addTabContents(dashboard.id, dashboard.title, dashboard.url);
     /* req dynamic menu */
-    //reqDynaminMenu
+    // reqDynaminMenu
 
     /* temp ----------------- */
     createFavoriteMenuFromLcDB();
@@ -218,7 +219,6 @@ $(document).ready(function() {
     });
     /* temp ----------------- */
 });
-
 
 function reqDynaminMenu() {
 

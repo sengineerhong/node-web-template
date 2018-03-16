@@ -1,0 +1,212 @@
+// menu left
+nav.navbar-default.navbar-static-side(role='navigation')
+    #navLeft.sidebar-collapse
+        ul.nav
+            li.nav-header
+                .dropdown.profile-element
+                    // <span> <img alt="image" class="img-circle" src="img/profile_small.jpg"> </span>
+                    span
+                        a(href='')
+                            h1(style='color: white; font-weight: 300;') INTERPARK ISIS
+                    a.dropdown-toggle(data-toggle='dropdown', href='#')
+                        span.clear
+                            span.block.m-t-xs
+                                strong.font-bold ${sessionScope.userInfo.userId}
+                                b.caret
+                            // <span class="text-muted text-xs block">개인정보<b class="caret"></b></span>
+                    ul.dropdown-menu.animated.fadeInLeft.m-t-xs
+                        li
+                            a(href='#') sub1
+                        li
+                            a(href='#') sub2
+                        li
+                            a(href='#') sub3
+                        li.divider
+                        li
+                            a(href='/isis/logout') Logout
+                .logo-element ISIS
+        .tabs-container.leftmenu
+            ul.nav.nav-tabs(style='font-size: 12.5px;')
+                li.active
+                    a(href='#nav_tab1', role='tab', data-toggle='tab', style='padding: 6px 14px 6px 14px;') 부문별
+                li
+                    a(href='#nav_tab2', role='tab', data-toggle='tab', style='padding: 6px 14px 6px 14px;') 업무별
+                li
+                    a(href='#nav_tab3', role='tab', data-toggle='tab', style='padding: 6px 14px 6px 14px;') 관심별
+            .tab-content
+                #nav_tab1.tab-pane.active
+                    .sidebar-collapse
+                        ul#side-menu1.nav.metismenu.tab_link
+                            // sample
+                            li.tab_go(data-info='{"id":"acct_test1","title":"acct test1","url":"/view/acct/test1"}')
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label acct test1
+
+                            li.tab_go(data-info='{"id":"admin_weblog","title":"web log","url":"/isis/admin/weblog"}')
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label web log
+                            //
+                              <li class="tab_go" data-info='{"id":"admin_menu","title":"menu","url":"/isis/admin/menu"}'>
+                              <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">menu</span></a>
+                              </li>
+                            li.tab_go(data-info='{"id":"all_dashboard","title":"dashboard","url":"/isis/all/dashboard"}')
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label dashboard
+                            li.active
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 전사지표
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                                    li.active
+                                        a(href='#')
+                                            | 영업정보
+                                            span.fa.arrow
+                                        ul.nav.nav-third-level.collapse
+                                            li.tab_go(data-info='{"id":"all_bn_dailysales","title":"[매출]일별","url":"/isis/all/dailysales"}')
+                                                a(href='#') [매출]일별
+                                            li.tab_go(data-info='{"id":"all_bn_clslasales","title":"[매출]대분류별","url":"/isis/all/clslasales"}')
+                                                a(href='#') [매출]대분류별
+                                            li.tab_go(data-info='{"id":"all_bn_clsmisales","title":"[매출]중분류별","url":"/isis/all/clsmisales"}')
+                                                a(href='#') [매출]중분류별
+                                            li.tab_go(data-info='{"id":"all_bn_crosssales","title":"[매출]타켓마케팅","url":"/isis/all/crosssales"}')
+                                                a(href='#') [매출]타켓마케팅용
+                                            li.tab_go(data-info='{"id":"all_bn_multisales","title":"[매출]멀티조건","url":"/isis/all/multisales"}')
+                                                a(href='#') [매출]멀티조건용
+                                    li
+                                        a(href='#')
+                                            | 마케팅정보
+                                            span.fa.arrow
+                                        ul.nav.nav-third-level.collapse
+                                            li.tab_go(data-info='{"id":"all_ma_factbook","title":"마케팅 Factbook","url":"/isis/all/factbook"}')
+                                                a(href='#') 마케팅 Factbook
+                                            li.tab_go(data-info='{"id":"all_ma_crossbuy","title":"교차구매내역","url":"/isis/all/crossbuy"}')
+                                                a(href='#') 교차구매내역
+                                            li
+                                                a(href='#')
+                                                    s 카드매출비교(인터파크이니시스)
+                                    li
+                                        a(href='#')
+                                            | 회원정보
+                                            span.fa.arrow
+                                        ul.nav.nav-third-level.collapse
+                                            li.tab_go(data-info='{"id":"all_ma_memstatus","title":"회원현황","url":"/isis/all/memstatus"}')
+                                                a(href='#') 회원현황
+                                            li.tab_go(data-info='{"id":"all_ma_loginpath","title":"로그인경로","url":"/isis/all/loginpath"}')
+                                                a(href='#') 로그인경로
+                                            li.tab_go(data-info='{"id":"all_ma_signuppath","title":"회원가입경로","url":"/isis/all/signuppath"}')
+                                                a(href='#') 회원가입경로
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 쇼핑
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                                    li
+                                        a(href='#')
+                                            | 영업정보
+                                            span.fa.arrow
+                                        ul.nav.nav-third-level.collapse
+                                            // <li data-info='{"id":"all_bn_dailysales","title":"[매출]일별","url":"/isis/all/dailysales"}'><a href="">[매출]일별</a></li>
+                                    li
+                                        a(href='#')
+                                            | 마케팅정보
+                                            span.fa.arrow
+                                        ul.nav.nav-third-level.collapse
+                                            li.tab_go(data-info='{"id":"shop_ma_sellerstate","title":"판매자현황(일)","url":"/isis/shop/sellerstate"}')
+                                                a(href='#') 판매자현황(일)
+                                            li.tab_go(data-info='{"id":"shop_ma_sellerlistd","title":"판매자LIST(일)","url":"/isis/shop/sellerlistd"}')
+                                                a(href='#') 판매자LIST(일)
+                                            li.tab_go(data-info='{"id":"shop_ma_selleractivew","title":"셀러활동성(주)","url":"/isis/shop/selleractivew"}')
+                                                a(href='#') 셀러활동성지표(주)
+                                            li.tab_go(data-info='{"id":"shop_ma_selleractivem","title":"셀러활동성(월)","url":"/isis/shop/selleractivem"}')
+                                                a(href='#') 셀러활동성지표(월)
+                                            li
+                                                a(href='#')
+                                                    s 셀러활동성지표(일)
+                            li
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label 도서
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label ENT
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label 투어
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='#')
+                                    i.fa.fa-th-large
+                                    span.nav-label 시스템
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='#')
+                                    i.fa.fa-sitemap
+                                    span.nav-label Dev
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                                    li.tab_go(data-info='{"id":"dev_demoinfo","title":"CsvJsonConverter","url":"/isis/dev/demoinfo"}')
+                                        a(href='#') demo info
+                                    li.tab_go(data-info='{"id":"dev_csvjson","title":"CsvJsonConverter","url":"/isis/dev/csvjson"}')
+                                        a(href='#') CsvJsonConverter
+                                    li.tab_go(data-info='{"id":"all_dashboard","title":"dashboard","url":"/isis/all/dashboard"}')
+                                        a(href='#') Dashboard
+                #nav_tab2.tab-pane
+                    .sidebar-collapse
+                        ul#side-menu2.nav.metismenu
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 회원
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 주문
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 상품
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 배송
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 클레임
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                            li
+                                a(href='')
+                                    i.fa.fa-th-large
+                                    span.nav-label 기타
+                                    span.fa.arrow
+                                ul.nav.nav-second-level.collapse
+                #nav_tab3.tab-pane
+                    .sidebar-collapse
+                        ul#side-menu3.nav.metismenu.tab_link
+                            //
+                              <li class="tab_go" data-info='{"id":"all_dashboard","title":"dashboard","url":"/isis/all/dashboard"}'>
+                              <a href="#"><i class="fa fa-star color-f-star"></i> <span class="nav-label">favorite</span></a>
+                              </li>
+// menu left

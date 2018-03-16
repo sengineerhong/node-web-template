@@ -1,4 +1,16 @@
 {
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jquery": true
+
+    },
+    "globals": {
+        "Chart": false,
+        "UtilsIsis": false,
+        "moment": false
+    },
     "extends": "standard",
     "plugins": [
         "standard",
@@ -6,6 +18,11 @@
     ],
     "rules": {
         "indent": [2, 4, {"SwitchCase": 1}],
-        "semi": [2, "always"]
+        "semi": [2, "always"],
+        "no-multi-spaces": [1, {
+            "exceptions": {
+                "VariableDeclarator": true
+            }
+        }]
     }
 }

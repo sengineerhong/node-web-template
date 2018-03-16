@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-(function (Acct1, $) {
+(function (Acct2, $) {
     // TODO: need common ajax request
     function reqAjax (callback, options) {
         $.ajax({
@@ -39,10 +39,18 @@
 
     function updateChart (chart, data) {
         data.forEach(function (item) {
-            chart.data.labels.push(item.regTime);
-            chart.data.datasets[0].data.push(item.byteSum);
+            chart.data.labels.push(item.byteSum);
+            chart.data.datasets[0].data.push(item.dstAs);
         });
         chart.update();
+    }
+
+    function updatePie (pie, data) {
+        data.forEach(function (item) {
+            pie.data.labels.push(item.ifaceOut);
+            pie.data.datasets[0].data.push(item.byteSum);
+        });
+        pie.update();
     }
 
     function showToast (msg) {
@@ -54,16 +62,15 @@
         let isChartReqEnd = false;
         let isGridReqEnd = false;
         /* view  */
-        const $dGrid = $('#acct1_grid');
-        const $chart = $('#acct1_chart');
-        const $reqBtn = $('#acct1_btn_req');
-        const $drp = $('#acct1_drp_date');
-        const $chartYn = $('#acct1_inputc_chartYn');
-        const $chartRow = $('#acct1_chartRow');
-        // const $form = $('#acct1_form');                                         // parsley validation form
-        const $chartRType = $("input[name='acct1_inputr_chartR']");             // radio name
-        const $chartRType1 = $('#acct1_inputr_chartR_1');
-        const $contentWrap = $('#acct1_contentwrap');
+        const $dGrid = $('#acct2_grid');
+        const $chart = $('#acct2_chart');
+        const $pie = $('#acct2_pie');
+        const $reqBtn = $('#acct2_btn_req');
+        const $drp = $('#acct2_drp_date');
+        const $chartYn = $('#acct2_inputc_chartYn');
+        const $chartRow = $('#acct2_chartRow');
+        // const $form = $('#acct2_form');                                         // parsley validation form
+        const $contentWrap = $('#acct2_contentwrap');
 
         /* options */
         // LoadingOverlay
@@ -83,13 +90,14 @@
         };
         // chart
         const chartOptions = {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'packet usage by minute',
+                    label: 'packet usage by dstAs',
                     data: [],
-                    backgroundColor: ['#F67280'],
+                    backgroundColor: '#F67280',
+                    borderColor: '#F67280',
                     borderWidth: 1,
                     fill: 'origin'
                 }]
@@ -98,10 +106,17 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'dstAs',
+                            fontSize: 15,
+                            padding: 1,
+                            fontColor: '#000'
+                        }
+                    }],
                     yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        },
                         display: true,
                         scaleLabel: {
                             display: true,
@@ -111,14 +126,35 @@
                 }
             }
         };
+        // pie
+        const pieOptions = {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'packet usage by ifaceOut'
+                }
+            }
+        };
 
         /* init views */
         // init checkbox - icheckbox
-        UtilsIsis.initIcheckbox('acct1_icheck');
+        UtilsIsis.initIcheckbox('acct2_icheck');
         // init drp
         UtilsIsis.initDaterangepicker($drp, drpOptions);
         // init chart
         var chart = new Chart($chart, chartOptions);
+        // init chart
+        var pie = new Chart($pie, pieOptions);
         // init datatables
         let dtGrid;
         function initGrid () {
@@ -140,7 +176,7 @@
                 // scrollX: true,
                 bProcessing: false,
                 // bServerSide: true,
-                sAjaxSource: 'api/acct/test1/grid',
+                sAjaxSource: 'api/acct/test2/grid',
                 sServerMethod: 'POST',
                 fnServerParams: function (aoData) {
                     aoData.push({ 'name': 'strDate', 'value': $drp.val() });
@@ -167,18 +203,15 @@
                 */
                 columns: [
                     {'data': 'regTime'},
-                    {'data': 'peerIpSrc'},
-                    {'data': 'ifaceIn'},
-                    {'data': 'ifaceOut'},
-                    {'data': 'ipSrc'},
-                    {'data': 'ipDst'},
-                    {'data': 'ipProto'},
-                    {'data': 'tos'},
-                    {'data': 'portSrc'},
-                    {'data': 'portDst'},
-                    {'data': 'tcpFlag'},
-                    {'data': 'packets'},
-                    {'data': 'byteSum'}
+                    {'data': '33882175'},
+                    {'data': '37290047'},
+                    {'data': '100991039'},
+                    {'data': '103874623'},
+                    {'data': '201654335'},
+                    {'data': '205586495'},
+                    {'data': 'dstNetMask'},
+                    {'data': 'byteSum'},
+                    {'data': 'dstAs'}
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
@@ -209,15 +242,17 @@
         /* request event */
         $reqBtn.on('click', function (e) {
             // request chart
-            var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: $chartRType.filter(':checked').val()}};
+            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val()}};
             reqChartData(reqOpt);
-
+            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val()}};
+            reqPieData(reqOptPie);
             // request grid
             isGridReqEnd = false;
             $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
             dtGrid.fnClearTable();
             dtGrid.fnReloadAjax();
         });
+
         /* own control  */
         // chart-row show/hide
         $chartYn.on('ifToggled', function (e) {
@@ -235,14 +270,6 @@
             }
         });
 
-        // radio checked event
-        $chartRType.on('ifChecked', function (e) {
-            var chartR = $(this).val();
-            var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: chartR}};
-
-            reqChartData(reqOpt);
-        });
-
         function reqChartData (reqOpt) {
             $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
             isChartReqEnd = false;
@@ -258,9 +285,19 @@
             }, reqOpt);
         }
 
-        // reset check box(chartRType1-1분)
-        // update chart (when load page)
-        $chartRType1.iCheck('check');
+        function reqPieData (reqOpt) {
+            clearChartData(pie);
+            reqAjax({
+                success: function (data) {
+                    updatePie(pie, data);
+                },
+                error: showToast
+            }, reqOpt);
+        }
+
+        // request chart
+        reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val()}});
+        reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val()}});
         initGrid();
     });
-}(window.Acct1 || {}, jquery));
+}(window.Acct2 || {}, jquery));

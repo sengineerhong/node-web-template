@@ -25,7 +25,7 @@ exports.loadConfig = function () {
         var configFile = path.resolve(startup.get('conf') || 'project.json');
 
         winston.info('[nconf.js]configFile', configFile);
-        winston.info('[nconf.js]startup', JSON.stringify(startup));
+        // winston.info('[nconf.js]startup', JSON.stringify(startup));
 
         try {
             nconf.overrides(yaml.safeLoad(fs.readFileSync(confFile, 'utf8')));

@@ -13,12 +13,39 @@ module.exports = {
     /* dailySales-grid,yoy */
     tab_all_dailySales_grid: {
         body: {
-            strDate: joi.number().required(),
+            strDate: joi.number().required()
         }
     },
     tab_all_dailySales_yoy: {
         body: {
-            strDate: joi.number().required(),
+            strDate: joi.number().required()
+        }
+    },
+
+    tab_acct_test1_grid: {
+        body: {
+            strDate: joi.date().required()
+        }
+    },
+    tab_acct_test1_chart: {
+        body: {
+            strDate: joi.date().required(),
+            range: joi.number().required()
+        }
+    },
+    tab_acct_test2_grid: {
+        body: {
+            strDate: joi.date().required()
+        }
+    },
+    tab_acct_test2_chart: {
+        body: {
+            strDate: joi.date().required()
+        }
+    },
+    tab_acct_test2_pie: {
+        body: {
+            strDate: joi.date().required()
         }
     },
 

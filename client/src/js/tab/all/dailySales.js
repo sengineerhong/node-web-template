@@ -372,7 +372,7 @@
                 // load data
                 AllDailySales.AllDailySalesView.chart.load(dmComTpArry);
             } else {
-                //TODO : error toast~
+                // TODO : error toast~
             }
         });
 

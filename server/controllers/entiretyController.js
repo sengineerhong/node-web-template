@@ -3,7 +3,11 @@ const entiretyModel = require('../models/entiretyModel');
 exports.getAcctTest1Chart = async (req, res, next) => {
     let data = '';
     try {
-        data = await entiretyModel.getAcctTest1Chart();
+        const param = {
+            strDate: req.body.strDate,
+            range: parseInt(req.body.range)
+        };
+        data = await entiretyModel.getAcctTest1Chart(param);
     } catch (error) {
         return next(error);
     }
@@ -13,15 +17,19 @@ exports.getAcctTest1Chart = async (req, res, next) => {
 exports.getAcctTest1Grid_reqOnce = async (req, res, next) => {
     let data = '';
     try {
-        data = await entiretyModel.getAcctTest1Grid_reqOnce();
+        const param = {
+            strDate: req.body.strDate
+        };
+        data = await entiretyModel.getAcctTest1Grid_reqOnce(param);
     } catch (error) {
         return next(error);
     }
-    return res.json({data : data});
+    return res.json({data: data});
 };
 
 exports.getAcctTest1Grid = async (req, res, next) => {
-    let iTotalRecords, data = '';
+    let iTotalRecords;
+    let data = '';
     try {
         var totalCntRow = await entiretyModel.getAcctTest1GridTotal(req);
         iTotalRecords = totalCntRow[0].iTotalRecords
@@ -29,25 +37,63 @@ exports.getAcctTest1Grid = async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.json({sEcho: req.body.sEcho, iTotalRecords: iTotalRecords, iDisplayLength: iTotalRecords, data : data});
+    return res.json({sEcho: req.body.sEcho, iTotalRecords: iTotalRecords, iDisplayLength: iTotalRecords, data: data});
 };
 
+exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            strDate: req.body.strDate
+        };
+        data = await entiretyModel.getAcctTest2Grid_reqOnce(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json({data: data});
+};
+
+exports.getAcctTest2Chart = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            strDate: req.body.strDate
+        };
+        data = await entiretyModel.getAcctTest2Chart(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(data);
+};
+
+exports.getAcctTest2Pie = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            strDate: req.body.strDate
+        };
+        data = await entiretyModel.getAcctTest2Pie(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(data);
+};
 
 exports.getAllLoginPath = async (req, res, next) => {
-  let result = '';
-  try {
-    result = await entiretyModel.getAllLoginPath();
-  } catch (error) {
-    return next(error);
-  }
-  return res.json(result);
+    let result = '';
+    try {
+        result = await entiretyModel.getAllLoginPath();
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(result);
 };
 
 exports.getAllDailySalesGrid = async (req, res, next) => {
     let result = '';
     try {
         result = await entiretyModel.getAllDailySalesGrid();
-        result["progress"] = "31/31";
+        result['progress'] = '31/31';
     } catch (error) {
         return next(error);
     }
@@ -58,12 +104,11 @@ exports.getAllDailySalesYoy = async (req, res, next) => {
     let result = '';
     try {
         result = await entiretyModel.getAllDailySalesYoy();
-        result["progress"] = "31/31";
+        result['progress'] = '31/31';
     } catch (error) {
         return next(error);
     }
     return res.json(result);
 };
-
 
 

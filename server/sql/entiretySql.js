@@ -1,10 +1,11 @@
+/* eslint-disable no-tabs */
 module.exports = {
 
-    AllLoginPath :
-        `SELECT * FROM board`,
-    AcctTest1Grid_reqOnce :
-        `SELECT 
-            DATE_FORMAT(timestamp_start, "%m-%d %H:%i:%s") as regTime
+    AllLoginPath:
+        `select * from board`,
+    AcctTest1Grid_reqOnce:
+        `select 
+            date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
             ,peer_ip_src as peerIpSrc
             ,iface_in as ifaceIn
             ,iface_out as ifaceOut
@@ -17,12 +18,13 @@ module.exports = {
             ,tcp_flags as tcpFlag
             ,packets as packets
             ,sum(bytes) as byteSum
-        FROM pmacct.acct_20180204
-        WHERE peer_ip_src = '192.168.100.33'
-        GROUP BY ip_dst
-        ORDER by regTime`,
-    AcctTest1Grid :
-        `SELECT 
+        from pmacct.acct_20180312
+        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
+        group by ip_dst
+        order by regTime
+        limit 0, 50`,
+    AcctTest1Grid:
+        `select 
             timestamp_start as regTime
             ,peer_ip_src as peerIpSrc
             ,iface_in as ifaceIn
@@ -36,33 +38,66 @@ module.exports = {
             ,tcp_flags as tcpFlag
             ,packets as packets
             ,sum(bytes) as byteSum
-        FROM pmacct.acct_20180204
-        WHERE peer_ip_src = '192.168.100.33'
-        GROUP BY ip_dst
-        LIMIT ?, ?`,
-    AcctTest1GridTotal :
-        `SELECT count(c.ipDst) as iTotalRecords
-        FROM (
-            SELECT 
+        from pmacct.acct_20180312
+        where peer_ip_src = '192.168.100.33'
+        group by ip_dst
+        limit ?, ?`,
+    AcctTest1GridTotal:
+        `select count(c.ipDst) as iTotalRecords
+        from (
+            select 
                 ip_dst as ipDst
-            FROM pmacct.acct_20180204
-            WHERE peer_ip_src = '192.168.100.33'
-            GROUP BY ip_dst
+            from pmacct.acct_20180312
+            where peer_ip_src = '192.168.100.33'
+            group by ip_dst
         ) as c`,
-    AcctTest1Chart :
-        `SELECT regTime, byteSum
-        FROM (
-            SELECT 
+    AcctTest1Chart:
+        `select regTime, byteSum
+        from (
+            select 
                 timestamp_start as orgTime
-                ,DATE_FORMAT(timestamp_start, "%m-%d %H:%i:%s") as regTime
+                ,date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
                 ,sum(bytes) as byteSum
-            FROM pmacct.acct_20180205
-            WHERE peer_ip_src = '192.168.100.33'
-            GROUP BY ip_dst
-            ORDER by regTime
+            from pmacct.acct_20180312
+            where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
+            group by ip_dst
+            order by regTime
         
         ) as a	
-        GROUP BY hour(a.orgTime), floor(minute(a.orgTime)/10)
-        -- LIMIT 0, 10`
-
-}
+        group by hour(a.orgTime), floor(minute(a.orgTime)/?)
+        -- limit 0, 10`,
+    AcctTest2Grid_reqOnce:
+        `select
+            date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
+            -- ,iface_out as ifaceOut
+            ,sum(case when iface_out = 33882175 then bytes end) as '33882175'
+            ,sum(case when iface_out = 37290047 then bytes end) as '37290047'
+            ,sum(case when iface_out = 100991039 then bytes end) as '100991039'
+            ,sum(case when iface_out = 103874623 then bytes end) as '103874623'
+            ,sum(case when iface_out = 201654335 then bytes end) as '201654335'
+            ,sum(case when iface_out = 205586495 then bytes end) as '205586495'
+            -- ,net_dst as dstNet
+            ,concat(net_dst, '/', mask_dst) as dstNetMask
+            ,sum(bytes) as byteSum
+            ,as_dst as dstAs
+        from pmacct.acct_20180312
+        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        group by iface_out, as_dst, dstNetMask
+        order by regTime`,
+    AcctTest2Chart:
+        `select
+            date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
+            ,sum(bytes) as byteSum
+            ,as_dst as dstAs
+        from pmacct.acct_20180312
+        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        group by as_dst
+        order by regTime`,
+    AcctTest2Pie:
+        `select
+            iface_out as ifaceOut
+            ,sum(bytes) as byteSum
+        from pmacct.acct_20180312
+        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        group by iface_out`
+};
