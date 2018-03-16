@@ -16,6 +16,9 @@ ul.nav-second-level {
     background-color: #363535;
     color: white;
 }
+.mini-navbar .nav .nav-second-level {
+    background-color: #363535;
+}
 .nav.nav-tabs li {
     background: none;
     border: none;

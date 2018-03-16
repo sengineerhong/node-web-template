@@ -52,11 +52,11 @@ module.exports = function () {
 
     // set main page
     app.get('/', function (req, res) {
-        res.redirect('/isis');
+        res.redirect('/pmacct');
     });
 
     // check session alive
-    app.get('/isis', function (req, res) {
+    app.get('/pmacct', function (req, res) {
         if (true) {
             res.render('main/plain');
         } else {
