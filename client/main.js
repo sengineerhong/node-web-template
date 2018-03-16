@@ -149,7 +149,7 @@ Logger.setHandler(function (messages, context) {
 var tabs = $('#tabs').bootstrapDynamicTabs();
 
 /* common toast */
-var plainToast = UtilsDx.initToast($('#plain_toast'), {message: 'plain error'});
+window.plainToast = UtilsDx.initToast($('#plain_toast'), {message: 'plain error'});
 
 /* for Parsley validations */
 window.ParsleyConfig = {
@@ -236,7 +236,7 @@ function reqDynaminMenu() {
             //genMenu(resData.data);
 
             /* generate 관심별 memu  */
-            createFavoriteMenu(resData.data);
+            // createFavoriteMenu(resData.data);
 
             /* activate MetisMenu */
             $('#side-menu1').metisMenu();

@@ -23,6 +23,8 @@
                     msg = 'Time out error.';
                 } else if (exception === 'abort') {
                     msg = 'Ajax request aborted.';
+                } else if (jqXHR.status === 999) {
+                    msg = '해당 날짜 data 없음';
                 } else {
                     msg = 'Uncaught Error.\n' + jqXHR.responseText;
                 }
@@ -34,24 +36,75 @@
     function clearChartData (chart) {
         chart.data.labels = [];
         chart.data.datasets[0].data = [];
+        chart.data.datasets[0].label = '';
         // chart.update();
     }
 
     function updateChart (chart, data) {
+        var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
+        var unit = checkByteUnit(min);
+
         data.forEach(function (item) {
             chart.data.labels.push(item.regTime);
-            chart.data.datasets[0].data.push(item.byteSum);
+            chart.data.datasets[0].data.push(genByteUnit(item.byteSum, unit));
         });
+        chart.data.datasets[0].label = 'packet usage by minute (' + unit + ')'
         chart.update();
     }
 
     function showToast (msg) {
         console.log('show toast: ' + msg);
+        window.plainToast.option({type: 'error', message: msg});
+        window.plainToast.show();
+    }
+
+    function checkByteUnit (num) {
+        if (num < 1024)             { return 'Bytes'; }
+        if (num < 1048576)          { return 'KB'; }
+        if (num < 1073741824)       { return 'MB'; }
+        if (num < 1099511600000)    { return 'GB'; }
+        return 'TB';
+    }
+
+    function genByteUnit (num, unit) {
+        var genNum;
+        switch (unit) {
+            case 'Bytes':
+                genNum = num;
+                break;
+            case 'KB':
+                genNum = num / 1024;
+                break;
+            case 'MB':
+                genNum = num / 1024 / 1024;
+                break;
+            case 'GB':
+                genNum = num / 1024 / 1024 / 1024;
+                break;
+            default:
+                genNum = num / 1024 / 1024 / 1024 / 1024;
+                break;
+        }
+        return genNum;
+    }
+
+    function formatBytes (bytes, decimals) {
+        if (bytes === 0) return '0 Bytes';
+        var k = 1024;
+        var dm = decimals || 2;
+        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
+    }
+
+    function byteFormatter (data, type, row) {
+        return formatBytes(data);
     }
 
     $(function () {
         /* flag */
         let isChartReqEnd = false;
+        let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         /* view  */
         const $dGrid = $('#acct1_grid');
@@ -73,12 +126,17 @@
             singleDatePicker: true,
             // startDate: moment().subtract(1, 'days'),
             startDate: moment('2018-03-12 14:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            minDate: moment('2018-03-12 14:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            maxDate: moment('2018-03-12 23:59:00', 'YYYY-MM-DD HH:mm:ss'),
+            minDate: moment('2018-03-11 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+            maxDate: moment().subtract(1, 'hours'),
             timePicker: true,
             timePicker24Hour: true,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
+            },
+            isInvalidDate: function (date) {
+                if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
+                    return true;
+                }
             }
         };
         // chart
@@ -87,7 +145,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'packet usage by minute',
+                    label: 'packet usage by minute (Bytes)',
                     data: [],
                     backgroundColor: ['#F67280'],
                     borderWidth: 1,
@@ -105,7 +163,7 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'byte'
+                            labelString: 'packet'
                         }
                     }]
                 }
@@ -146,9 +204,16 @@
                     aoData.push({ 'name': 'strDate', 'value': $drp.val() });
                 },
                 fnDrawCallback: function (oSettings) {
-                    if (oSettings.aiDisplay.length !== 0 && !isGridReqEnd) {
+                    // TODO : 임시로직
+                    cntFnDrawCB++;
+                    if (cntFnDrawCB === 2 && !isGridReqEnd) {
+                        // if (oSettings.aiDisplay.length !== 0 && !isGridReqEnd) {
                         $contentWrap.LoadingOverlay('hide', true);
                         isGridReqEnd = true;
+                        cntFnDrawCB = 0;
+                        if (oSettings.aiDisplay.length === 0) {
+                            showToast('해당 기간 데이터 없음');
+                        }
                     }
                 },
                 /*
@@ -178,7 +243,7 @@
                     {'data': 'portDst'},
                     {'data': 'tcpFlag'},
                     {'data': 'packets'},
-                    {'data': 'byteSum'}
+                    {'data': 'byteSum', render: byteFormatter}
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');

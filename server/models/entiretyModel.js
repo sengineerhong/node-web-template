@@ -4,12 +4,12 @@ const path = require('path');
 const query = require('../sql/entiretySql');
 const fakeFilePath = path.resolve(__dirname, '../data');
 
-exports.getAcctTest1Chart = (param) => {
+exports.checkTableExist = (param) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest1Chart;
+        const sql = query.CommonTabledExist;
 
-        pool.query(sql, [param.strDate, param.strDate, param.range], (err, rows) => {
+        pool.query(sql, [param.dbName, param.tbName], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -23,7 +23,66 @@ exports.getAcctTest1Grid_reqOnce = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.AcctTest1Grid_reqOnce;
 
-        pool.query(sql, [param.strDate, param.strDate], (err, rows) => {
+        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctTest1Chart = (param) => {
+    return new Promise((resolve, reject) => {
+        // const sql = `SELECT * FROM board`;
+        const sql = query.AcctTest1Chart;
+
+        pool.query(sql, [param.tbName, param.strDate, param.strDate, param.range], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctTest2Grid_reqOnce = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.AcctTest2Grid_reqOnce;
+
+        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctTest2Chart = (param) => {
+    return new Promise((resolve, reject) => {
+        // const sql = `SELECT * FROM board`;
+        const sql = query.AcctTest2Chart;
+
+        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctTest2Pie = (param) => {
+    return new Promise((resolve, reject) => {
+        // const sql = `SELECT * FROM board`;
+        const sql = query.AcctTest2Pie;
+
+        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -54,50 +113,6 @@ exports.getAcctTest1Grid = (req) => {
         const sql = query.AcctTest1Grid;
 
         pool.query(sql, [parseInt(req.body.iDisplayStart), parseInt(req.body.iDisplayLength)], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-};
-
-exports.getAcctTest2Grid_reqOnce = (param) => {
-    return new Promise((resolve, reject) => {
-        const sql = query.AcctTest2Grid_reqOnce;
-
-        pool.query(sql, [param.strDate, param.strDate], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-};
-
-exports.getAcctTest2Chart = (param) => {
-    return new Promise((resolve, reject) => {
-        // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest2Chart;
-
-        pool.query(sql, [param.strDate, param.strDate], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-};
-
-exports.getAcctTest2Pie = (param) => {
-    return new Promise((resolve, reject) => {
-        // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest2Pie;
-
-        pool.query(sql, [param.strDate, param.strDate], (err, rows) => {
             if (err) {
                 reject(err);
             } else {

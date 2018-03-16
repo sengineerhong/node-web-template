@@ -3,6 +3,13 @@ module.exports = {
 
     AllLoginPath:
         `select * from board`,
+    CommonTabledExist:
+        `select 
+            count(*) tbCnt 
+        from information_schema.tables
+        where table_schema = ? 
+            and table_name = ?
+        limit 1;`,
     AcctTest1Grid_reqOnce:
         `select 
             date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
@@ -18,11 +25,11 @@ module.exports = {
             ,tcp_flags as tcpFlag
             ,packets as packets
             ,sum(bytes) as byteSum
-        from pmacct.acct_20180312
+        from ??
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
         group by ip_dst
         order by regTime
-        limit 0, 50`,
+        -- limit 0, 50`,
     AcctTest1Grid:
         `select 
             timestamp_start as regTime
@@ -38,7 +45,7 @@ module.exports = {
             ,tcp_flags as tcpFlag
             ,packets as packets
             ,sum(bytes) as byteSum
-        from pmacct.acct_20180312
+        from ??
         where peer_ip_src = '192.168.100.33'
         group by ip_dst
         limit ?, ?`,
@@ -47,24 +54,25 @@ module.exports = {
         from (
             select 
                 ip_dst as ipDst
-            from pmacct.acct_20180312
+            from ??
             where peer_ip_src = '192.168.100.33'
             group by ip_dst
         ) as c`,
     AcctTest1Chart:
-        `select regTime, byteSum
+        `select regTime, sum(byteSum) as byteSum
         from (
             select 
                 timestamp_start as orgTime
                 ,date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
                 ,sum(bytes) as byteSum
-            from pmacct.acct_20180312
+            from ??
             where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
             group by ip_dst
             order by regTime
         
-        ) as a	
-        group by hour(a.orgTime), floor(minute(a.orgTime)/?)
+        ) as a
+        group by unix_timestamp(a.orgTime) DIV ?	
+        -- group by hour(a.orgTime), floor(minute(a.orgTime)/?)
         -- limit 0, 10`,
     AcctTest2Grid_reqOnce:
         `select
@@ -80,7 +88,7 @@ module.exports = {
             ,concat(net_dst, '/', mask_dst) as dstNetMask
             ,sum(bytes) as byteSum
             ,as_dst as dstAs
-        from pmacct.acct_20180312
+        from ??
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
         group by iface_out, as_dst, dstNetMask
         order by regTime`,
@@ -89,7 +97,7 @@ module.exports = {
             date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
             ,sum(bytes) as byteSum
             ,as_dst as dstAs
-        from pmacct.acct_20180312
+        from ??
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
         group by as_dst
         order by regTime`,
@@ -97,7 +105,7 @@ module.exports = {
         `select
             iface_out as ifaceOut
             ,sum(bytes) as byteSum
-        from pmacct.acct_20180312
+        from ??
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
         group by iface_out`
 };
