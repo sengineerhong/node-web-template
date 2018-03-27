@@ -39,6 +39,7 @@ exports.getAcctTest1Grid_reqOnce = async (req, res, next) => {
             tbName: req.body.tbName
         };
         data = await entiretyModel.getAcctTest1Grid_reqOnce(param);
+        // data = await entiretyModel.getAcctTest1Grid_reqOnce_alasql2(param);
     } catch (error) {
         return next(error);
     }
@@ -119,7 +120,6 @@ exports.getAcctTest1Grid = async (req, res, next) => {
     return res.json({sEcho: req.body.sEcho, iTotalRecords: iTotalRecords, iDisplayLength: iTotalRecords, data: data});
 };
 
-
 exports.getAllLoginPath = async (req, res, next) => {
     let result = '';
     try {
@@ -151,5 +151,3 @@ exports.getAllDailySalesYoy = async (req, res, next) => {
     }
     return res.json(result);
 };
-
-

@@ -23,7 +23,7 @@
 
 	UtilsDx.getExcelFileName = function(preStr)
 	{
-		return preStr+"_"+UtilsIsis.getDateStringFormat()
+		return preStr+"_"+UtilsCmmn.getDateStringFormat();
 	};
 
 	/* pivotgrid function */

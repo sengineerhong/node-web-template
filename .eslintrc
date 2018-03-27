@@ -8,7 +8,7 @@
     },
     "globals": {
         "Chart": false,
-        "UtilsIsis": false,
+        "UtilsCmmn": false,
         "moment": false
     },
     "extends": "standard",

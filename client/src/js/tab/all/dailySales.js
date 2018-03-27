@@ -7,7 +7,7 @@
     /* view  */
     var allwrapId = "dailysales_allwrap";
     /* tab id, title, url */
-    var tabObj = UtilsIsis.getTabInfo(allwrapId);
+    var tabObj = UtilsCmmn.getTabInfo(allwrapId);
     /* user id */
     var userId = "${sessionScope.userInfo.userId}";
 
@@ -65,21 +65,21 @@
                     isDev: window.devconfig_dailysales_fake
                 }, reqOpt);
 
-            UtilsIsis.loadData({
+            UtilsCmmn.loadData({
 
                 dbName: db,
                 request: requestOpt,
                 callback: function(result) {
 
                     // for fake request
-                    if (requestOpt.isDev) UtilsIsis.setKnobFake(self.$progress);
+                    if (requestOpt.isDev) UtilsCmmn.setKnobFake(self.$progress);
 
-                    var currentProgressPercent = UtilsIsis.calculateProgressStatus(result.progress);
-                    UtilsIsis.animateKnobProgress(self.$progress, preProgressPercent, currentProgressPercent);
+                    var currentProgressPercent = UtilsCmmn.calculateProgressStatus(result.progress);
+                    UtilsCmmn.animateKnobProgress(self.$progress, preProgressPercent, currentProgressPercent);
                     preProgressPercent = currentProgressPercent;
 
                     // all requests done
-                    if (100 == UtilsIsis.calculateProgressStatus(result.progress)) {
+                    if (100 == UtilsCmmn.calculateProgressStatus(result.progress)) {
                         self.loaded = true;
                         self.loadPanel.hide();
                     }
@@ -97,8 +97,8 @@
                 error : function(result) {
 
                     // knob 100% & change knob color(error)
-                    UtilsIsis.animateKnobProgress(self.$progress, "0", "100");
-                    UtilsIsis.setKnobError(self.$progress);
+                    UtilsCmmn.animateKnobProgress(self.$progress, "0", "100");
+                    UtilsCmmn.setKnobError(self.$progress);
                     // hide loadPanel
                     self.loaded = true;
                     self.loadPanel.hide();
@@ -121,21 +121,21 @@
                     isDev: window.devconfig_dailysales_fake
                 }, reqOpt);
 
-            UtilsIsis.loadData({
+            UtilsCmmn.loadData({
 
                 dbName: db,
                 request: requestOpt,
                 callback: function(result) {
 
                     // for fake request
-                    if (requestOpt.isDev) UtilsIsis.setKnobFake(self.$progress);
+                    if (requestOpt.isDev) UtilsCmmn.setKnobFake(self.$progress);
 
-                    var currentProgressPercent = UtilsIsis.calculateProgressStatus(result.progress);
-                    UtilsIsis.animateKnobProgress(self.$progress, preProgressPercent, currentProgressPercent);
+                    var currentProgressPercent = UtilsCmmn.calculateProgressStatus(result.progress);
+                    UtilsCmmn.animateKnobProgress(self.$progress, preProgressPercent, currentProgressPercent);
                     preProgressPercent = currentProgressPercent;
 
                     // all requests done
-                    if (100 == UtilsIsis.calculateProgressStatus(result.progress)) {
+                    if (100 == UtilsCmmn.calculateProgressStatus(result.progress)) {
                         self.loaded = true;
                         self.loadPanel.hide();
                     }
@@ -146,7 +146,7 @@
                     result.data.forEach(function (obj) {
 
                         // YYYYMMDD to YYY-MM-DD(WD)
-                        obj._stdRevDt = UtilsIsis.changeDateFormat(obj.stdRevDt.toString());
+                        obj._stdRevDt = UtilsCmmn.changeDateFormat(obj.stdRevDt.toString());
                         if (obj.dmComTp == "02") {
                             dataArry.push(obj);
                         }
@@ -162,8 +162,8 @@
                 error : function(result) {
 
                     // knob 100% & change knob color(error)
-                    UtilsIsis.animateKnobProgress(self.$progress, "0", "100");
-                    UtilsIsis.setKnobError(self.$progress);
+                    UtilsCmmn.animateKnobProgress(self.$progress, "0", "100");
+                    UtilsCmmn.setKnobError(self.$progress);
                     // hide loadPanel
                     self.loadPanel.hide();
                     // set toast msg & show
@@ -279,12 +279,12 @@
         var $toast = $("#dailysales_toast");
 
         // init daterangepicker - for use pick day rage only
-        UtilsIsis.initDaterangepicker("dailysales_drp_strDate", { singleDatePicker: true, startDate: moment().subtract(1, "days") });
+        UtilsCmmn.initDaterangepicker("dailysales_drp_strDate", { singleDatePicker: true, startDate: moment().subtract(1, "days") });
 
         // init knob - for progress circle
-        UtilsIsis.initKnob("dailysales_knob");
+        UtilsCmmn.initKnob("dailysales_knob");
         // init checkbox - icheckbox
-        UtilsIsis.initIcheckbox("dailysales_icheck");
+        UtilsCmmn.initIcheckbox("dailysales_icheck");
 
         // init dx view - for grid, loadpanel, etc.
         AllDailySales.AllDailySalesView = new AllDailySalesView();
@@ -325,12 +325,12 @@
 
             AllDailySales.AllDailySalesView.clearGrid();
             AllDailySales.AllDailySalesView.clearChart();
-            UtilsIsis.setKnobValue($progress, "0");
-            UtilsIsis.resetKnob($progress);
+            UtilsCmmn.setKnobValue($progress, "0");
+            UtilsCmmn.resetKnob($progress);
             AllDailySales.AllDailySalesView.updateData(requestOptGrid, requestOptChart);
 
             // request weblog
-            Logger.info("[weblog]", UtilsIsis.genWebLogJson(userId, tabObj.id, tabObj.title, "search", [requestOptGrid, requestOptChart]));
+            Logger.info("[weblog]", UtilsCmmn.genWebLogJson(userId, tabObj.id, tabObj.title, "search", [requestOptGrid, requestOptChart]));
 
         });
 
@@ -378,7 +378,7 @@
 
 
         /* common control  */
-        UtilsIsis.initTabCommonFunc(AllDailySales.AllDailySalesView, tabObj, userId);
+        UtilsCmmn.initTabCommonFunc(AllDailySales.AllDailySalesView, tabObj, userId);
 
         // request immediately when page loaded.
         $reqBtn.trigger( "click" );

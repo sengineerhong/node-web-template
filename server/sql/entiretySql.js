@@ -29,7 +29,7 @@ module.exports = {
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
         group by ip_dst
         order by regTime
-        -- limit 0, 50`,
+        limit 0, 50`,
     AcctTest1Grid:
         `select 
             timestamp_start as regTime
@@ -107,5 +107,23 @@ module.exports = {
             ,sum(bytes) as byteSum
         from ??
         where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
-        group by iface_out`
+        group by iface_out`,
+    AcctTest1Grid_reqOnce_alasql:
+        `select 
+            FIRST(timestamp_start) as regTime
+            ,FIRST(peer_ip_src) as peerIpSrc
+            ,FIRST(iface_in) as ifaceIn
+            ,FIRST(iface_out) as ifaceOut
+            ,FIRST(ip_src) as ipSrc
+            ,ip_dst as ipDst
+            ,FIRST(ip_proto) as ipProto
+            ,FIRST(tos) as tos
+            ,FIRST(src_port) as portSrc
+            ,FIRST(dst_port) as portDst
+            ,FIRST(tcp_flags) as tcpFlag
+            ,FIRST(packets) as packets
+            ,sum(bytes) as byteSum
+        from ?
+        group by ip_dst
+        order by regTime`
 };

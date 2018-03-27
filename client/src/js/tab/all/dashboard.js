@@ -8,7 +8,7 @@
     /* view  */
     var allwrapId = "dashboard_allwrap";
     /* tab id, title, url */
-    var tabObj = UtilsIsis.getTabInfo(allwrapId);
+    var tabObj = UtilsCmmn.getTabInfo(allwrapId);
     /* user id */
     var userId = "${sessionScope.userInfo.userId}";
     var AllDashboardView = function () {
@@ -40,7 +40,7 @@
             UtilsDx.renderChart(self.chartAllMemberBar);
         };
         self.clearRtSalesHtml = function() {
-            UtilsIsis.clearRtSalesHtml(self.$rTSalesObj);
+            UtilsCmmn.clearRtSalesHtml(self.$rTSalesObj);
         };
         self.getRtSalesHtmlData = function(reqOpt) {
             var dataArry = [];
@@ -51,17 +51,17 @@
                 {
                     isDev: window.devconfig_dashboard_fake
                 }, reqOpt);
-            UtilsIsis.loadData({
+            UtilsCmmn.loadData({
                 dbName: db,
                 request: requestOpt,
                 callback: function(result) {
                     // all requests done
-                    if (100 == UtilsIsis.calculateProgressStatus(result.progress)) {
+                    if (100 == UtilsCmmn.calculateProgressStatus(result.progress)) {
                         self.loaded = true;
                         self.loadPanel.hide();
                         result.data[0];
                         // bind data to html
-                        UtilsIsis.bindRtSalesHtml(self.$rTSalesObj, result.data[0]);
+                        UtilsCmmn.bindRtSalesHtml(self.$rTSalesObj, result.data[0]);
                     }
                 },
                 error : function(result) {
@@ -82,18 +82,18 @@
                 {
                     isDev: window.devconfig_dashboard_fake
                 }, reqOpt);
-            UtilsIsis.loadData({
+            UtilsCmmn.loadData({
                 dbName: db,
                 request: requestOpt,
                 callback: function(result) {
                     // all requests done
-                    if (100 == UtilsIsis.calculateProgressStatus(result.progress)) {
+                    if (100 == UtilsCmmn.calculateProgressStatus(result.progress)) {
                         self.loaded = true;
                         self.loadPanel.hide();
                     }
                     result.data.forEach(function (obj) {
                         // YYYYMMDD to YYY-MM-DD(WD)
-                        obj._revDt = UtilsIsis.changeDateFormat(obj.revDt.toString())+obj.revDtNm.toString();
+                        obj._revDt = UtilsCmmn.changeDateFormat(obj.revDt.toString())+obj.revDtNm.toString();
                         dataArry.push(obj);
                     });
                     cnt++;
@@ -118,12 +118,12 @@
                 {
                     isDev: window.devconfig_dashboard_fake
                 }, reqOpt);
-            UtilsIsis.loadData({
+            UtilsCmmn.loadData({
                 dbName: db,
                 request: requestOpt,
                 callback: function(result) {
                     // all requests done
-                    if (100 == UtilsIsis.calculateProgressStatus(result.progress)) {
+                    if (100 == UtilsCmmn.calculateProgressStatus(result.progress)) {
                         self.loaded = true;
                         self.loadPanel.hide();
                     }
@@ -302,7 +302,7 @@
         });
         // set momont obj - only use once when page loading
         var now = moment();
-        //var nowWeekDays = UtilsIsis.getWeekDaysShort(now);
+        //var nowWeekDays = UtilsCmmn.getWeekDaysShort(now);
         // init dx view - for chart, loadpanel, etc.
         AllDashboard.AllDashboardView = new AllDashboardView();
         AllDashboard.AllDashboardView.init($toast, $loadPanel, $chartAllSalesBar, $chartAllSalesPie, $chartAllMemberBar, $rTSalesObj);
@@ -331,7 +331,7 @@
         // set html view - allSalesBar view(date, weekdays, etc)
         var yDay = now.subtract(1, "days");
         $("#dashboard_allsales_date").html(yDay.format("YYYY-MM-DD"));
-        $("#dashboard_allsales_weekd").html("("+UtilsIsis.getWeekDaysShort(yDay)+")");
+        $("#dashboard_allsales_weekd").html("("+UtilsCmmn.getWeekDaysShort(yDay)+")");
         // chartAllSalesBar evnet
         AllDashboard.AllDashboardView.chartAllSalesBar.instance.on({
             //"seriesClick":onSeriesClick
@@ -398,7 +398,7 @@
             }, 100);
         });
         /* common control  */
-        UtilsIsis.initTabCommonFunc(AllDashboard.AllDashboardView, tabObj, userId);
+        UtilsCmmn.initTabCommonFunc(AllDashboard.AllDashboardView, tabObj, userId);
         // request immediately when page loaded.
         $comTp.trigger( "change" );
     });

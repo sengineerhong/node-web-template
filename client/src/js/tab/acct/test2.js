@@ -211,9 +211,9 @@
 
         /* init views */
         // init checkbox - icheckbox
-        UtilsIsis.initIcheckbox('acct2_icheck');
+        UtilsCmmn.initIcheckbox('acct2_icheck');
         // init drp
-        UtilsIsis.initDaterangepicker($drp, drpOptions);
+        UtilsCmmn.initDaterangepicker($drp, drpOptions);
         // init chart
         var chart = new Chart($chart, chartOptions);
         // init chart

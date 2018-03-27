@@ -1,10 +1,10 @@
 (function ($, global) {
     var window = global;
-    window.UtilsIsis = function () {
-        return new UtilsIsis.fn.init();
+    window.UtilsCmmn = function () {
+        return new UtilsCmmn.fn.init();
     };
 
-    UtilsIsis.fn = UtilsIsis.prototype =
+    UtilsCmmn.fn = UtilsCmmn.prototype =
 	{
 	    init: function () {
 	        return this;
@@ -18,7 +18,7 @@
      * @param options     			: options(callback function, etc)
      * @return
      * ****************************************************************************************/
-    UtilsIsis.loadData = function (options) {
+    UtilsCmmn.loadData = function (options) {
         return CSRequester.get(options.dbName).request(options.request, {
 
         	complete: function (resultMap) {
@@ -38,7 +38,7 @@
         });
     };
 
-    UtilsIsis.getTabInfo = function (allwrapId) {
+    UtilsCmmn.getTabInfo = function (allwrapId) {
         var tabObj = {};
 
     	var tabId = $('#' + allwrapId).parent('div').attr('id');
@@ -51,7 +51,7 @@
     	return tabObj;
     };
 
-    UtilsIsis.genTabInfoObjToString = function (tabId, tabTitle, tabUrl) {
+    UtilsCmmn.genTabInfoObjToString = function (tabId, tabTitle, tabUrl) {
         var obj = {};
         obj.id = tabId;	obj.title = tabTitle;	obj.url = tabUrl;
         return JSON.stringify(obj);
@@ -63,12 +63,12 @@
      * @param tabId      	: tabId
      * @return
      * ****************************************************************************************/
-    UtilsIsis.initTabCommonFunc = function (View, tabObj, userId) {
-        UtilsIsis.setTabShowEvent(View, tabObj.id, tabObj.title, userId);
-        UtilsIsis.setTabHideEvent(View, tabObj.id);
-        UtilsIsis.setTabAddTriger(View, tabObj.id);
-        UtilsIsis.setTabResizeWidthTriger(View, tabObj.id);
-        UtilsIsis.setTabIconClickEvent(View, tabObj);
+    UtilsCmmn.initTabCommonFunc = function (View, tabObj, userId) {
+        UtilsCmmn.setTabShowEvent(View, tabObj.id, tabObj.title, userId);
+        UtilsCmmn.setTabHideEvent(View, tabObj.id);
+        UtilsCmmn.setTabAddTriger(View, tabObj.id);
+        UtilsCmmn.setTabResizeWidthTriger(View, tabObj.id);
+        UtilsCmmn.setTabIconClickEvent(View, tabObj);
     };
 
     /******************************************************************************************
@@ -79,7 +79,7 @@
      * @param userId      	: userId (need to request weblog)
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setTabShowEvent = function (View, tabId, tabName, userId) {
+    UtilsCmmn.setTabShowEvent = function (View, tabId, tabName, userId) {
         /* tab show event (or shown.bs.tab?) */
         $("a[href='#" + tabId + "']").on('shown.bs.tab', function (e) {
             // var target = $(e.target).attr("href");
@@ -92,7 +92,7 @@
                 View.loadPanel.show();
             }
             // request weblog
-            Logger.info('[weblog]', UtilsIsis.genWebLogJson(userId, tabId, tabName, 'addTab', []));
+            Logger.info('[weblog]', UtilsCmmn.genWebLogJson(userId, tabId, tabName, 'addTab', []));
         });
     };
 
@@ -102,7 +102,7 @@
      * @param tabId      	: tabId
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setTabHideEvent = function (View, tabId) {
+    UtilsCmmn.setTabHideEvent = function (View, tabId) {
         /* tab hide event */
         $("a[href='#" + tabId + "']").on('hide.bs.tab ', function (e) {
             Logger.debug('[dev]', 'hide.bs.tab:' + tabId);
@@ -116,7 +116,7 @@
      * @param tabId      	: tabId
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setTabAddTriger = function (View, tabId) {
+    UtilsCmmn.setTabAddTriger = function (View, tabId) {
         /* TODO: renew trgger event */
         /* add new tab trigger */
         $('#tabs').on('addTabEvent', function (e) {
@@ -137,7 +137,7 @@
      * @param tabId      	: tabId
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setTabResizeWidthTriger = function (View, tabId) {
+    UtilsCmmn.setTabResizeWidthTriger = function (View, tabId) {
         /* TODO: renew trgger event */
         /* topMenu(resize width) button click triger */
         $("a[href='#" + tabId + "']").on('resizeWidth', function (e) {
@@ -152,7 +152,7 @@
      * @param tabId      	: tabId
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setTabIconClickEvent = function (View, tabObj) {
+    UtilsCmmn.setTabIconClickEvent = function (View, tabObj) {
         // activation tab star icon click event
         $('#tabs > ul > li.active > a > i').on('click', function (e) {
             console.log('activation tab star icon click:' + e);
@@ -165,8 +165,8 @@
 
             if (tabObj.id != actTabId) return;
 
-            if (UtilsIsis.isSupportLS) {
-                var favTabIdArry = UtilsIsis.getObjDataToLS(itemName) || [];
+            if (UtilsCmmn.isSupportLS) {
+                var favTabIdArry = UtilsCmmn.getObjDataToLS(itemName) || [];
                 var actTabIdIndex = favTabIdArry.indexOf(actTabId);
 
                 // not exist - push - change icon color to yellow
@@ -175,7 +175,7 @@
                     $(this).addClass('color-f-star');
 
                     // add menu
-                    var li = $('<li/>').addClass('tab_go').attr('data-id', tabObj.id).attr('data-info', UtilsIsis.genTabInfoObjToString(tabObj.id, tabObj.title, tabObj.url));
+                    var li = $('<li/>').addClass('tab_go').attr('data-id', tabObj.id).attr('data-info', UtilsCmmn.genTabInfoObjToString(tabObj.id, tabObj.title, tabObj.url));
                     var a = $('<a/>').appendTo(li);
                     var i = $('<i/>').addClass('fa fa-star color-f-star');
                     var span = $('<span/>').addClass('nav-label').html(tabObj.title);
@@ -199,27 +199,27 @@
 
                 Logger.debug('[favTabIdArry]', favTabIdArry);
                 // then, reset local storage item
-                UtilsIsis.setObjDataToLS(itemName, favTabIdArry);
+                UtilsCmmn.setObjDataToLS(itemName, favTabIdArry);
             }
         });
     };
 
     // 임시 localStorage item crud
-    UtilsIsis.isSupportLS = function () {
+    UtilsCmmn.isSupportLS = function () {
         return (('localStorage' in window) && window['localStorage'] !== null);
     };
 
-    UtilsIsis.setObjDataToLS = function (k, v) {
+    UtilsCmmn.setObjDataToLS = function (k, v) {
         localStorage.setItem(k, JSON.stringify(v));
     };
 
-    UtilsIsis.getObjDataToLS = function (k) {
+    UtilsCmmn.getObjDataToLS = function (k) {
         // localStorage.getItem(k) ==
 
         return JSON.parse(localStorage.getItem(k));
     };
 
-    UtilsIsis.removeDataToLS = function (k) {
+    UtilsCmmn.removeDataToLS = function (k) {
         localStorage.removeItem(k);
     };
 
@@ -229,7 +229,7 @@
      * @param options   : datetimepicker options
      * @return          : daterangepicker
      * ****************************************************************************************/
-    UtilsIsis.initDaterangepicker = function ($drp, options, cb) {
+    UtilsCmmn.initDaterangepicker = function ($drp, options, cb) {
         $drp.daterangepicker($.extend(
             {
                 dateLimit: { 'months': 1 },
@@ -257,7 +257,7 @@
      * @param options	: datetimepicker options
      * @return			: datetimepicker
      * ****************************************************************************************/
-    UtilsIsis.initDatetimepicker = function (id, options) {
+    UtilsCmmn.initDatetimepicker = function (id, options) {
         // console.log(id);
         return $('#' + id).datetimepicker($.extend(
             {
@@ -275,7 +275,7 @@
      * @param id      : datetimepicker html attr id
      * @return
      * ****************************************************************************************/
-    UtilsIsis.initKnob = function (id) {
+    UtilsCmmn.initKnob = function (id) {
         $('#' + id).knob({
             fgColor: '#26B99A',
             inputColor: '#26B99A',
@@ -292,19 +292,19 @@
         });
     };
 
-    UtilsIsis.resetKnob = function ($id) {
+    UtilsCmmn.resetKnob = function ($id) {
         $id.trigger('configure', { fgColor: '#26B99A', inputColor: '#26B99A', format: function (value) { return value + '%'; } });
     };
 
-    UtilsIsis.setKnobError = function ($id) {
+    UtilsCmmn.setKnobError = function ($id) {
         $id.trigger('configure', { fgColor: '#d9534f', inputColor: '#d9534f', format: function (value) { return 'error'; } });
     };
 
-    UtilsIsis.setKnobFake = function ($id) {
+    UtilsCmmn.setKnobFake = function ($id) {
         $id.trigger('configure', { fgColor: '#f0ad4e', inputColor: '#f0ad4e', format: function (value) { return 'fake'; } });
     };
 
-    UtilsIsis.setKnobValue = function ($id, intValue) {
+    UtilsCmmn.setKnobValue = function ($id, intValue) {
         $id.val(intValue).trigger('change');
     };
 
@@ -313,7 +313,7 @@
      * @param progress     : ex> progress = "1/30";
      * @return current status value
      * ****************************************************************************************/
-    UtilsIsis.calculateProgressStatus = function (progress) {
+    UtilsCmmn.calculateProgressStatus = function (progress) {
         var status = progress.split('/');
         var now = Number(status[0]);
         var all = Number(status[1]);
@@ -328,7 +328,7 @@
      * @param nowProgressPercent     	: current-value
      * @return
      * ****************************************************************************************/
-    UtilsIsis.animateKnobProgress = function (progressJqId, preProgressPercent, nowProgressPercent) {
+    UtilsCmmn.animateKnobProgress = function (progressJqId, preProgressPercent, nowProgressPercent) {
         $({val: preProgressPercent}).animate({val: nowProgressPercent}, {
 		       duration: 1200,
 		       easing: 'swing',
@@ -343,7 +343,7 @@
      * @param cName    		: tag class name
      * @return
      * ****************************************************************************************/
-    UtilsIsis.initIcheckbox = function (cName) {
+    UtilsCmmn.initIcheckbox = function (cName) {
         // init checkbox - icheckbox
         // set checkbox format
         $('.' + cName).iCheck({
@@ -358,7 +358,7 @@
      * @param options      	: options(property fullscreen)
      * @return
      * ****************************************************************************************/
-    UtilsIsis.initCustomTextarea = function ($id, options) {
+    UtilsCmmn.initCustomTextarea = function ($id, options) {
         // console.log(options);
         $id.textareafullscreen($.extend({
             overlay: true,
@@ -373,7 +373,7 @@
      * @param text     					: string value
      * @return	validation result
      * ****************************************************************************************/
-    UtilsIsis.isValidNumAndCommaSeperate = function (text) {
+    UtilsCmmn.isValidNumAndCommaSeperate = function (text) {
         var pattern = /^\d+(,\d+)*$/;
 	    return pattern.test(text);
     };
@@ -386,7 +386,7 @@
      * @param precision     			: validation precision(year, month, day)
      * @return
      * ****************************************************************************************/
-    UtilsIsis.isSameOrAfterDate = function (sDate, eDate, format, precision) {
+    UtilsCmmn.isSameOrAfterDate = function (sDate, eDate, format, precision) {
         return moment(eDate, format).isSameOrAfter(moment(sDate, format), precision);
     };
 
@@ -395,7 +395,7 @@
      * @param momentObj     			: moment obj
      * @return	 weekdaysShort
      * ****************************************************************************************/
-    UtilsIsis.getWeekDaysShort = function (momentObj) {
+    UtilsCmmn.getWeekDaysShort = function (momentObj) {
         var koLocaleData = moment.localeData('ko');
         return koLocaleData.weekdaysShort(momentObj);
     };
@@ -407,7 +407,7 @@
      * @param isOn    				: add or remove validation & toggle disabled
      * @return
      * ****************************************************************************************/
-    UtilsIsis.toggleParsleyValidation = function ($id, validatorAttr, isOn) {
+    UtilsCmmn.toggleParsleyValidation = function ($id, validatorAttr, isOn) {
         if (isOn) {
             $id.attr(validatorAttr[0], validatorAttr[1]).prop('disabled', !isOn);
         } else {
@@ -427,7 +427,7 @@
      * @param _this     			: this
      * @return
      * ****************************************************************************************/
-    UtilsIsis.selectAllText = function (_this) {
+    UtilsCmmn.selectAllText = function (_this) {
         var $this = $(_this);
 	    $this.select();
 
@@ -442,7 +442,7 @@
      * @param srcText     			: src text
      * @return text					: cleaned text
      * ****************************************************************************************/
-    UtilsIsis.replaceValueToValidText = function (srcText) {
+    UtilsCmmn.replaceValueToValidText = function (srcText) {
         // TODO : 구분자로 사용될 몇몇 문자에 대한 정제 작업 필요
         var text = srcText;
         text = text.replace(/[\n\r]/g, ',');
@@ -462,7 +462,7 @@
      * @param $id     			: jquery selector(tag $id)
      * @return isShow			: show or hide all
      * ****************************************************************************************/
-    UtilsIsis.toggleParsleyErrorUi = function ($id, parentDivId, isShow) {
+    UtilsCmmn.toggleParsleyErrorUi = function ($id, parentDivId, isShow) {
         if (isShow) {
             $id.addClass('parsley_errorBox');
             $id.focus();
@@ -483,7 +483,7 @@
      * @param yyyymmdd     			: string yyyymmdd
      * @return new Date				: Date
      * ****************************************************************************************/
-    UtilsIsis.getDateYYYYMMDD = function (yyyymmdd) {
+    UtilsCmmn.getDateYYYYMMDD = function (yyyymmdd) {
         if (!/^(\d){8}$/.test(yyyymmdd)) return 'invalid date';
 	    var y = yyyymmdd.substr(0, 4);
         var m = yyyymmdd.substr(4, 2) - 1;
@@ -496,7 +496,7 @@
      * @param date     				: Date v
      * @return yyyymmdd     		: String yyyymmdd
      * ****************************************************************************************/
-    UtilsIsis.getYYYYMMDDFromDate = function (v) {
+    UtilsCmmn.getYYYYMMDDFromDate = function (v) {
         var y = v.getFullYear().toString(), m = (v.getMonth() + 1).toString(), d = v.getDate().toString();
         return y + (m.length == 2 ? m : '0' + m) + (d.length == 2 ? d : '0' + d);
     };
@@ -506,7 +506,7 @@
      * @param num     				: number
      * @return formatNum			: string number
      * ****************************************************************************************/
-    UtilsIsis.getNumberWithThousands = function (num) {
+    UtilsCmmn.getNumberWithThousands = function (num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     };
 
@@ -516,7 +516,7 @@
      * @param f     				: format (default YYYYMMDD-HHmmss)
      * @return formatted v     		: String formatted v
      * ****************************************************************************************/
-    UtilsIsis.getDateStringFormat = function (d, f) {
+    UtilsCmmn.getDateStringFormat = function (d, f) {
         var dateTime = d == undefined ? new Date() : d;
         var format = f == undefined ? 'YYYYMMDD-HHmmss' : f;
         return moment(dateTime).format(format);
@@ -529,7 +529,7 @@
      * @param tF     				: String target format
      * @return formatted v     		: String formatted v
      * ****************************************************************************************/
-    UtilsIsis.changeDateFormat = function (sD, sF, tF) {
+    UtilsCmmn.changeDateFormat = function (sD, sF, tF) {
         var sDate = sD == undefined ? new Date() : sD;
         var sFormat = sF == undefined ? 'YYYYMMDD' : sF;
         var tFormat = tF == undefined ? 'YYYY-MM-DD' : tF;
@@ -543,12 +543,12 @@
      * @param bObj     				: bind object
      * @return
      * ****************************************************************************************/
-    UtilsIsis.bindRtSalesHtml = function ($tagObjs, bObj) {
+    UtilsCmmn.bindRtSalesHtml = function ($tagObjs, bObj) {
         // key는 json key 값을 이용함
         for (var k in bObj) {
             var resParam = bObj[k];		// response param			ex> dmComTp 의 json value
             var $tId = $tagObjs[k];		// jquery tagId selector	ex> $("#dmComTp")
-            UtilsIsis.setRtSalesHtmlTag(k, resParam, $tId);		// ex> ("dmComTp", "02", "$("#dmComTp")")
+            UtilsCmmn.setRtSalesHtmlTag(k, resParam, $tId);		// ex> ("dmComTp", "02", "$("#dmComTp")")
             //			$tId.remove tag 안
             // $tId.html(html);
             // $tId.empty();
@@ -565,7 +565,7 @@
      * @param $tagObjs     			: jquery objects
      * @return
      * ****************************************************************************************/
-    UtilsIsis.clearRtSalesHtml = function ($tagObjs) {
+    UtilsCmmn.clearRtSalesHtml = function ($tagObjs) {
         for (var k in $tagObjs) {
             var $tId = $tagObjs[k];
             $tId.removeClass('dashbd-success').removeClass('dashbd-danger').removeClass('dashbd-warning');
@@ -581,7 +581,7 @@
      * @param $tId     			: jquery object($("#dmComTp"))
      * @return
      * ****************************************************************************************/
-    UtilsIsis.setRtSalesHtmlTag = function (key, resParam, $tId) {
+    UtilsCmmn.setRtSalesHtmlTag = function (key, resParam, $tId) {
         // rate 증감관련 html ex> 전주_거래금액_거래액(증감)
         if (key.substr(key.length - 2) == 'Rt') {
             $tId.removeClass('dashbd-success').removeClass('dashbd-danger').removeClass('dashbd-warning');
@@ -615,7 +615,7 @@
     };
 
     // 공통 코드 메시지
-    UtilsIsis.getCommonErrorMsg = function (errCode) {
+    UtilsCmmn.getCommonErrorMsg = function (errCode) {
         var errMsg;
 
         switch (errCode) {
@@ -638,7 +638,7 @@
     };
 
     // weblog request json format
-    UtilsIsis.genWebLogJson = function (uId, tId, tTitle, eName, eDetail) {
+    UtilsCmmn.genWebLogJson = function (uId, tId, tTitle, eName, eDetail) {
         var jsonObj =
 		{
 		    userId: uId,
@@ -652,7 +652,7 @@
         return JSON.stringify(jsonObj);
     };
 
-    UtilsIsis.bulidHtmlTag = function (tag, html, attrs) {
+    UtilsCmmn.bulidHtmlTag = function (tag, html, attrs) {
         if (typeof (html) !== 'string') {
             attrs = html;
             html = null;
@@ -665,43 +665,5 @@
         return h += html ? '>' + html + '</' + tag + '>' : '/>';
     };
 
-    /***************************************************************************
-	 *
-	 * @param s :
-	 *            날짜문자
-	 * @param format :
-	 *            표현식(예:yyyy-mm-dd hh:mi:ss)
-	 * @return 표현식으로 치환된 문자열
-	 **************************************************************************/
-    /* UtilsIsis.getDateTime = function(s, format)
-    {
-    	var dt = new Date();
-    	var yyyy, mm, dd, hh, mi, ss;
-
-		s = CastUtilsIsis.trimChar(s);
-		format =  StringUtilsIsis.nvl(format, "yyyy-mm-dd");
-
-		yyyy = StringUtilsIsis.nvl(s.substr( 0, 4),                  dt.getFullYear()          );
-		mm   = StringUtilsIsis.nvl(s.substr( 4, 2), StringUtilsIsis.lpad(dt.getMonth() + 1, 2, "0"));
-		dd   = StringUtilsIsis.nvl(s.substr( 6, 2), StringUtilsIsis.lpad(dt.getDate()     , 2, "0"));
-		hh   = StringUtilsIsis.nvl(s.substr( 8, 2), StringUtilsIsis.lpad(dt.getHours()    , 2, "0"));
-		mi   = StringUtilsIsis.nvl(s.substr(10, 2), StringUtilsIsis.lpad(dt.getMinutes()  , 2, "0"));
-		ss   = StringUtilsIsis.nvl(s.substr(12, 2), StringUtilsIsis.lpad(dt.getSeconds()  , 2, "0"));
-
-		if ( format == "date" )
-			return dt;
-		else
-	    	return (
-	    			format.toLowerCase()
-			    	      .replace("yyyy", yyyy)
-			    	      .replace("mm"  , mm  )
-			    	      .replace("dd"  , dd  )
-			    	      .replace("hh"  , hh  )
-			    	      .replace("mi"  , mi  )
-			    	      .replace("ss"  , ss  )
-    			);
-    };
-*/
-
-    UtilsIsis.fn.init.prototype = UtilsIsis.fn;
+    UtilsCmmn.fn.init.prototype = UtilsCmmn.fn;
 })(jQuery, window);

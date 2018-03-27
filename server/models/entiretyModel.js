@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const query = require('../sql/entiretySql');
 const fakeFilePath = path.resolve(__dirname, '../data');
+const alasql = require('alasql');
+const now = require('performance-now');
 
 exports.checkTableExist = (param) => {
     return new Promise((resolve, reject) => {
@@ -133,6 +135,37 @@ exports.getAllLoginPath = () => {
             } else {
                 resolve(rows);
             }
+        });
+    });
+};
+
+exports.getAcctTest1Grid_reqOnce_alasql = (param) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path.join(fakeFilePath, 'acct_sample_half.json'), 'utf8', function (err, data) {
+            if (err) reject(err);
+            else {
+
+                var fReadEnd = now();
+
+                var result = alasql(query.AcctTest1Grid_reqOnce_alasql, [JSON.parse(data)]);
+
+                var pAlaSqlEnd = now();
+                console.log('alasqlTime:' + (pAlaSqlEnd - fReadEnd).toFixed(3));
+                resolve(result);
+            }
+        });
+    });
+};
+
+exports.getAcctTest1Grid_reqOnce_alasql2 = (param) => {
+    return new Promise((resolve, reject) => {
+        var fReadEnd = now();
+
+        alasql('select * from JSON("' + path.join(fakeFilePath, 'acct_sample_short.json') + '")', function (res) {
+            var pAlaSqlEnd = now();
+            console.log('result:' + JSON.stringify(res));
+            console.log('alasqlTime:' + (pAlaSqlEnd - fReadEnd).toFixed(3));
+            // resolve(result);
         });
     });
 };

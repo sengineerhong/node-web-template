@@ -43,7 +43,7 @@ import Dexie from '../node_modules/dexie/dist/dexie.min';                       
 
 /* DevExtreme */
 import '../node_modules/jszip/dist/jszip.min';                                                           // switchery
-import '../node_modules/devextreme/dist/js/dx.all'
+import '../node_modules/devextreme/dist/js/dx.all';
 
 /* datatables */
 // import '../node_modules/datatables.net/js/jquery.dataTables';
@@ -59,7 +59,7 @@ import Chart from 'chart.js';
 /* custom common */
 import './src/js/common/bootstrap-dynamic-tabs-custom';
 import './src/js/common/jquery.textareafullscreen-custom';
-import './src/js/common/utils.isis';
+import './src/js/common/utils.cmmn';
 import './src/js/common/utils.dx';
 import CSRequester from './src/js/common/csrequester.js';
 import './src/js/common/custom.js';
@@ -173,7 +173,7 @@ window.Parsley.addValidator('numcommasepearate', {
     messages: {ko: '숫자입력(구분자 ,)'},
     validateString: function (value) {
         if ($.trim(value) === '')   return true;
-        else                        return UtilsIsis.isValidNumAndCommaSeperate(value);
+        else                        return UtilsCmmn.isValidNumAndCommaSeperate(value);
     }
 });
 
@@ -272,8 +272,8 @@ function addTabContents(id, title, url, params){
 
     // check fav tab - change icon color
     var icon = "fa fa-star";
-    if (UtilsIsis.isSupportLS) {
-        var favTabIdArry = UtilsIsis.getObjDataToLS("isis_favorite") || [];
+    if (UtilsCmmn.isSupportLS) {
+        var favTabIdArry = UtilsCmmn.getObjDataToLS("isis_favorite") || [];
 
         // get valid index
         // var favTabIdIndex = favTabIdArry.indexOf(id);  - for dynamic menu
@@ -304,7 +304,7 @@ function addTabContents(id, title, url, params){
     // tab shown event 로 일괄처리하기로함. tab이 활성화되는 모든 시점을 해당 tab울 사용할 의도를 가지고 있다고 보도록 함.
     // request weblog
     var userId = "${sessionScope.userInfo.userId}";
-    Logger.info("[weblog]", UtilsIsis.genWebLogJson(userId, id, title, "addTab", []));
+    Logger.info("[weblog]", UtilsCmmn.genWebLogJson(userId, id, title, "addTab", []));
 }
 
 
@@ -326,17 +326,17 @@ function genMenu(menuInfo) {
 /* dynanmic favorite menu - hong */
 function createFavoriteMenu(menuInfo) {
 
-    if (UtilsIsis.isSupportLS) {
+    if (UtilsCmmn.isSupportLS) {
 
         var parent = $("#side-menu3");
         var loopCnt = 0;
-        var favTabIdArry = UtilsIsis.getObjDataToLS("isis_favorite") || [];
+        var favTabIdArry = UtilsCmmn.getObjDataToLS("isis_favorite") || [];
 
         $.each(menuInfo, function(i, v) {
 
             var favTabIdIndex = favTabIdArry.indexOf(v.tabId);
             if (favTabIdIndex != -1) {
-                var li = $("<li/>").addClass("tab_go").attr("data-id", v.tabId).attr("data-info", UtilsIsis.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
+                var li = $("<li/>").addClass("tab_go").attr("data-id", v.tabId).attr("data-info", UtilsCmmn.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
                 var a = $("<a/>").appendTo(li);
                 var i = $("<i/>").addClass("fa fa-star color-f-star");
                 var span = $("<span/>").addClass("nav-label").html(v.tabTitle);
@@ -359,14 +359,14 @@ function createFavoriteMenu(menuInfo) {
 // now(beta), use static menu. save tabObj({id, title, url}) not tabid!
 function createFavoriteMenuFromLcDB() {
 
-    if (UtilsIsis.isSupportLS) {
+    if (UtilsCmmn.isSupportLS) {
 
         var parent = $("#side-menu3");
-        var favTabIdArry = UtilsIsis.getObjDataToLS("isis_favorite") || [];
+        var favTabIdArry = UtilsCmmn.getObjDataToLS("isis_favorite") || [];
 
         favTabIdArry.forEach(function (tabObj) {
 
-            var li = $("<li/>").addClass("tab_go").attr("data-id", tabObj.id).attr("data-info", UtilsIsis.genTabInfoObjToString(tabObj.id, tabObj.title, tabObj.url));
+            var li = $("<li/>").addClass("tab_go").attr("data-id", tabObj.id).attr("data-info", UtilsCmmn.genTabInfoObjToString(tabObj.id, tabObj.title, tabObj.url));
             var a = $("<a/>").appendTo(li);
             var i = $("<i/>").addClass("fa fa-star color-f-star");
             var span = $("<span/>").addClass("nav-label").html(tabObj.title);
@@ -391,7 +391,7 @@ function genMenuHtml(menuInfo, menuType, parent) {
         if (menuType == v.type) {
             // depth2
             if (v.depth2 != "") {
-                var depth2Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsIsis.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
+                var depth2Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsCmmn.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
                 var a = $("<a/>").appendTo(depth2Menu);
                 a.html(v.depth2);
                 depth1Menu.find('.nav-third-level').append(depth2Menu);
@@ -400,7 +400,7 @@ function genMenuHtml(menuInfo, menuType, parent) {
             } else if (v.depth2 == "" && v.depth1 != "") {
 
                 if (v.tabYn == "Y") {
-                    depth1Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsIsis.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
+                    depth1Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsCmmn.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
                     var a = $("<a/>").appendTo(depth1Menu);
                     a.html(v.depth1);
                 } else {
@@ -417,7 +417,7 @@ function genMenuHtml(menuInfo, menuType, parent) {
             } else if (v.depth2 == "" && v.depth1 == "") {
 
                 if (v.tabYn == "Y") {
-                    depth0Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsIsis.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
+                    depth0Menu = $("<li/>").addClass("tab_go").attr("data-info", UtilsCmmn.genTabInfoObjToString(v.tabId, v.tabTitle, v.tabUrl));
                     var a = $("<a/>").appendTo(depth0Menu);
                     var i = $("<i/>").addClass("fa fa-th-large");
                     var span = $("<span/>").addClass("nav-label").html(v.depth0);
