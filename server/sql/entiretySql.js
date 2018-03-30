@@ -26,7 +26,9 @@ module.exports = {
             ,packets as packets
             ,sum(bytes) as byteSum
         from ??
-        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
+        where 
+            net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33'
+	        and (timestamp_start between date_add(?, interval -1 hour) and ?)
         group by ip_dst
         order by regTime
         limit 0, 50`,
@@ -46,7 +48,9 @@ module.exports = {
             ,packets as packets
             ,sum(bytes) as byteSum
         from ??
-        where peer_ip_src = '192.168.100.33'
+        where 
+            net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33'
+	        and (timestamp_start between date_add(?, interval -1 hour) and ?)
         group by ip_dst
         limit ?, ?`,
     AcctTest1GridTotal:
@@ -55,7 +59,8 @@ module.exports = {
             select 
                 ip_dst as ipDst
             from ??
-            where peer_ip_src = '192.168.100.33'
+            where 
+                net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33'
             group by ip_dst
         ) as c`,
     AcctTest1Chart:
@@ -66,7 +71,9 @@ module.exports = {
                 ,date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
                 ,sum(bytes) as byteSum
             from ??
-            where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 1 hour))
+            where 
+                net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33'
+	            and (timestamp_start between date_add(?, interval -1 hour) and ?)
             group by ip_dst
             order by regTime
         
@@ -89,7 +96,9 @@ module.exports = {
             ,sum(bytes) as byteSum
             ,as_dst as dstAs
         from ??
-        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        where 
+            net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33' 
+            and (timestamp_start between date_add(?, interval -5 minute) and ?)
         group by iface_out, as_dst, dstNetMask
         order by regTime`,
     AcctTest2Chart:
@@ -98,7 +107,9 @@ module.exports = {
             ,sum(bytes) as byteSum
             ,as_dst as dstAs
         from ??
-        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        where 
+            net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33'
+            and (timestamp_start between date_add(?, interval -5 minute) and ?)
         group by as_dst
         order by regTime`,
     AcctTest2Pie:
@@ -106,7 +117,9 @@ module.exports = {
             iface_out as ifaceOut
             ,sum(bytes) as byteSum
         from ??
-        where peer_ip_src = '192.168.100.33' and (timestamp_start between ? and date_add(?, interval 5 minute))
+        where 
+            net_dst != '0.0.0.0' and as_dst != 0 and peer_ip_src = '192.168.100.33' 
+            and (timestamp_start between date_add(?, interval -5 minute) and ?)
         group by iface_out`,
     AcctTest1Grid_reqOnce_alasql:
         `select 

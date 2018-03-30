@@ -104,7 +104,9 @@
     "pug": "^2.0.0-rc.4",
     "serve-favicon": "~2.4.5",
     "slimscroll": "^0.9.1",
+    "ssh2": "^0.6.0",
     "switchery-npm": "^0.8.2",
+    "tunnel-ssh": "^4.1.4",
     "vue": "^2.4.2",
     "winston": "^2.4.0",
     "winston-daily-rotate-file": "^1.7.2"

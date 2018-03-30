@@ -109,9 +109,23 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
     }
 
+    function formatGByte (bytes) {
+        if (bytes === 0) return 0;
+        else return (bytes / 1024 / 1024 / 1024).toFixed(2);
+    }
+
+    function formatMByte (bytes) {
+        // if (bytes === 0) return '0 MB';
+        // else return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+        if (bytes === 0) return 0;
+        else return (bytes / 1024 / 1024).toFixed(2);
+    }
+
     function byteFormatter (data, type, row) {
         if (!$.isNumeric(data)) return data;
-        else return formatBytes(data);
+        // else return formatBytes(data);
+        else return formatGByte(data);
+        // else return data;
     }
 
     $(function () {
@@ -137,9 +151,9 @@
         const drpOptions = {
             singleDatePicker: true,
             // startDate: moment().subtract(1, 'days'),
-            startDate: moment('2018-03-12 14:00:00', 'YYYY-MM-DD HH:mm:ss'),
+            startDate: moment('2018-03-30 15:00:00', 'YYYY-MM-DD HH:mm:ss'),
             minDate: moment('2018-03-11 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            maxDate: moment().subtract(1, 'hours'),
+            maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
             locale: {
@@ -255,6 +269,16 @@
                         if (oSettings.aiDisplay.length === 0) {
                             showToast('해당 기간 데이터 없음');
                         }
+
+                        // footer sum
+                        var api = this.api();
+                        for (let i = 1; i < 10; i++) {
+                            if (i === 8 || i === 9) {
+                                $(api.column(i).footer()).html('-');
+                            } else {
+                                $(api.column(i).footer()).html(formatGByte(api.column(i).data().sum()) + ' GB');
+                            }
+                        }
                     }
                 },
                 /*
@@ -279,12 +303,20 @@
                     {'data': '103874623', render: byteFormatter},
                     {'data': '201654335', render: byteFormatter},
                     {'data': '205586495', render: byteFormatter},
-                    {'data': 'dstNetMask'},
                     {'data': 'byteSum', render: byteFormatter},
+                    {'data': 'dstNetMask'},
                     {'data': 'dstAs'}
+                ],
+                columnDefs: [
+                    { targets: [0], visible: false, searchable: false },
+                    { className: 'text-right', 'targets': [1, 2, 3, 4, 5, 6, 7, 8, 9] }
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
+                    // footer(sum data) change location
+                    var $footer = $($dGrid.api().table().footer());
+                    $($dGrid.api().table().header()).append($footer.children().addClass('sum'));
+
                 },
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [

@@ -26,3 +26,6 @@ ul.nav-second-level {
 .table > thead > tr > th {
     text-align: center;
 }
+.sum {
+    font-weight: bold;
+}

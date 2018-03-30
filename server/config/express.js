@@ -11,7 +11,6 @@ var path = require('path');
 var router = require('express').Router();
 
 module.exports = function () {
-
     var app = express();
 
     // development or production
@@ -46,9 +45,6 @@ module.exports = function () {
     // view engine setup
     app.set('views', path.resolve(__dirname, '../../client/views'));
     app.set('view engine', 'pug');
-
-    // set mysql(mairdb) cn pool
-    require('./mysql').createDBPool(100);
 
     // set main page
     app.get('/', function (req, res) {

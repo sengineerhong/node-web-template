@@ -10,7 +10,7 @@
                                 .row(style='padding: 10px 0px;')
                                     .col-lg-3.col-md-3.col-sm-3.col-xs-3
                                         form.form-horizontal
-                                            label#acct1_label_date(for='acct1_drp_date') 조회시작시간 (+ 1시간)
+                                            label#acct1_label_date(for='acct1_drp_date') 조회시작시간 (- 1시간)
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
@@ -22,7 +22,7 @@
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
                                         input#acct1_inputc_chartYn.acct1_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
                                         label.orange(for='acct1_inputc_chartYn') chart
-                            h5 * 현재는 지정된 시간부터 + 1시간이 조회됨
+                            h5 * 현재는 지정된 시간부터 - 1시간이 조회됨
                             #acct1_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins

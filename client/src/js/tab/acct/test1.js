@@ -125,9 +125,9 @@
         const drpOptions = {
             singleDatePicker: true,
             // startDate: moment().subtract(1, 'days'),
-            startDate: moment('2018-03-12 14:00:00', 'YYYY-MM-DD HH:mm:ss'),
+            startDate: moment(),
             minDate: moment('2018-03-11 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            maxDate: moment().subtract(1, 'hours'),
+            maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
             locale: {
@@ -244,6 +244,10 @@
                     {'data': 'tcpFlag'},
                     {'data': 'packets'},
                     {'data': 'byteSum', render: byteFormatter}
+                ],
+                columnDefs: [
+                    { targets: [0], visible: false, searchable: false },
+                    { className: 'text-right', 'targets': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');

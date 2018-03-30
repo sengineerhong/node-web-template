@@ -10,7 +10,7 @@
                                 .row(style='padding: 10px 0px;')
                                     .col-lg-3.col-md-3.col-sm-3.col-xs-3
                                         form.form-horizontal
-                                            label#acct2_label_date(for='acct2_drp_date') 조회시작시간 (+ 1시간)
+                                            label#acct2_label_date(for='acct2_drp_date') 조회시작시간 (- 5분)
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
@@ -22,7 +22,7 @@
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
                                         input#acct2_inputc_chartYn.acct2_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
                                         label.orange(for='acct2_inputc_chartYn') chart
-                            h5 * 지정된 시간부터 + 5분이 조회됨
+                            h5 * 지정된 시간부터 - 5분이 조회됨
                             #acct2_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins
@@ -45,8 +45,8 @@
                                             tr
                                                 th(rowspan='2', style='vertical-align: middle') regTime
                                                 th(colspan='6') ifaceOut
-                                                th(rowspan='2', style='vertical-align: middle') dstNetMask
                                                 th(rowspan='2', style='vertical-align: middle') byteSum
+                                                th(rowspan='2', style='vertical-align: middle') dstNetMask
                                                 th(rowspan='2', style='vertical-align: middle') dstAs
                                             tr
                                                 th 33882175
@@ -58,15 +58,15 @@
                                         tfoot
                                             tr
                                                 th(scope='row') Total
-                                                td 212.920
-                                                td 214.860
-                                                td 206.390
-                                                td 207.535
-                                                td 213.210
-                                                td 2.7
-                                                td 0.1
-                                                td 0.1
-                                                td 0.1
+                                                td
+                                                td
+                                                td
+                                                td
+                                                td
+                                                td
+                                                td
+                                                td
+                                                td
 
                                 // grid end
 script(src='/js/tab/acct/test2.js' type='text/javascript')

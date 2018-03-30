@@ -8,7 +8,7 @@ exports.checkTableExist = async (req, res, next) => {
     let data = '';
     try {
         const param = {
-            dbName: nconf.get('mariadb:database'),
+            dbName: nconf.get('db_maria:database'),
             tbName: 'acct_' + moment(req.body.strDate).format('YYYY-MM-DD HH:mm:ss').substr(0, 10).replace(/-/g, '')
         };
         data = await entiretyModel.checkTableExist(param);

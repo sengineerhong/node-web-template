@@ -1,10 +1,14 @@
-const pool = require('../config/mysql').pool;
+
+const db = require('../config/mysql2');
+const pool = db.connPool;
+
 const fs = require('fs');
 const path = require('path');
 const query = require('../sql/entiretySql');
 const fakeFilePath = path.resolve(__dirname, '../data');
 const alasql = require('alasql');
 const now = require('performance-now');
+const tunnel = require('tunnel-ssh');
 
 exports.checkTableExist = (param) => {
     return new Promise((resolve, reject) => {
@@ -12,6 +16,8 @@ exports.checkTableExist = (param) => {
         const sql = query.CommonTabledExist;
 
         pool.query(sql, [param.dbName, param.tbName], (err, rows) => {
+            // console.log('=============================1' + param.dbName);
+            // console.log('=============================1' + param.tbName);
             if (err) {
                 reject(err);
             } else {
