@@ -29,3 +29,18 @@ ul.nav-second-level {
 .sum {
     font-weight: bold;
 }
+.dataTables_wrapper {
+    padding-bottom: 0px;
+}
+.modal-body {
+    padding: 10px 20px 10px 20px;
+}
+.editor {
+    background-color: #ffce98;
+    /*color: #000000;*/
+    font-weight: 500;
+}
+.btn-small {
+    padding: 2px 4px;
+    font-size: 11px;
+}

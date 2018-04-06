@@ -90,8 +90,6 @@ function tnl (cb, myF) {
         //     password: dbConfig.password,
         //     database: dbConfig.database,
         // }).connect();
-
-
     });
 }
 

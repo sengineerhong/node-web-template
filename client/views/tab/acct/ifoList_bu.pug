@@ -1,0 +1,34 @@
+#ifoList_allwrap
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row.plain
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.float-e-margins
+                    #ifoList_contentwrap.ibox-content
+                        .control-group
+                            #ifoList_parsley_msgAll
+                            form#ifoList_form(data-parsley-validate='')
+                                .row(style='padding: 10px 0px;')
+                                    .col-lg-3.col-md-3.col-sm-3.col-xs-3
+                                        form.form-horizontal
+                                            label#ifoList_label_date(for='ifoList_drp_date') 조회날짜
+                                            .control-group
+                                                .controls
+                                                    .input-prepend.input-group
+                                                        span.add-on.input-group-addon
+                                                            i.glyphicon.glyphicon-calendar.fa.fa-calendar
+                                                        input#ifoList_drp_date.datepicker.form-control(type='text')
+                                    .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
+                                        button#ifoList_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
+                            h5 * comment
+                            .x_content
+                                // grid start
+                                #ifoList_gridwrap.table-responsive
+                                    table#ifoList_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
+                                        thead
+                                            tr
+                                                th displayYn
+                                                th ifaceOut
+                                                th ifaceOutAs
+                                                th edit
+                                // grid end
+script(src='/js/tab/acct/ifoList.js' type='text/javascript')

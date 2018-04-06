@@ -41,26 +41,26 @@
     }
 
     function updateChart (chart, data) {
-        var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
-        var unit = checkByteUnit(min);
+        // var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
+        // var unit = checkByteUnit(min);
         data.forEach(function (item) {
             // chart.data.labels.push(item.dstNetMask);
             // chart.data.datasets[0].data.push(genByteUnit(item.byteSum, unit));
-            chart.data.labels.push(item.byteSum);
-            chart.data.datasets[0].data.push(item.dstAs);
+            chart.data.labels.push(item.dstAs);
+            chart.data.datasets[0].data.push(item.bpsAvg);
         });
-        chart.data.datasets[0].label = 'packet usage by dstAs (' + unit + ')'
+        chart.data.datasets[0].label = 'bps average by dstAs (Gbps)'
         chart.update();
     }
 
     function updatePie (pie, data) {
-        var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
-        var unit = checkByteUnit(min);
+        // var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
+        // var unit = checkByteUnit(min);
         data.forEach(function (item) {
-            pie.data.labels.push(item.ifaceOut);
-            pie.data.datasets[0].data.push(genByteUnit(item.byteSum, unit));
+            pie.data.labels.push(item.ifaceOutAs);
+            pie.data.datasets[0].data.push(item.bpsSum);
         });
-        pie.options.title.text = 'packet usage by ifaceOut (' + unit + ')'
+        pie.options.title.text = 'bps sum by ifaceOut (Gbps)'
         pie.update();
     }
 
@@ -134,7 +134,8 @@
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         /* view  */
-        const $dGrid = $('#acct2_grid');
+        const $dGridWrap = $('#acct2_gridwrap');
+        let $dGrid;
         const $chart = $('#acct2_chart');
         const $pie = $('#acct2_pie');
         const $reqBtn = $('#acct2_btn_req');
@@ -150,20 +151,20 @@
         // daterangepicker
         const drpOptions = {
             singleDatePicker: true,
-            // startDate: moment().subtract(1, 'days'),
-            startDate: moment('2018-03-30 15:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            minDate: moment('2018-03-11 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+            startDate: moment(),
+            // startDate: moment('2018-04-06 13:38:00', 'YYYY-MM-DD HH:mm:ss'),
+            minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
             maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
-            },
-            isInvalidDate: function (date) {
-                if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
-                    return true;
-                }
             }
+            // isInvalidDate: function (date) {
+            //     if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
+            //         return true;
+            //     }
+            // }
         };
         // chart
         const chartOptions = {
@@ -171,7 +172,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'packet usage by dstAs',
+                    label: 'bps average by dstAs (Gbps)',
                     data: [],
                     backgroundColor: '#F67280',
                     borderColor: '#F67280',
@@ -197,7 +198,7 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'packet'
+                            labelString: 'Gbps'
                         }
                     }]
                 }
@@ -234,7 +235,7 @@
         var pie = new Chart($pie, pieOptions);
         // init datatables
         let dtGrid;
-        function initGrid () {
+        function initGrid (options) {
             // init datatables
             // activate spinner
             $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
@@ -272,12 +273,13 @@
 
                         // footer sum
                         var api = this.api();
-                        for (let i = 1; i < 10; i++) {
-                            if (i === 8 || i === 9) {
-                                $(api.column(i).footer()).html('-');
-                            } else {
-                                $(api.column(i).footer()).html(formatGByte(api.column(i).data().sum()) + ' GB');
-                            }
+                        for (let i = 1; i < options.ifaceLength + 2; i++) {
+                            $(api.column(i).footer()).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                            // if (i === 8 || i === 9) {
+                            //     $(api.column(i).footer()).html('-');
+                            // } else {
+                            //     $(api.column(i).footer()).html(formatGByte(api.column(i).data().sum()) + ' GB');
+                            // }
                         }
                     }
                 },
@@ -295,28 +297,16 @@
                     // contentType: 'application/json;charset=UTF-8'
                 },
                 */
-                columns: [
-                    {'data': 'regTime'},
-                    {'data': '33882175', render: byteFormatter},
-                    {'data': '37290047', render: byteFormatter},
-                    {'data': '100991039', render: byteFormatter},
-                    {'data': '103874623', render: byteFormatter},
-                    {'data': '201654335', render: byteFormatter},
-                    {'data': '205586495', render: byteFormatter},
-                    {'data': 'byteSum', render: byteFormatter},
-                    {'data': 'dstNetMask'},
-                    {'data': 'dstAs'}
-                ],
+                columns: options.columns,
                 columnDefs: [
                     { targets: [0], visible: false, searchable: false },
-                    { className: 'text-right', 'targets': [1, 2, 3, 4, 5, 6, 7, 8, 9] }
+                    { className: 'text-right', targets: '_all' }
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
                     // footer(sum data) change location
                     var $footer = $($dGrid.api().table().footer());
                     $($dGrid.api().table().header()).append($footer.children().addClass('sum'));
-
                 },
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
@@ -336,7 +326,6 @@
                         }
                     }
                 ]
-
             });
         }
 
@@ -349,10 +338,11 @@
             var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val()}};
             reqPieData(reqOptPie);
             // request grid
-            isGridReqEnd = false;
-            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            dtGrid.fnClearTable();
-            dtGrid.fnReloadAjax();
+            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val()}});
+            // isGridReqEnd = false;
+            // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            // dtGrid.fnClearTable();
+            // dtGrid.fnReloadAjax();
         });
 
         /* own control  */
@@ -370,6 +360,12 @@
                 $chartRow.hide(800);
                 $chartRow.fadeOut('slow');
             }
+        });
+
+        $('#acct2_btn_modal').on('click', function () {
+            $('.modal-body').load('/view/acct/ifoList', function () {
+                $('#myModal').modal({show: true});
+            });
         });
 
         function reqChartData (reqOpt) {
@@ -397,9 +393,68 @@
             }, reqOpt);
         }
 
+        // for dynamic grid
+        function getColumns (objArry) {
+            var ifCol = [];
+            objArry.data.forEach(function (obj) {
+                ifCol.push({data: obj.ifaceOutAs});
+            });
+            return [{data: 'regTime'}].concat(ifCol, [{data: 'bpsSum'}, {data: 'dstNetMask'}, {data: 'dstAs'}]);
+        }
+
+        function reqDynamicGrid (reqOpt) {
+            // isGridReqEnd = false;
+            // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            reqAjax({
+                success: function (data) {
+                    repaintHtml(data);
+                    $dGrid = $('#acct2_grid');
+                    var options = {};
+                    options.columns = getColumns(data);
+                    options.ifaceLength = data.data.length;
+                    // console.log(JSON.stringify(col));
+                    initGrid(options);
+                    $contentWrap.LoadingOverlay('hide', true);
+                },
+                error: showToast
+            }, reqOpt);
+        }
+
+        function repaintHtml (objArry) {
+            // header
+            var tHeader = '';
+            objArry.data.forEach(function (obj) {
+                tHeader += '<th>' + obj.ifaceOutAs + '</th>';
+            });
+            // footer
+            var tFooter = '';
+            for (var i = 0; i < objArry.data.length + 4; i++) {
+                tFooter += '<td></td>';
+            }
+            $dGridWrap.empty();
+            $dGridWrap.append(
+                '<table id="acct2_grid" class="table table-striped table-bordered table-hover dataTables-example dataTable">' +
+                '   <thead>' +
+                '       <tr>' +
+                '           <th rowspan="2" style="vertical-align: middle">regTime</th>' +
+                '           <th colspan="' + objArry.data.length + '"style="vertical-align: middle">iface out</th>' +
+                '           <th rowspan="2" style="vertical-align: middle">bpsSum</th>' +
+                '           <th rowspan="2" style="vertical-align: middle">dstNetMask</th>' +
+                '           <th rowspan="2" style="vertical-align: middle">dstAs</th>' +
+                '       </tr>' +
+                '       <tr>' + tHeader + '</tr>' +
+                '   </thead>' +
+                '   <tfoot>' +
+                '       <tr>' + tFooter + '</tr>' +
+                '   </tfoot>' +
+                '</table>'
+            );
+        }
+
         // request chart
         reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val()}});
         reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val()}});
-        initGrid();
+        // initGrid();
+        reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val()}});
     });
 }(window.Acct2 || {}, jquery));

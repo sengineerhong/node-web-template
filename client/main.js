@@ -53,6 +53,7 @@ import '../node_modules/datatables.net-buttons/js/buttons.html5';
 import '../node_modules/datatables.net-buttons/js/buttons.print';
 import '../node_modules/datatables.net-plugins/api/fnReloadAjax';
 import '../node_modules/datatables.net-plugins/api/sum()';
+import '../node_modules/datatables.net-plugins/api/average()';
 // import '../node_modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import Chart from 'chart.js';

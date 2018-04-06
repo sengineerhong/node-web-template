@@ -126,18 +126,18 @@
             singleDatePicker: true,
             // startDate: moment().subtract(1, 'days'),
             startDate: moment(),
-            minDate: moment('2018-03-11 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+            minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
             maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
-            },
-            isInvalidDate: function (date) {
-                if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
-                    return true;
-                }
             }
+            // isInvalidDate: function (date) {
+            //     if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
+            //         return true;
+            //     }
+            // }
         };
         // chart
         const chartOptions = {

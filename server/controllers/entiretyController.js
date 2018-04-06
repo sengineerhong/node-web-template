@@ -63,18 +63,49 @@ exports.getAcctTest1Chart = async (req, res, next) => {
 };
 
 exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
-    let data = '';
+    let gridArry = '';
     try {
         const param = {
             strDate: req.body.strDate,
+            strDateYMD: moment(req.body.strDate).format('YYYY-MM-DD HH:mm:ss').substr(0, 10),
+            // strDate: '2018-04-06 13:35:00',
+            // strDateYMD: '2018-04-02',
             dbName: req.body.dbName,
             tbName: req.body.tbName
         };
-        data = await entiretyModel.getAcctTest2Grid_reqOnce(param);
+        // get iface out list
+        let ifoListRows = await entiretyModel.getAcctIfoListGrid(param);
+        // console.log(ifoListRows);
+        // rows to json
+        let ifoListArry = utiles.getMysqlRowToJson(ifoListRows);
+        // get grid data
+        let data = await entiretyModel.getAcctTest2Grid_reqOnce(param);
+        // rows to json
+        gridArry = utiles.getMysqlRowToJson(data);
+        // console.log(ifoListArry);
+        // trans pivot
+        _.forEach(gridArry, function (obj) {
+            obj.bpsSum = 0;
+            // console.log(ifoListArry);
+            _.forEach(ifoListArry, function (ifo) {
+                obj[ifo.ifaceOutAs] = '';
+            });
+            var ifaceOutAs = obj.ifaceOutAs;
+            var byteSum = obj.byteSum;
+            var seconds = obj.seconds;
+            _.forEach(obj, function (k, v) {
+                if (k === ifaceOutAs) {
+                    // Gbps
+                    obj[k] = Number((byteSum / seconds / 125000000).toFixed(2));
+                    obj.bpsSum = Number(obj[k]);
+                }
+            });
+        });
+        // console.log(gridArry);
     } catch (error) {
         return next(error);
     }
-    return res.json({data: data});
+    return res.json({data: gridArry});
 };
 
 exports.getAcctTest2Chart = async (req, res, next) => {
@@ -101,6 +132,35 @@ exports.getAcctTest2Pie = async (req, res, next) => {
             tbName: req.body.tbName
         };
         data = await entiretyModel.getAcctTest2Pie(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(data);
+};
+
+exports.getAcctIfoListGrid = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            strDateYMD: moment(req.body.strDateYMD).format('YYYY-MM-DD HH:mm:ss').substr(0, 10)
+            // strDateYMD: '2018-04-02'
+        };
+        data = await entiretyModel.getAcctIfoListGrid(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json({data: data});
+};
+
+exports.getAcctIfoListGridUpdate = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            displayYn: req.body.displayYn,
+            ifaceOut: req.body.ifaceOut,
+            ifaceOutAs: req.body.ifaceOutAs
+        };
+        data = await entiretyModel.getAcctIfoListGridUpdate(param);
     } catch (error) {
         return next(error);
     }

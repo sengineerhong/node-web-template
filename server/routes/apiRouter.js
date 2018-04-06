@@ -7,15 +7,14 @@ const AuthCtrl = controller.AuthCtrl;
 const BoardCtrl = controller.BoardCtrl; */
 
 module.exports = (router) => {
-    // acct test1
-    // router.route('/acct/test1/grid').post(validation(rule.tab_acct_test1_grid), entirety.checkTableExist);
-    // router.route('/acct/test1/chart').post(validation(rule.tab_acct_test1_chart), entirety.checkTableExist);
-    // router.route('/acct/test1/grid').post(validation(rule.tab_all_dailySales_grid), entirety.getAcctTest1Grid);
     router.route('/acct/test1/grid').post(validation(rule.tab_acct_test1_grid), entirety.checkTableExist, entirety.getAcctTest1Grid_reqOnce);
     router.route('/acct/test1/chart').post(validation(rule.tab_acct_test1_chart), entirety.checkTableExist, entirety.getAcctTest1Chart);
     router.route('/acct/test2/grid').post(validation(rule.tab_acct_test2_grid), entirety.checkTableExist, entirety.getAcctTest2Grid_reqOnce);
     router.route('/acct/test2/chart').post(validation(rule.tab_acct_test2_chart), entirety.checkTableExist, entirety.getAcctTest2Chart);
     router.route('/acct/test2/pie').post(validation(rule.tab_acct_test2_pie), entirety.checkTableExist, entirety.getAcctTest2Pie);
+
+    router.route('/acct/ifoList/grid').post(validation(rule.tab_acct_ifoList_grid_select), entirety.getAcctIfoListGrid);
+    router.route('/acct/ifoList/grid/update').post(validation(rule.tab_acct_ifoList_grid_update), entirety.getAcctIfoListGridUpdate);
 
     // User
     // router.route('/all/loginpath/grid/day').post(validation(rule.tab_all_loginPath), entirety.getAllLoginPath);

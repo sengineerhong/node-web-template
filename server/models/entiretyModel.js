@@ -100,6 +100,33 @@ exports.getAcctTest2Pie = (param) => {
     });
 };
 
+exports.getAcctIfoListGrid = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.AcctIfoListGrid;
+
+        pool.query(sql, [param.strDateYMD], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctIfoListGridUpdate = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.AcctIfoListGridUpdate;
+        pool.query(sql, [param.ifaceOutAs, param.ifaceOut], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 exports.getAcctTest1GridTotal = () => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;

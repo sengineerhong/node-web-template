@@ -48,7 +48,19 @@ module.exports = {
             strDate: joi.date().required()
         }
     },
-
+    tab_acct_ifoList_grid_select: {
+        body: {
+            strDateYMD: joi.date().required()
+        }
+    },
+    tab_acct_ifoList_grid_update: {
+        body: {
+            strDateYMD: joi.date().required(),
+            displayYn: joi.string().required(),
+            ifaceOut: joi.string().required(),
+            ifaceOutAs: joi.string().required()
+        }
+    },
   /**
    * User Validation
    */
