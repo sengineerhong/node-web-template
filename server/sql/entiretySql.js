@@ -56,7 +56,8 @@ module.exports = {
             ,a.iface_out as ifaceOut
             ,b.iface_out_as as ifaceOutAs
             ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
-            ,unix_timestamp(a.stamp_updated)-unix_timestamp(a.stamp_inserted) as seconds
+            -- ,unix_timestamp(a.stamp_updated)-unix_timestamp(a.stamp_inserted) as seconds
+            ,count(*) cnt
             ,sum(a.bytes) as byteSum
             ,a.as_dst as dstAs
         from ?? as a
@@ -65,12 +66,12 @@ module.exports = {
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
             and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
-        group by a.iface_out, a.as_dst, dstNetMask, seconds
-        order by sum(bytes) desc`,
+        group by a.iface_out, a.as_dst, dstNetMask
+        order by (sum(a.bytes)/count(*)) desc`,
     AcctTest2Chart:
         `select
             date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
-            ,round(avg(bytes/61/125000000), 6) as bpsAvg
+            ,round(avg(bytes)/125000000, 6) as bpsAvg
             ,as_dst as dstAs
         from ??
         where 
@@ -79,16 +80,35 @@ module.exports = {
         group by as_dst
         order by regTime`,
     AcctTest2Pie:
-        `select
-            b.iface_out_as as ifaceOutAs
-            ,round(sum(a.bytes/61/125000000), 2) as bpsSum
-        from ?? as a
-        INNER JOIN pmacct.acct_ifacelist AS b
-            ON a.iface_out = b.iface_out
-        where 
-            a.net_dst != '0.0.0.0' and a.as_dst != 0 
-            and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
-        group by a.iface_out`,
+        `select 
+            c.ifaceOutAs as ifaceOutAs
+            ,round(sum(c.bpsAvg), 2) as bpsSum
+        from(
+            select
+                b.iface_out_as as ifaceOutAs
+                ,round(avg(a.bytes)/125000000, 2) as bpsAvg
+                ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
+            from ?? as a
+            INNER JOIN pmacct.acct_ifacelist AS b
+                ON a.iface_out = b.iface_out
+            where 
+                a.net_dst != '0.0.0.0' and a.as_dst != 0 
+                and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
+            group by a.iface_out, a.as_dst, dstNetMask
+        ) c
+        group by c.ifaceOutAs`,
+    // AcctTest2Pie:
+    //     `select
+    //         b.iface_out_as as ifaceOutAs
+    //         -- ,round(sum(a.bytes/61/125000000), 2) as bpsSum
+    //         ,round(sum(a.bytes/1/125000000), 2) as bpsSum
+    //     from ?? as a
+    //     INNER JOIN pmacct.acct_ifacelist AS b
+    //         ON a.iface_out = b.iface_out
+    //     where
+    //         a.net_dst != '0.0.0.0' and a.as_dst != 0
+    //         and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
+    //     group by a.iface_out`,
     AcctIfoListGrid:
         `select 
             date_time as regTime
@@ -97,8 +117,16 @@ module.exports = {
             ,display_yn as displayYn
         from pmacct.acct_ifacelist
         where date_time=(select max(date_time) from pmacct.acct_ifacelist)`,
+    AcctIfoListGridDispFlag:
+        `select 
+            date_time as regTime
+            ,iface_out as ifaceOut
+            ,iface_out_as as ifaceOutAs
+            ,display_yn as displayYn
+        from pmacct.acct_ifacelist
+        where date_time=(select max(date_time) from pmacct.acct_ifacelist) and display_yn =?`,
     AcctIfoListGridUpdate:
         `update pmacct.acct_ifacelist
-            set iface_out_as = ?
+            set iface_out_as = ?, display_yn =?
         where iface_out=?`
 };

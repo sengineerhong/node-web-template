@@ -1,4 +1,4 @@
-const entiretyModel = require('../models/entiretyModel');
+const entiretyModel = require('../model/entiretyModel');
 const nconf = require('nconf');
 const moment = require('moment');
 const _ = require('lodash');
@@ -88,15 +88,21 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             obj.bpsSum = 0;
             // console.log(ifoListArry);
             _.forEach(ifoListArry, function (ifo) {
-                obj[ifo.ifaceOutAs] = '';
+                // check displayYn
+                if (ifo.displayYn === 'Y') {
+                    obj[ifo.ifaceOutAs] = '';
+                }
             });
             var ifaceOutAs = obj.ifaceOutAs;
             var byteSum = obj.byteSum;
-            var seconds = obj.seconds;
-            _.forEach(obj, function (k, v) {
+            var cnt = obj.cnt;
+            // console.log(ifaceOutAs);
+            _.forEach(obj, function (v, k) {
+                // console.log('===================='+k);
+                // console.log('--------------------'+v);
                 if (k === ifaceOutAs) {
                     // Gbps
-                    obj[k] = Number((byteSum / seconds / 125000000).toFixed(2));
+                    obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
                     obj.bpsSum = Number(obj[k]);
                 }
             });
@@ -142,10 +148,17 @@ exports.getAcctIfoListGrid = async (req, res, next) => {
     let data = '';
     try {
         const param = {
-            strDateYMD: moment(req.body.strDateYMD).format('YYYY-MM-DD HH:mm:ss').substr(0, 10)
+            strDateYMD: moment(req.body.strDateYMD).format('YYYY-MM-DD HH:mm:ss').substr(0, 10),
             // strDateYMD: '2018-04-02'
+            displayYn: req.body.displayYn
         };
-        data = await entiretyModel.getAcctIfoListGrid(param);
+        // console.log(param);
+        // TODO : displayYn flag에 따른 query 분기
+        if (param.displayYn) {
+            data = await entiretyModel.getAcctIfoListGridDispFlag(param);
+        } else {
+            data = await entiretyModel.getAcctIfoListGrid(param);
+        }
     } catch (error) {
         return next(error);
     }
@@ -156,9 +169,9 @@ exports.getAcctIfoListGridUpdate = async (req, res, next) => {
     let data = '';
     try {
         const param = {
-            displayYn: req.body.displayYn,
             ifaceOut: req.body.ifaceOut,
-            ifaceOutAs: req.body.ifaceOutAs
+            ifaceOutAs: req.body.ifaceOutAs,
+            displayYn: req.body.displayYn
         };
         data = await entiretyModel.getAcctIfoListGridUpdate(param);
     } catch (error) {

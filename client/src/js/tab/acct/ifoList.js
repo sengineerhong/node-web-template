@@ -111,7 +111,32 @@
                     }
                 },
                 columns: [
-                    {data: 'displayYn'},
+                    // {data: 'displayYn'},
+                    {
+                        data: 'displayYn',
+                        width: 20,
+                        render: function (d, t, r, m) {
+                            console.log('d:' + d);
+                            console.log('t:' + t);
+                            console.log('r:' + r);
+                            console.log('m:' + m);
+                            var $select = $('<select></select>', {
+                                'id': 'displayYn_' + m.row
+                            });
+                            var falg = ['Y', 'N'];
+                            $.each(falg, function (k, v) {
+                                var $option = $('<option></option>', {
+                                    'text': v,
+                                    'value': v
+                                });
+                                if (d === v) {
+                                    $option.attr('selected', 'selected');
+                                }
+                                $select.append($option);
+                            });
+                            return $select.prop('outerHTML');
+                        }
+                    },
                     {data: 'ifaceOut'},
                     {data: 'ifaceOutAs', className: 'text-right editor'},
                     {
@@ -121,8 +146,8 @@
                     }
                 ],
                 columnDefs: [
-                    { className: 'text-right', 'targets': [0, 1] },
-                    { className: 'text-center', 'targets': [3] }
+                    { className: 'text-right', 'targets': [1, 2] },
+                    { className: 'text-center', 'targets': [0, 3] }
 
                 ],
                 fnInitComplete: function () {
@@ -165,7 +190,10 @@
         $dGrid.on('click', 'tbody button', function () {
             var data = $dGrid.api().row($(this).parents('tr')).data();
             var ifaceOutAs = $(this).closest('td').prev('td').html();
-            var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: data.displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
+            // var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').filter(':selected');
+            var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').children('option').filter(':selected').val();
+            console.log(displayYn);
+            var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
             reqGridUpdate(reqOpt);
         });
 

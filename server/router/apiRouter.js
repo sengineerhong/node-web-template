@@ -1,7 +1,7 @@
 const validation = require('express-validation');
-const rule = require('../config/validationRule');
+const rule = require('../model/validationRule');
 
-const entirety = require('../controllers/entiretyController');
+const entirety = require('../controller/entiretyController');
 /* const UserCtrl = controller.UserCtrl;
 const AuthCtrl = controller.AuthCtrl;
 const BoardCtrl = controller.BoardCtrl; */

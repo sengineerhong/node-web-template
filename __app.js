@@ -8,8 +8,8 @@ const flash = require('express-flash')
 const common = require('./common')
 
 
-const router = require('./server/routes')
-var index = require('./server/routes/index');
+const router = require('./server/router')
+var index = require('./server/router/index');
 
 const app = express()
 

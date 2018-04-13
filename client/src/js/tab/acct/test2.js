@@ -70,63 +70,84 @@
         window.plainToast.show();
     }
 
-    function checkByteUnit (num) {
-        if (num < 1024)             { return 'Bytes'; }
-        if (num < 1048576)          { return 'KB'; }
-        if (num < 1073741824)       { return 'MB'; }
-        if (num < 1099511600000)    { return 'GB'; }
-        return 'TB';
-    }
-
-    function genByteUnit (num, unit) {
-        var genNum;
-        switch (unit) {
-            case 'Bytes':
-                genNum = num;
-                break;
-            case 'KB':
-                genNum = num / 1024;
-                break;
-            case 'MB':
-                genNum = num / 1024 / 1024;
-                break;
-            case 'GB':
-                genNum = num / 1024 / 1024 / 1024;
-                break;
-            default:
-                genNum = num / 1024 / 1024 / 1024 / 1024;
-                break;
+    /* options */
+    // LoadingOverlay
+    const LoadingOverlayOpt = {size: '10%', color: 'rgba(255, 255, 255, 0.6)'};
+    // daterangepicker
+    const drpOptions = {
+        singleDatePicker: true,
+        startDate: moment(),
+        // startDate: moment('2018-04-06 13:38:00', 'YYYY-MM-DD HH:mm:ss'),
+        minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+        maxDate: moment(),
+        timePicker: true,
+        timePicker24Hour: true,
+        locale: {
+            format: 'YYYY-MM-DD HH:mm:ss'
         }
-        return genNum;
-    }
-
-    function formatBytes (bytes, decimals) {
-        if (bytes === 0) return '0 Bytes';
-        var k = 1024;
-        var dm = decimals || 2;
-        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        var i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
-    }
-
-    function formatGByte (bytes) {
-        if (bytes === 0) return 0;
-        else return (bytes / 1024 / 1024 / 1024).toFixed(2);
-    }
-
-    function formatMByte (bytes) {
-        // if (bytes === 0) return '0 MB';
-        // else return (bytes / 1024 / 1024).toFixed(2) + ' MB';
-        if (bytes === 0) return 0;
-        else return (bytes / 1024 / 1024).toFixed(2);
-    }
-
-    function byteFormatter (data, type, row) {
-        if (!$.isNumeric(data)) return data;
-        // else return formatBytes(data);
-        else return formatGByte(data);
-        // else return data;
-    }
+        // isInvalidDate: function (date) {
+        //     if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
+        //         return true;
+        //     }
+        // }
+    };
+    // chart
+    const chartOptions = {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'bps average by dstAs (Gbps)',
+                data: [],
+                backgroundColor: '#F67280',
+                borderColor: '#F67280',
+                borderWidth: 1,
+                fill: 'origin'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'dstAs',
+                        fontSize: 15,
+                        padding: 1,
+                        fontColor: '#000'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Gbps'
+                    }
+                }]
+            }
+        }
+    };
+    // pie
+    const pieOptions = {
+        type: 'pie',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195', '#97b954']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'packet usage by ifaceOut'
+            }
+        }
+    };
 
     $(function () {
         /* flag */
@@ -144,85 +165,10 @@
         const $chartRow = $('#acct2_chartRow');
         // const $form = $('#acct2_form');                                         // parsley validation form
         const $contentWrap = $('#acct2_contentwrap');
-
-        /* options */
-        // LoadingOverlay
-        const LoadingOverlayOpt = {size: '10%', color: 'rgba(255, 255, 255, 0.6)'};
-        // daterangepicker
-        const drpOptions = {
-            singleDatePicker: true,
-            startDate: moment(),
-            // startDate: moment('2018-04-06 13:38:00', 'YYYY-MM-DD HH:mm:ss'),
-            minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            maxDate: moment(),
-            timePicker: true,
-            timePicker24Hour: true,
-            locale: {
-                format: 'YYYY-MM-DD HH:mm:ss'
-            }
-            // isInvalidDate: function (date) {
-            //     if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
-            //         return true;
-            //     }
-            // }
-        };
-        // chart
-        const chartOptions = {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'bps average by dstAs (Gbps)',
-                    data: [],
-                    backgroundColor: '#F67280',
-                    borderColor: '#F67280',
-                    borderWidth: 1,
-                    fill: 'origin'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'dstAs',
-                            fontSize: 15,
-                            padding: 1,
-                            fontColor: '#000'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Gbps'
-                        }
-                    }]
-                }
-            }
-        };
-        // pie
-        const pieOptions = {
-            type: 'pie',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                title: {
-                    display: true,
-                    text: 'packet usage by ifaceOut'
-                }
-            }
-        };
+        // ifo as modal
+        const $ifoasModal = $('#acct2_modal_ifoas');
+        const $ifoasModalBody = $('#acct2_body_ifoas');
+        const $ifoasModalBtn = $('#acct2_btn_ifoas');
 
         /* init views */
         // init checkbox - icheckbox
@@ -249,6 +195,7 @@
                 bInfo: true,
                 searching: true,
                 ordering: true,
+                order: [[ options.ifaceLength + 1, 'desc' ]],
                 responsive: true,
                 // bAutoWidth: false,
                 // scrollX: true,
@@ -338,7 +285,7 @@
             var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val()}};
             reqPieData(reqOptPie);
             // request grid
-            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val()}});
+            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             // isGridReqEnd = false;
             // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
             // dtGrid.fnClearTable();
@@ -362,10 +309,16 @@
             }
         });
 
-        $('#acct2_btn_modal').on('click', function () {
-            $('.modal-body').load('/view/acct/ifoList', function () {
-                $('#myModal').modal({show: true});
+        // modal-open
+        $ifoasModalBtn.on('click', function () {
+            $ifoasModalBody.load('/view/acct/ifoList', function () {
+                $ifoasModal.modal({show: true});
             });
+        });
+
+        // modal-close
+        $ifoasModal.on('hidden.bs.modal', function () {
+            $reqBtn.trigger('click');
         });
 
         function reqChartData (reqOpt) {
@@ -411,6 +364,7 @@
                     $dGrid = $('#acct2_grid');
                     var options = {};
                     options.columns = getColumns(data);
+                    // console.log(JSON.stringify(options.columns));
                     options.ifaceLength = data.data.length;
                     // console.log(JSON.stringify(col));
                     initGrid(options);
@@ -424,7 +378,7 @@
             // header
             var tHeader = '';
             objArry.data.forEach(function (obj) {
-                tHeader += '<th>' + obj.ifaceOutAs + '</th>';
+                tHeader += '<th>' + obj.ifaceOutAs + '[' + obj.ifaceOut + ']' + '</th>';
             });
             // footer
             var tFooter = '';
@@ -455,6 +409,6 @@
         reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val()}});
         reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val()}});
         // initGrid();
-        reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val()}});
+        reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
     });
 }(window.Acct2 || {}, jquery));

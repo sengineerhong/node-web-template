@@ -22,7 +22,7 @@
 
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
                                         label Settings
-                                        button#acct2_btn_modal.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
+                                        button#acct2_btn_ifoas.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
 
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
                                         input#acct2_inputc_chartYn.acct2_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
@@ -47,14 +47,14 @@
                                 #acct2_gridwrap.table-responsive
                                 // grid end
                                 // modal
-                                #myModal.modal.fade(role='dialog')
+                                #acct2_modal_ifoas.modal.fade(role='dialog')
                                     .modal-dialog
                                         // Modal content
                                         .modal-content
                                             .modal-header
                                                 button.close(type='button', data-dismiss='modal') ×
                                                 h4.modal-title Set iface out alias
-                                            .modal-body
+                                            #acct2_body_ifoas.modal-body
                                             .modal-footer
                                                 button.btn.btn-default(type='button', data-dismiss='modal') Close
 script(src='/js/tab/acct/test2.js' type='text/javascript')

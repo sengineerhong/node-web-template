@@ -1,6 +1,3 @@
-/**
- * Created by seungminghong on 17. 4. 4.
- */
 var winston = require('winston');
 require('winston-daily-rotate-file');
 var _ = require('lodash');

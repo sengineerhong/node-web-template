@@ -1,6 +1,3 @@
-/**
- * Created by seungminghong on 17. 4. 3.
- */
 var express = require('express');
 var morgan = require('morgan');
 var compress = require('compression');
@@ -60,9 +57,27 @@ module.exports = function () {
         }
     });
 
-    // set routes
-    app.use('/api', require('../routes/apiRouter')(router));
-    app.use('/view', require('../routes/viewRouter')(router));
+    // set router
+    app.use('/api', require('../router/apiRouter')(router));
+    app.use('/view', require('../router/viewRouter')(router));
+
+    // catch 404 and forward to error handler
+    app.use(function (req, res, next) {
+        var err = new Error('Not Found');
+        err.status = 404;
+        next(err);
+    });
+
+    // error handler
+    app.use(function (err, req, res, next) {
+        // set locals, only providing error in development
+        res.locals.message = err.message;
+        res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+        // render the error page
+        res.status(err.status || 500);
+        res.render('template/error');
+    });
 
     return app;
 };

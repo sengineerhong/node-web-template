@@ -1,70 +1,70 @@
 /* css */
 // use webpack.ProvidePlugin - bootstrap
-import '../node_modules/font-awesome/css/font-awesome.min.css';
-// import '../node_modules/animate.css/animate.min.css';
-import './src/css/animate.css';
-import '../node_modules/nprogress/nprogress.css';
-import '../node_modules/icheck/skins/flat/green.css';
-import '../node_modules/switchery-npm/index.css';
-import '../node_modules/bootstrap-daterangepicker/daterangepicker.css';
-import '../node_modules/bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css';
-import '../node_modules/devextreme/dist/css/dx.common.css';
-import '../node_modules/devextreme/dist/css/generic.light-compact.custom_1120.css';
+import 'Modules/font-awesome/css/font-awesome.min.css';
+// import 'Modules/animate.css/animate.min.css';
+import 'Venders/css/animate.css';
+import 'Modules/nprogress/nprogress.css';
+import 'Modules/icheck/skins/flat/green.css';
+import 'Modules/switchery-npm/index.css';
+import 'Modules/bootstrap-daterangepicker/daterangepicker.css';
+import 'Modules/bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css';
+import 'Modules/devextreme/dist/css/dx.common.css';
+import 'Modules/devextreme/dist/css/generic.light-compact.custom_1120.css';
 /* datatable */
-// import '../node_modules/datatables.net-dt/css/jquery.dataTables.css';
-import '../node_modules/datatables.net-bs/css/dataTables.bootstrap.css';
-import '../node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.css';
-// import '../node_modules/datatables.net-responsive-bs/css/responsive.bootstrap.min.css'
-import './src/css/custom.css';
-import './src/css/pmacct.css';
+// import 'Modules/datatables.net-dt/css/jquery.dataTables.css';
+import 'Modules/datatables.net-bs/css/dataTables.bootstrap.css';
+import 'Modules/datatables.net-buttons-bs/css/buttons.bootstrap.css';
+// import 'Modules/datatables.net-responsive-bs/css/responsive.bootstrap.min.css'
+import 'Venders/css/custom.css';
+import 'Venders/css/pmacct.css';
 
 /* js */
 // use webpack.ProvidePlugin - jquery, bootstrap, moment && ...
-import jquery from '../node_modules/jquery/dist/jquery';                                                // moment korean
-import moment from '../node_modules/moment/min/moment.min';                                             // moment korean
-import '../node_modules/moment/locale/ko';                                                              // moment korean
-import '../node_modules/twix/dist/twix.min';                                                            // twix
-import '../node_modules/jquery-ui-dist/jquery-ui.min';                                                  // jquery-ui
-import '../node_modules/metismenu/dist/metisMenu.min';                                                  // metisMenu
-import '../node_modules/nestable2/dist/jquery.nestable.min';                                            // nestable2
-import './src/vender/jquery.slimscroll/jquery.slimscroll.min';                                          // jquery.slimscroll
-// import '../node_modules/slimscroll/lib/slimscroll';                                                  // jquery.slimscroll
-import NProgress from '../node_modules/nprogress/nprogress';                                            // nprogress
-import '../node_modules/bootstrap-daterangepicker/daterangepicker';                                     // bootstrap-daterangepicker
-import '../node_modules/bootstrap-datetimepicker-npm/build/js/bootstrap-datetimepicker.min';            // bootstrap-datetimepicker-npm
-import '../node_modules/jquery-knob/dist/jquery.knob.min';                                              // jquery-knob
-import '../node_modules/icheck/icheck.min';                                                             // icheck
-import '../node_modules/parsleyjs/dist/parsley.min';                                                    // parsleyjs
-import '../node_modules/parsleyjs/src/i18n/ko';                                                         // parsleyjs korean
-import '../node_modules/switchery-npm/index';                                                           // switchery
-import '../node_modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min';                   // loading-overlay
-import Logger from '../node_modules/js-logger/src/logger.min';                                          // logger
-import Dexie from '../node_modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
+import jquery from 'Modules/jquery/dist/jquery';                                                // moment korean
+import moment from 'Modules/moment/min/moment.min';                                             // moment korean
+import 'Modules/moment/locale/ko';                                                              // moment korean
+import 'Modules/twix/dist/twix.min';                                                            // twix
+import 'Modules/jquery-ui-dist/jquery-ui.min';                                                  // jquery-ui
+import 'Modules/metismenu/dist/metisMenu.min';                                                  // metisMenu
+import 'Modules/nestable2/dist/jquery.nestable.min';                                            // nestable2
+import 'Venders/vender/jquery.slimscroll/jquery.slimscroll.min';                                          // jquery.slimscroll
+// import 'Modules/slimscroll/lib/slimscroll';                                                  // jquery.slimscroll
+import NProgress from 'Modules/nprogress/nprogress';                                            // nprogress
+import 'Modules/bootstrap-daterangepicker/daterangepicker';                                     // bootstrap-daterangepicker
+import 'Modules/bootstrap-datetimepicker-npm/build/js/bootstrap-datetimepicker.min';            // bootstrap-datetimepicker-npm
+import 'Modules/jquery-knob/dist/jquery.knob.min';                                              // jquery-knob
+import 'Modules/icheck/icheck.min';                                                             // icheck
+import 'Modules/parsleyjs/dist/parsley.min';                                                    // parsleyjs
+import 'Modules/parsleyjs/src/i18n/ko';                                                         // parsleyjs korean
+import 'Modules/switchery-npm/index';                                                           // switchery
+import 'Modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min';                   // loading-overlay
+import Logger from 'Modules/js-logger/src/logger.min';                                          // logger
+import Dexie from 'Modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 
 /* DevExtreme */
-import '../node_modules/jszip/dist/jszip.min';                                                           // switchery
-import '../node_modules/devextreme/dist/js/dx.all';
+import 'Modules/jszip/dist/jszip.min';                                                           // switchery
+import 'Modules/devextreme/dist/js/dx.all';
 
 /* datatables */
-// import '../node_modules/datatables.net/js/jquery.dataTables';
-import '../node_modules/datatables.net-bs/js/dataTables.bootstrap';
-import '../node_modules/datatables.net-buttons-bs/js/buttons.bootstrap';
-import '../node_modules/datatables.net-buttons/js/buttons.html5';
-import '../node_modules/datatables.net-buttons/js/buttons.print';
-import '../node_modules/datatables.net-plugins/api/fnReloadAjax';
-import '../node_modules/datatables.net-plugins/api/sum()';
-import '../node_modules/datatables.net-plugins/api/average()';
-// import '../node_modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
+// import 'Modules/datatables.net/js/jquery.dataTables';
+import 'Modules/datatables.net-bs/js/dataTables.bootstrap';
+import 'Modules/datatables.net-buttons-bs/js/buttons.bootstrap';
+import 'Modules/datatables.net-buttons/js/buttons.html5';
+import 'Modules/datatables.net-buttons/js/buttons.print';
+import 'Modules/datatables.net-plugins/api/fnReloadAjax';
+import 'Modules/datatables.net-plugins/api/sum()';
+import 'Modules/datatables.net-plugins/api/average()';
+// import 'Modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import Chart from 'chart.js';
 
 /* custom common */
-import './src/js/common/bootstrap-dynamic-tabs-custom';
-import './src/js/common/jquery.textareafullscreen-custom';
-import './src/js/common/utils.cmmn';
-import './src/js/common/utils.dx';
-import CSRequester from './src/js/common/csrequester.js';
-import './src/js/common/custom.js';
+import 'Venders/js/common/bootstrap-dynamic-tabs-custom';
+import 'Venders/js/common/jquery.textareafullscreen-custom';
+import 'Venders/js/common/utils.cmmn';
+import 'Venders/js/common/utils.dx';
+import CSRequester from 'Venders/js/common/csrequester.js';
+import 'Venders/js/common/custom.js';
 
 /* for external accessing */
 window.jquery = jquery;

@@ -6,14 +6,14 @@
  * - http://github.com/CreoArt
  * Licensed under Apache - https://raw.githubusercontent.com/CreoArt/jquery.textareafullscreen/master/LICENSE
  */
-(function($) {
-    "use strict";
+(function ($) {
+    'use strict';
 
-    function isFullscreen() {
+    function isFullscreen () {
         return $('.tx-editor-overlay').length > 0;
     }
 
-    function relocate(el) {
+    function relocate (el) {
         var yPos = ($(window).height() - el.height()) / 2;
         var xPos = ($(window).width() - el.width()) / 2;
 
@@ -23,7 +23,7 @@
         });
     }
 
-    function transitions($el, $editor) {
+    function transitions ($el, $editor) {
         relocate($editor);
 
         if (isFullscreen()) {
@@ -34,10 +34,8 @@
         }
     }
 
-    function FullscreenTextarea(el, opts) {
-        var method,
-            i;
-
+    function FullscreenTextarea (el, opts) {
+        var method, i;
         this.$el = $(el);
 
         this.settings = {
@@ -47,7 +45,7 @@
             key: null
         };
 
-        for( i = 0; i < this.bindMethods.length; i++) {
+        for (i = 0; i < this.bindMethods.length; i++) {
             method = this.bindMethods[i];
             this[method] = $.proxy(this, method);
         }
@@ -92,7 +90,7 @@
 
         if (this.settings.key !== null) {
             this.$wrapper.on('keyup', function (e) {
-                if (e.ctrlKey && (String.fromCharCode(e.which) == self.settings.key.toUpperCase() || String.fromCharCode(e.which) == self.settings.key)) {
+                if (e.ctrlKey && (String.fromCharCode(e.which) === self.settings.key.toUpperCase() || String.fromCharCode(e.which) === self.settings.key)) {
                     if (isFullscreen()) {
                         self.minimize();
                     } else {
@@ -101,13 +99,11 @@
                 }
             });
         }
-
-        //Fullscreen icon click event
+        // Fullscreen icon click event
         this.$icon.on('click.txeditor.icon', this.onIconClick);
     };
 
-
-    FullscreenTextarea.prototype.bindMethods = ["onOverlayClick", "onIconClick", "onKeyUp", "onResize"];
+    FullscreenTextarea.prototype.bindMethods = ['onOverlayClick', 'onIconClick', 'onKeyUp', 'onResize'];
 
     FullscreenTextarea.prototype.showOverlay = function () {
         $('<div class="tx-editor-overlay" />').appendTo('body')
@@ -127,37 +123,37 @@
     };
 
     FullscreenTextarea.prototype.expand = function () {
-        var settings = this.settings,
-            $editor = this.$editor;
+        var settings = this.settings;
+        var $editor = this.$editor;
 
         if (settings.maxWidth) {
             $editor.css('max-width', settings.maxWidth);
         }
-        if (settings.maxHeight){
+        if (settings.maxHeight) {
             $editor.css('max-height', settings.maxHeight);
         }
 
         if (settings.overlay) {
             this.showOverlay();
         }
-        
-        this.$el.css("overflow", "auto");
-        
+
+        this.$el.css('overflow', 'auto');
+
         $editor.addClass('expanded');
         transitions(this.$el, this.$editor);
 
-        //Adjust editor size on resize
+        // Adjust editor size on resize
         $(window).on('resize.txeditor', this.onResize);
 
         // ESC = closes the fullscreen mode
-        $(window).on("keyup.txeditor", this.onKeyUp);
+        $(window).on('keyup.txeditor', this.onKeyUp);
 
         return this;
     };
 
     FullscreenTextarea.prototype.minimize = function () {
-        var settings = this.settings,
-            $editor = this.$editor;
+        var settings = this.settings;
+        var $editor = this.$editor;
 
         $(window).off('resize.txeditor', this.onResize);
         $(window).off('keyup.txeditor', this.onKeyUp);
@@ -167,9 +163,9 @@
                 'max-width': 'none',
                 'max-height': 'none'
             });
-        
-        this.$el.css("overflow", "hidden");
-        
+
+        this.$el.css('overflow', 'hidden');
+
         transitions(this.$el, $editor);
 
         if (settings.overlay) {
@@ -222,15 +218,16 @@
         relocate(this.$editor);
     };
 
-    $.fn.textareafullscreen = function(options) {
+    $.fn.textareafullscreen = function (options) {
         return this.each(function () {
-            var $this = $(this),
-                fullscreenTextarea, args;
+            var $this = $(this);
+            var fullscreenTextarea;
+            var args;
 
-            if ("string" === typeof options) {
+            if (typeof options  === 'string') {
                 fullscreenTextarea = $this.data('textareafullscreendata');
 
-                if ("function" === typeof fullscreenTextarea[options]) {
+                if (typeof fullscreenTextarea[options] === 'function') {
                     args = Array.prototype.slice.call(arguments, 1);
                     return fullscreenTextarea[options].apply(fullscreenTextarea, args);
                 } else {

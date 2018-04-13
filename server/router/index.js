@@ -13,7 +13,7 @@ module.exports = router
 */
 /*
 module.exports = function (app) {
-    var index = require('../controllers/index');
+    var index = require('../controller/index');
     app.get('/', index.sample);
 }
 */

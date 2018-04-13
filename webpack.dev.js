@@ -2,9 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
-const winston = require('winston');
-
-// winston.info('process.env.ASSET_PATH ', process.env.ASSET_PATH);
 
 module.exports = {
     devtool: 'source-map',
@@ -16,7 +13,12 @@ module.exports = {
         path: path.resolve(__dirname, 'client/src/dist'),
         filename: 'bundle.js'
     },
-
+    resolve: {
+        alias: {
+            Modules: path.resolve(__dirname, 'node_modules/'),
+            Venders: path.resolve(__dirname, 'client/src/')
+        }
+    },
     module: {
         rules: [{
             test: /\.vue$/,

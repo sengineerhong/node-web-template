@@ -1,7 +1,5 @@
-
 const db = require('../config/mysql2');
 const pool = db.connPool;
-
 const fs = require('fs');
 const path = require('path');
 const query = require('../sql/entiretySql');
@@ -114,10 +112,24 @@ exports.getAcctIfoListGrid = (param) => {
     });
 };
 
+exports.getAcctIfoListGridDispFlag = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.AcctIfoListGridDispFlag;
+
+        pool.query(sql, [param.displayYn, param.strDateYMD], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 exports.getAcctIfoListGridUpdate = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.AcctIfoListGridUpdate;
-        pool.query(sql, [param.ifaceOutAs, param.ifaceOut], (err, rows) => {
+        pool.query(sql, [param.ifaceOutAs, param.displayYn, param.ifaceOut], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -177,7 +189,6 @@ exports.getAcctTest1Grid_reqOnce_alasql = (param) => {
         fs.readFile(path.join(fakeFilePath, 'acct_sample_half.json'), 'utf8', function (err, data) {
             if (err) reject(err);
             else {
-
                 var fReadEnd = now();
 
                 var result = alasql(query.AcctTest1Grid_reqOnce_alasql, [JSON.parse(data)]);

@@ -9,6 +9,10 @@
     "globals": {
         "Chart": false,
         "UtilsCmmn": false,
+        "UtilsDx": false,
+        "CSRequester": false,
+        "Globalize": false,
+        "Logger": false,
         "moment": false
     },
     "extends": "standard",
