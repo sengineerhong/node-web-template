@@ -65,7 +65,7 @@
     }
 
     function showToast (msg) {
-        console.log('show toast: ' + msg);
+        // console.log('show toast: ' + msg);
         window.plainToast.option({type: 'error', message: msg});
         window.plainToast.show();
     }
@@ -82,6 +82,7 @@
         maxDate: moment(),
         timePicker: true,
         timePicker24Hour: true,
+        timePickerSeconds: true,
         locale: {
             format: 'YYYY-MM-DD HH:mm:ss'
         }
@@ -163,6 +164,7 @@
         const $drp = $('#acct2_drp_date');
         const $chartYn = $('#acct2_inputc_chartYn');
         const $chartRow = $('#acct2_chartRow');
+        const $intervalRType = $("input[name='acct2_inputr_intervalR']");          // radio name
         // const $form = $('#acct2_form');                                         // parsley validation form
         const $contentWrap = $('#acct2_contentwrap');
         // ifo as modal
@@ -204,7 +206,8 @@
                 sAjaxSource: 'api/acct/test2/grid',
                 sServerMethod: 'POST',
                 fnServerParams: function (aoData) {
-                    aoData.push({ 'name': 'strDate', 'value': $drp.val() });
+                    aoData.push({ name: 'strDate', value: $drp.val() });
+                    aoData.push({ name: 'interval', value: $intervalRType.filter(':checked').val() });
                 },
                 fnDrawCallback: function (oSettings) {
                     // TODO : 임시로직
@@ -280,11 +283,11 @@
         /* request event */
         $reqBtn.on('click', function (e) {
             // request chart
-            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val()}};
+            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             reqChartData(reqOpt);
-            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val()}};
+            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             reqPieData(reqOptPie);
-            // request grid
+            // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             // isGridReqEnd = false;
             // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
@@ -406,8 +409,8 @@
         }
 
         // request chart
-        reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val()}});
-        reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val()}});
+        reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}});
+        reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}});
         // initGrid();
         reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
     });

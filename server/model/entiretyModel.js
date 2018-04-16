@@ -58,7 +58,7 @@ exports.getAcctTest2Grid_reqOnce = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.AcctTest2Grid_reqOnce;
 
-        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+        pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -73,7 +73,7 @@ exports.getAcctTest2Chart = (param) => {
         // const sql = `SELECT * FROM board`;
         const sql = query.AcctTest2Chart;
 
-        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+        pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -88,7 +88,7 @@ exports.getAcctTest2Pie = (param) => {
         // const sql = `SELECT * FROM board`;
         const sql = query.AcctTest2Pie;
 
-        pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
+        pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
                 reject(err);
             } else {

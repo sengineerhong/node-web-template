@@ -35,17 +35,20 @@ module.exports = {
     },
     tab_acct_test2_grid: {
         body: {
-            strDate: joi.date().required()
+            strDate: joi.date().required(),
+            interval: joi.number().required()
         }
     },
     tab_acct_test2_chart: {
         body: {
-            strDate: joi.date().required()
+            strDate: joi.date().required(),
+            interval: joi.number().required()
         }
     },
     tab_acct_test2_pie: {
         body: {
-            strDate: joi.date().required()
+            strDate: joi.date().required(),
+            interval: joi.number().required()
         }
     },
     tab_acct_ifoList_grid_select: {

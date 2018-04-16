@@ -130,6 +130,7 @@
             maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
+            timePickerSeconds: true,
             locale: {
                 format: 'YYYY-MM-DD HH:mm:ss'
             }

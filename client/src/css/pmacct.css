@@ -44,3 +44,12 @@ ul.nav-second-level {
     padding: 2px 4px;
     font-size: 11px;
 }
+.acct-menu-radio-wrapper {
+    margin-top: 11px;
+}
+.acct-menu-font {
+    font-weight: bold;
+}
+.acct-menu-icon {
+    margin-right: 5px;
+}

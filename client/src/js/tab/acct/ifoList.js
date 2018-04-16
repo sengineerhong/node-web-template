@@ -32,7 +32,7 @@
     }
 
     function showToast (msg) {
-        console.log('show toast: ' + msg);
+        // console.log('show toast: ' + msg);
         window.plainToast.option({type: 'error', message: msg});
         window.plainToast.show();
     }
@@ -116,10 +116,6 @@
                         data: 'displayYn',
                         width: 20,
                         render: function (d, t, r, m) {
-                            console.log('d:' + d);
-                            console.log('t:' + t);
-                            console.log('r:' + r);
-                            console.log('m:' + m);
                             var $select = $('<select></select>', {
                                 'id': 'displayYn_' + m.row
                             });
@@ -192,9 +188,19 @@
             var ifaceOutAs = $(this).closest('td').prev('td').html();
             // var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').filter(':selected');
             var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').children('option').filter(':selected').val();
-            console.log(displayYn);
+            // console.log(displayYn);
             var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
-            reqGridUpdate(reqOpt);
+
+            // length 0 이상 / chatAt(0) alphabet / all char alphabet or number or _
+            if (ifaceOutAs.length === 0 || !/^\w+$/.test(ifaceOutAs)) {
+                showToast('알파벳 또는 숫자 또는 _ 만 사용 가능');
+            } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
+                showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
+            } else if (ifaceOutAs.length > 20) {
+                showToast('글자는 최대 20자를 넘을 수 없음');
+            } else {
+                reqGridUpdate(reqOpt);
+            }
         });
 
         $dGrid.on('click', 'tbody td:not(:has(button))', function (e) {

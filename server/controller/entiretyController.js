@@ -71,7 +71,8 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             // strDate: '2018-04-06 13:35:00',
             // strDateYMD: '2018-04-02',
             dbName: req.body.dbName,
-            tbName: req.body.tbName
+            tbName: req.body.tbName,
+            interval: req.body.interval
         };
         // get iface out list
         let ifoListRows = await entiretyModel.getAcctIfoListGrid(param);
@@ -120,7 +121,8 @@ exports.getAcctTest2Chart = async (req, res, next) => {
         const param = {
             strDate: req.body.strDate,
             dbName: req.body.dbName,
-            tbName: req.body.tbName
+            tbName: req.body.tbName,
+            interval: req.body.interval
         };
         data = await entiretyModel.getAcctTest2Chart(param);
     } catch (error) {
@@ -135,7 +137,8 @@ exports.getAcctTest2Pie = async (req, res, next) => {
         const param = {
             strDate: req.body.strDate,
             dbName: req.body.dbName,
-            tbName: req.body.tbName
+            tbName: req.body.tbName,
+            interval: req.body.interval
         };
         data = await entiretyModel.getAcctTest2Pie(param);
     } catch (error) {

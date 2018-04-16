@@ -8,25 +8,60 @@
                             #acct2_parsley_msgAll
                             form#acct2_form(data-parsley-validate='')
                                 .row(style='padding: 10px 0px;')
-                                    .col-lg-3.col-md-3.col-sm-3.col-xs-3
+                                    .col-lg-2.col-md-3.col-sm-3.col-xs-3(style='min-width: 230px;')
                                         form.form-horizontal
-                                            label#acct2_label_date(for='acct2_drp_date') 조회시작시간 (- 5분)
+                                            label#acct2_label_date(for='acct2_drp_date') 조회시작시간
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
                                                         span.add-on.input-group-addon
                                                             i.glyphicon.glyphicon-calendar.fa.fa-calendar
                                                         input#acct2_drp_date.datepicker.form-control(type='text')
+                                    .col-lg-2.col-md-3.col-sm-3.col-xs-3(style='min-width: 213px;')
+                                        label#acct2_label_intervalR Time Interval
+                                         .acct-menu-radio-wrapper
+                                            //
+                                              <label>기준:
+                                              </label>
+                                            label(style='margin-left: 3px;')
+                                                input#acct2_inputr_intervalR_30.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-30' checked='')
+                                                | 30초
+                                            label(style='margin-left: 3px;')
+                                                input#acct2_inputr_intervalR_60.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-60')
+                                                | 1분
+                                            label(style='margin-left: 3px;')
+                                                input#acct2_inputr_intervalR_180.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-180')
+                                                | 3분
+                                            label(style='margin-left: 3px;')
+                                                input#acct2_inputr_intervalR_300.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-300')
+                                                | 5분
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
                                         button#acct2_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
 
-                                    .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
-                                        label Settings
-                                        button#acct2_btn_ifoas.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
+                                    //.col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
+                                    //    label Settings
+                                    //    button#acct2_btn_ifoas.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
 
-                                    .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
-                                        input#acct2_inputc_chartYn.acct2_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
-                                        label.orange(for='acct2_inputc_chartYn') chart
+                                    //.col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
+                                    //    input#acct2_inputc_chartYn.acct2_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                    //    label.orange(for='acct2_inputc_chartYn') chart
+                                    .col-lg-2.col-md-2.col-sm-2.col-xs-2.pull-right(style='text-align: right; min-width: 110px;')
+                                        .dropdown.acct-menu-font
+                                            a.dropdown-toggle.dashbd-icon(data-toggle='dropdown', aria-expanded='false')
+                                                i.fa.fa-cog.fa-lg.acct-menu-icon
+                                                | Settings
+                                            ul.dropdown-menu.dropdown-menu-right.animated.fadeInRight
+                                                li
+                                                    a#acct2_btn_ifoas(href='#')
+                                                        .inline
+                                                            i.fa.fa-pencil-square-o.fa-lg.acct-menu-icon
+                                                            label Set Infaceout Alias
+                                                li.divider
+                                                li
+                                                    a(href='#')
+                                                        .inline
+                                                            input#acct2_inputc_chartYn.acct2_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                                            label(for='acct2_inputc_chartYn', style='margin-left: 5px;') Show Chart
                             h5 * 지정된 시간부터 - 5분이 조회됨
                             #acct2_chartRow(style='display: block; ')
                                 .row

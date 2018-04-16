@@ -65,7 +65,7 @@ module.exports = {
             ON a.iface_out = b.iface_out
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
-            and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
+            and (a.timestamp_start between date_add(?, interval ? second) and ?)
         group by a.iface_out, a.as_dst, dstNetMask
         order by (sum(a.bytes)/count(*)) desc`,
     AcctTest2Chart:
@@ -76,7 +76,7 @@ module.exports = {
         from ??
         where 
             net_dst != '0.0.0.0' and as_dst != 0
-            and (timestamp_start between date_add(?, interval -5 minute) and ?)
+            and (timestamp_start between date_add(?, interval ? second) and ?)
         group by as_dst
         order by regTime`,
     AcctTest2Pie:
@@ -92,8 +92,8 @@ module.exports = {
             INNER JOIN pmacct.acct_ifacelist AS b
                 ON a.iface_out = b.iface_out
             where 
-                a.net_dst != '0.0.0.0' and a.as_dst != 0 
-                and (a.timestamp_start between date_add(?, interval -5 minute) and ?)
+                a.net_dst != '0.0.0.0' and a.as_dst != 0
+                and (timestamp_start between date_add(?, interval ? second) and ?)
             group by a.iface_out, a.as_dst, dstNetMask
         ) c
         group by c.ifaceOutAs`,
