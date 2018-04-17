@@ -96,18 +96,25 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             });
             var ifaceOutAs = obj.ifaceOutAs;
             var byteSum = obj.byteSum;
-            var cnt = obj.cnt;
+            // var cnt = obj.cnt;
             // console.log(ifaceOutAs);
             _.forEach(obj, function (v, k) {
                 // console.log('===================='+k);
                 // console.log('--------------------'+v);
                 if (k === ifaceOutAs) {
                     // Gbps
-                    obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
+                    // obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
+                    obj[k] = Number((byteSum / 60 / 125000000).toFixed(3));
                     obj.bpsSum = Number(obj[k]);
                 }
             });
         });
+        // TODO : 임시 로직 정합성 확인필요
+        for (var i = gridArry.length - 1; i >= 0; --i) {
+            if (gridArry[i].bpsSum === 0) {
+                gridArry.splice(i, 1); // Remove even numbers
+            }
+        }
         // console.log(gridArry);
     } catch (error) {
         return next(error);

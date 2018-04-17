@@ -65,20 +65,38 @@ module.exports = {
             ON a.iface_out = b.iface_out
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
-            and (a.timestamp_start between date_add(?, interval ? second) and ?)
+            and (a.timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+            and b.display_yn = 'Y'
         group by a.iface_out, a.as_dst, dstNetMask
         order by (sum(a.bytes)/count(*)) desc`,
     AcctTest2Chart:
-        `select
-            date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
-            ,round(avg(bytes)/125000000, 6) as bpsAvg
-            ,as_dst as dstAs
-        from ??
-        where 
-            net_dst != '0.0.0.0' and as_dst != 0
-            and (timestamp_start between date_add(?, interval ? second) and ?)
-        group by as_dst
-        order by regTime`,
+        `select 
+            a.regTime as regTime
+            ,round(avg(a.bps), 6) as bpsAvg
+            ,a.dstAs as dstAs
+        from (
+            select
+                date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
+                ,round(bytes/60/125000000, 6) as bps
+                ,as_dst as dstAs
+            from ??
+            where 
+                net_dst != '0.0.0.0' and as_dst != 0
+                and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+        ) a
+        group by a.dstAs
+        order by a.regTime`,
+    // AcctTest2Chart:
+    //     `select
+    //         date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
+    //         ,round(avg(bytes)/125000000, 6) as bpsAvg
+    //         ,as_dst as dstAs
+    //     from ??
+    //     where
+    //         net_dst != '0.0.0.0' and as_dst != 0
+    //         and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+    //     group by as_dst
+    //     order by regTime`,
     AcctTest2Pie:
         `select 
             c.ifaceOutAs as ifaceOutAs
@@ -86,17 +104,35 @@ module.exports = {
         from(
             select
                 b.iface_out_as as ifaceOutAs
-                ,round(avg(a.bytes)/125000000, 2) as bpsAvg
+                ,round(sum(a.bytes)/60/125000000, 2) as bpsAvg
                 ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
             from ?? as a
             INNER JOIN pmacct.acct_ifacelist AS b
                 ON a.iface_out = b.iface_out
             where 
                 a.net_dst != '0.0.0.0' and a.as_dst != 0
-                and (timestamp_start between date_add(?, interval ? second) and ?)
+                and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
             group by a.iface_out, a.as_dst, dstNetMask
         ) c
         group by c.ifaceOutAs`,
+    // AcctTest2Pie:
+    //     `select
+    //         c.ifaceOutAs as ifaceOutAs
+    //         ,round(sum(c.bpsAvg), 2) as bpsSum
+    //     from(
+    //         select
+    //             b.iface_out_as as ifaceOutAs
+    //             ,round(avg(a.bytes)/125000000, 2) as bpsAvg
+    //             ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
+    //         from ?? as a
+    //         INNER JOIN pmacct.acct_ifacelist AS b
+    //             ON a.iface_out = b.iface_out
+    //         where
+    //             a.net_dst != '0.0.0.0' and a.as_dst != 0
+    //             and (timestamp_start between date_add(?, interval ? second) and ?)
+    //         group by a.iface_out, a.as_dst, dstNetMask
+    //     ) c
+    //     group by c.ifaceOutAs`,
     // AcctTest2Pie:
     //     `select
     //         b.iface_out_as as ifaceOutAs

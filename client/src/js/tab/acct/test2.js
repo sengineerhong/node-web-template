@@ -232,6 +232,7 @@
                             // }
                         }
                     }
+                    // console.log('fnDrawCallback:' + oSettings + '|cntFnDrawCB:' + cntFnDrawCB);
                 },
                 /*
                 ajax: reqAjax({
@@ -282,6 +283,8 @@
         /* event control  */
         /* request event */
         $reqBtn.on('click', function (e) {
+            // reset drow cb cnt!
+            cntFnDrawCB = 0;
             // request chart
             var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             reqChartData(reqOpt);
