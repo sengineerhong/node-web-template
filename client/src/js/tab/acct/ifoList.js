@@ -1,36 +1,5 @@
 /* eslint-disable no-undef */
 (function (IfoList, $) {
-    // TODO: need common ajax request
-    function reqAjax (callback, options) {
-        $.ajax({
-            url: options.url,
-            type: options.type || 'POST',
-            data: options.param,
-            success: function (resData) {
-                callback.success(resData);
-            },
-            error: function (jqXHR, exception) {
-                var msg = '';
-                if (jqXHR.status === 0) {
-                    msg = 'Not connect.\n Verify Network.';
-                } else if (jqXHR.status === 404) {
-                    msg = 'Requested page not found. [404]';
-                } else if (jqXHR.status === 500) {
-                    msg = 'Internal Server Error [500].';
-                } else if (exception === 'parsererror') {
-                    msg = 'session time out! Please, Login.';
-                } else if (exception === 'timeout') {
-                    msg = 'Time out error.';
-                } else if (exception === 'abort') {
-                    msg = 'Ajax request aborted.';
-                } else {
-                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                }
-                callback.error(msg);
-            }
-        });
-    }
-
     function showToast (msg) {
         // console.log('show toast: ' + msg);
         window.plainToast.option({type: 'error', message: msg});
@@ -154,14 +123,13 @@
                     //
                     // var $footer = $($dGrid.api().table().footer());
                     // $($dGrid.api().table().header()).append($footer.children().addClass('sum'));
-
                 }
             });
         }
 
         function reqGridUpdate (reqOpt) {
             $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            reqAjax({
+            UtilsCmmn.reqDefaultAjax({
                 success: function (data) {
                     // console.log('ifoListGridUpdate : ' + JSON.stringify(data));
                     $contentWrap.LoadingOverlay('hide', true);
@@ -184,21 +152,35 @@
 
         /* own control  */
         $dGrid.on('click', 'tbody button', function () {
+            // datatable row data
             var data = $dGrid.api().row($(this).parents('tr')).data();
+            // edit data
             var ifaceOutAs = $(this).closest('td').prev('td').html();
-            // var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').filter(':selected');
             var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').children('option').filter(':selected').val();
-            // console.log(displayYn);
-            var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
+            // clone datatable column data (ifaceOut)
+            var ifaceOutArry = $dGrid.api().columns('.editor').data().eq(0).slice(0);
+            // slice this-row-ifaceOutAs
+            var idx = ifaceOutArry.indexOf(data.ifaceOutAs);
+            if (idx !== -1) ifaceOutArry.splice(idx, 1);
+            // check same alias name
+            var sameNameCnt = 0;
+            for (var j = 0; j < ifaceOutArry.length; j++) {
+                if (ifaceOutArry[j] === ifaceOutAs) {
+                    sameNameCnt++;
+                }
+            }
 
-            // length 0 이상 / chatAt(0) alphabet / all char alphabet or number or _
+            // length 0 이상 / chatAt(0) alphabet / all char alphabet or number or _ / can use differ alias name
             if (ifaceOutAs.length === 0 || !/^\w+$/.test(ifaceOutAs)) {
                 showToast('알파벳 또는 숫자 또는 _ 만 사용 가능');
             } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
                 showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
             } else if (ifaceOutAs.length > 20) {
                 showToast('글자는 최대 20자를 넘을 수 없음');
+            } else if (sameNameCnt >= 1) {
+                showToast('동일한 alias 를 사용할 수 없음');
             } else {
+                var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
                 reqGridUpdate(reqOpt);
             }
         });
@@ -216,7 +198,7 @@
                 if (el[0].childNodes.length > 0) {
                     range.setStart(el[0].childNodes[0], el[0].childNodes[0].length);
                     range.collapse(true);
-                    sel.removeAllRanges();
+                    // sel.removeAllRanges();
                     sel.addRange(range);
                 }
                 // The cell have now the focus

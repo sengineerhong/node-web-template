@@ -1,36 +1,5 @@
 /* eslint-disable no-undef */
 (function (Acct2, $) {
-    // TODO: need common ajax request
-    function reqAjax (callback, options) {
-        $.ajax({
-            url: options.url,
-            type: options.type || 'POST',
-            data: options.param,
-            success: function (resData) {
-                callback.success(resData);
-            },
-            error: function (jqXHR, exception) {
-                var msg = '';
-                if (jqXHR.status === 0) {
-                    msg = 'Not connect.\n Verify Network.';
-                } else if (jqXHR.status === 404) {
-                    msg = 'Requested page not found. [404]';
-                } else if (jqXHR.status === 500) {
-                    msg = 'Internal Server Error [500].';
-                } else if (exception === 'parsererror') {
-                    msg = 'session time out! Please, Login.';
-                } else if (exception === 'timeout') {
-                    msg = 'Time out error.';
-                } else if (exception === 'abort') {
-                    msg = 'Ajax request aborted.';
-                } else {
-                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                }
-                callback.error(msg);
-            }
-        });
-    }
-
     function clearChartData (chart) {
         chart.data.labels = [];
         chart.data.datasets[0].data = [];
@@ -131,13 +100,15 @@
         }
     };
     // pie
+    const pieColor = ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195', '#97b954', '#a167bf', '#f98684', '#eda053', '#4271c9', '#9fe0e0', '#ff7049', '#63e27f'];
+    // const pieColor = ['#a167bf', '#f98684', '#eda053', '#4271c9', '#9fe0e0', '#ff7049', '#63e27f'];
     const pieOptions = {
         type: 'pie',
         data: {
             labels: [],
             datasets: [{
                 data: [],
-                backgroundColor: ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195', '#97b954']
+                backgroundColor: pieColor
             }]
         },
         options: {
@@ -165,6 +136,7 @@
         const $chartYn = $('#acct2_inputc_chartYn');
         const $chartRow = $('#acct2_chartRow');
         const $intervalRType = $("input[name='acct2_inputr_intervalR']");          // radio name
+        const $intervalMsg = $('#acct2_interval_msg');
         // const $form = $('#acct2_form');                                         // parsley validation form
         const $contentWrap = $('#acct2_contentwrap');
         // ifo as modal
@@ -220,11 +192,14 @@
                         if (oSettings.aiDisplay.length === 0) {
                             showToast('해당 기간 데이터 없음');
                         }
-
                         // footer sum
                         var api = this.api();
                         for (let i = 1; i < options.ifaceLength + 2; i++) {
-                            $(api.column(i).footer()).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                            // console.log((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2));
+                            // $(api.column(i).footer()).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                            if (i !== options.ifaceLength + 1) {
+                                $(api.column(i).footer()).css('background-color', UtilsCmmn.hexToRGB(pieColor[i - 1], '0.4')).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                            }
                             // if (i === 8 || i === 9) {
                             //     $(api.column(i).footer()).html('-');
                             // } else {
@@ -232,7 +207,7 @@
                             // }
                         }
                     }
-                    // console.log('fnDrawCallback:' + oSettings + '|cntFnDrawCB:' + cntFnDrawCB);
+                    // console.log('fnDrawCallback:' + oSettings + '|cntFnDrawCB:' + cntFnDrawCB + '|options.ifaceLength:' + options.ifaceLength);
                 },
                 /*
                 ajax: reqAjax({
@@ -277,6 +252,13 @@
                         }
                     }
                 ]
+            }).on('search.dt', function () {
+                // footer sum
+                var api = $dGrid.api();
+                for (let i = 1; i < options.ifaceLength + 2; i++) {
+                    // console.log((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2));
+                    $(api.column(i).footer()).html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
+                }
             });
         }
 
@@ -315,6 +297,11 @@
             }
         });
 
+        // radio checked event
+        $intervalRType.on('ifChecked', function (event) {
+            $intervalMsg.html('&nbsp&nbsp' + $(this).val());
+        });
+
         // modal-open
         $ifoasModalBtn.on('click', function () {
             $ifoasModalBody.load('/view/acct/ifoList', function () {
@@ -331,7 +318,7 @@
             $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
             isChartReqEnd = false;
             clearChartData(chart);
-            reqAjax({
+            UtilsCmmn.reqDefaultAjax({
                 success: function (data) {
                     updateChart(chart, data);
                     $chartRow.LoadingOverlay('hide', true);
@@ -344,7 +331,7 @@
 
         function reqPieData (reqOpt) {
             clearChartData(pie);
-            reqAjax({
+            UtilsCmmn.reqDefaultAjax({
                 success: function (data) {
                     updatePie(pie, data);
                 },
@@ -364,7 +351,7 @@
         function reqDynamicGrid (reqOpt) {
             // isGridReqEnd = false;
             // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            reqAjax({
+            UtilsCmmn.reqDefaultAjax({
                 success: function (data) {
                     repaintHtml(data);
                     $dGrid = $('#acct2_grid');

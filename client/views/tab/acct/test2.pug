@@ -62,7 +62,11 @@
                                                         .inline
                                                             input#acct2_inputc_chartYn.acct2_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
                                                             label(for='acct2_inputc_chartYn', style='margin-left: 5px;') Show Chart
-                            h5 * 지정된 시간부터 - 5분이 조회됨
+                            h5
+                                |* 지정된 시간부터
+                                #acct2_interval_msg.inline
+                                    |&nbsp;&nbsp;-1
+                                |분이 조회됨
                             #acct2_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins

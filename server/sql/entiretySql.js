@@ -61,7 +61,7 @@ module.exports = {
             ,sum(a.bytes) as byteSum
             ,a.as_dst as dstAs
         from ?? as a
-        INNER JOIN pmacct.acct_ifacelist AS b
+        LEFT JOIN pmacct.acct_ifacelist AS b
             ON a.iface_out = b.iface_out
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
@@ -107,11 +107,12 @@ module.exports = {
                 ,round(sum(a.bytes)/60/125000000, 2) as bpsAvg
                 ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
             from ?? as a
-            INNER JOIN pmacct.acct_ifacelist AS b
+            LEFT JOIN pmacct.acct_ifacelist AS b
                 ON a.iface_out = b.iface_out
             where 
                 a.net_dst != '0.0.0.0' and a.as_dst != 0
                 and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+                and b.display_yn = 'Y'
             group by a.iface_out, a.as_dst, dstNetMask
         ) c
         group by c.ifaceOutAs`,

@@ -62,6 +62,7 @@ import Chart from 'chart.js';
 import 'Venders/js/common/bootstrap-dynamic-tabs-custom';
 import 'Venders/js/common/jquery.textareafullscreen-custom';
 import 'Venders/js/common/utils.cmmn';
+import 'Venders/js/common/utils.req';
 import 'Venders/js/common/utils.dx';
 import CSRequester from 'Venders/js/common/csrequester.js';
 import 'Venders/js/common/custom.js';
