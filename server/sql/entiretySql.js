@@ -61,31 +61,36 @@ module.exports = {
             ,sum(a.bytes) as byteSum
             ,a.as_dst as dstAs
         from ?? as a
-        LEFT JOIN pmacct.acct_ifacelist AS b
+        INNER JOIN pmacct.acct_ifacelist AS b
             ON a.iface_out = b.iface_out
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
             and (a.timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+            and b.date_time = ( select ifnull(max(date_time), current_date()) from pmacct.acct_ifacelist  where date_time >= date_add(current_date(), interval -10 day) )
             and b.display_yn = 'Y'
         group by a.iface_out, a.as_dst, dstNetMask
         order by (sum(a.bytes)/count(*)) desc`,
     AcctTest2Chart:
         `select 
-            a.regTime as regTime
-            ,round(avg(a.bps), 6) as bpsAvg
-            ,a.dstAs as dstAs
+            c.regTime as regTime
+            ,round(avg(c.bps), 6) as bpsAvg
+            ,c.dstAs as dstAs
         from (
             select
                 date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
                 ,round(bytes/60/125000000, 6) as bps
                 ,as_dst as dstAs
-            from ??
+            from ?? as a
+            INNER JOIN pmacct.acct_ifacelist AS b
+                ON a.iface_out = b.iface_out
             where 
-                net_dst != '0.0.0.0' and as_dst != 0
-                and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
-        ) a
-        group by a.dstAs
-        order by a.regTime`,
+                a.net_dst != '0.0.0.0' and a.as_dst != 0
+                and (a.timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+                and b.date_time = ( select ifnull(max(date_time), current_date()) from pmacct.acct_ifacelist  where date_time >= date_add(current_date(), interval -10 day) )
+                and b.display_yn = 'Y'
+        ) c
+        group by c.dstAs
+        order by c.regTime and c.dstAs`,
     // AcctTest2Chart:
     //     `select
     //         date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime
@@ -107,11 +112,12 @@ module.exports = {
                 ,round(sum(a.bytes)/60/125000000, 2) as bpsAvg
                 ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
             from ?? as a
-            LEFT JOIN pmacct.acct_ifacelist AS b
+            INNER JOIN pmacct.acct_ifacelist AS b
                 ON a.iface_out = b.iface_out
             where 
                 a.net_dst != '0.0.0.0' and a.as_dst != 0
                 and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
+                and b.date_time = ( select ifnull(max(date_time), current_date()) from pmacct.acct_ifacelist  where date_time >= date_add(current_date(), interval -10 day) )
                 and b.display_yn = 'Y'
             group by a.iface_out, a.as_dst, dstNetMask
         ) c
