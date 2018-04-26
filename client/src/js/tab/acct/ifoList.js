@@ -171,12 +171,15 @@
             }
 
             // length 0 이상 / chatAt(0) alphabet / all char alphabet or number or _ / can use differ alias name
-            if (ifaceOutAs.length === 0 || !/^\w+$/.test(ifaceOutAs)) {
-                showToast('알파벳 또는 숫자 또는 _ 만 사용 가능');
-            } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
-                showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
-            } else if (ifaceOutAs.length > 20) {
-                showToast('글자는 최대 20자를 넘을 수 없음');
+            // if (ifaceOutAs.length === 0 || !/^\w+$/.test(ifaceOutAs)) {
+            //     showToast('알파벳 또는 숫자 또는 _ 만 사용 가능');
+            // } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
+            //     showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
+            // ^[a-zA-Z0-9\(\)\[\]\{\}\/<>|\-_\#]*$
+            if (ifaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(ifaceOutAs)) {
+                showToast('알파벳 또는 숫자 또는 []{}|-_<>()/# 사용 가능');
+            } else if (ifaceOutAs.length > 256) {
+                showToast('글자는 최대 256자를 넘을 수 없음');
             } else if (sameNameCnt >= 1) {
                 showToast('동일한 alias 를 사용할 수 없음');
             } else {

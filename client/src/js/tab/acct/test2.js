@@ -15,6 +15,7 @@
         data.forEach(function (item) {
             // chart.data.labels.push(item.dstNetMask);
             // chart.data.datasets[0].data.push(genByteUnit(item.byteSum, unit));
+            // console.log(item);
             chart.data.labels.push(item.dstAs);
             chart.data.datasets[0].data.push(item.bpsAvg);
         });
@@ -44,11 +45,11 @@
     const LoadingOverlayOpt = {size: '10%', color: 'rgba(255, 255, 255, 0.6)'};
     // daterangepicker
     const drpOptions = {
+        autoUpdateInput: true,
         singleDatePicker: true,
         startDate: moment(),
-        // startDate: moment('2018-04-06 13:38:00', 'YYYY-MM-DD HH:mm:ss'),
-        minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-        maxDate: moment(),
+        minDate: moment().subtract(1, 'days'),
+        maxDate: moment().add(1, 'days'),
         timePicker: true,
         timePicker24Hour: true,
         timePickerSeconds: true,
@@ -121,11 +122,23 @@
         }
     };
 
+    function genSearchTimeHistory (arry, time) {
+        arry.unshift(time);
+        // keep history length (under 3)
+        if (arry.length > 3) {
+            arry.splice(3, 1);
+        }
+        var first = '<div class="pinkred inline">' + arry[0] + '</div>';
+        // 2018-04-26 11:26:21
+        return first + arry.join(', ').substring(19);
+    }
+
     $(function () {
         /* flag */
         let isChartReqEnd = false;
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
+        let searchHisArry = [];
         /* view  */
         const $dGridWrap = $('#acct2_gridwrap');
         let $dGrid;
@@ -137,18 +150,20 @@
         const $chartRow = $('#acct2_chartRow');
         const $intervalRType = $("input[name='acct2_inputr_intervalR']");          // radio name
         const $intervalMsg = $('#acct2_interval_msg');
+        const $timehisMsg = $('#acct2_timehis_msg');
         // const $form = $('#acct2_form');                                         // parsley validation form
         const $contentWrap = $('#acct2_contentwrap');
         // ifo as modal
         const $ifoasModal = $('#acct2_modal_ifoas');
         const $ifoasModalBody = $('#acct2_body_ifoas');
         const $ifoasModalBtn = $('#acct2_btn_ifoas');
+        const $nowBtn = $('#acct2_btn_now');
 
         /* init views */
         // init checkbox - icheckbox
         UtilsCmmn.initIcheckbox('acct2_icheck');
         // init drp
-        UtilsCmmn.initDaterangepicker($drp, drpOptions);
+        var cal = UtilsCmmn.initDaterangepicker($drp, drpOptions);
         // init chart
         var chart = new Chart($chart, chartOptions);
         // init chart
@@ -162,6 +177,7 @@
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
+                autoWidth: false,
                 pageLength: 25,
                 // pagingType: 'full_numbers',
                 bPaginate: true,
@@ -227,6 +243,7 @@
                 columnDefs: [
                     { targets: [0], visible: false, searchable: false },
                     { className: 'text-right', targets: '_all' }
+                    // { className: 'text-left', targets: -1 }
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
@@ -273,10 +290,39 @@
             reqPieData(reqOptPie);
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
-            // isGridReqEnd = false;
-            // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            // dtGrid.fnClearTable();
-            // dtGrid.fnReloadAjax();
+            // update searched-date filed
+            $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
+            /*
+            isGridReqEnd = false;
+            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            dtGrid.fnClearTable();
+            dtGrid.fnReloadAjax();
+            */
+        });
+
+        /* request(now) event */
+        $nowBtn.on('click', function (e) {
+            // reset drow cb cnt!
+            cntFnDrawCB = 0;
+            // get now & set now to cal
+            var now = moment().format('YYYY-MM-DD HH:mm:ss');
+            cal.setStartDate(now);
+            $drp.val(now);
+            // request chart
+            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqChartData(reqOpt);
+            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqPieData(reqOptPie);
+            // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
+            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+            // update searched-date filed
+            $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, now) + ']');
+            /*
+            isGridReqEnd = false;
+            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            dtGrid.fnClearTable();
+            dtGrid.fnReloadAjax();
+            */
         });
 
         /* own control  */
@@ -310,7 +356,7 @@
 
         // modal-close
         $ifoasModal.on('hidden.bs.modal', function () {
-            $reqBtn.trigger('click');
+            $nowBtn.trigger('click');
         });
 
         function reqChartData (reqOpt) {
@@ -342,9 +388,10 @@
         function getColumns (objArry) {
             var ifCol = [];
             objArry.data.forEach(function (obj) {
-                ifCol.push({data: obj.ifaceOutAs});
+                // ifCol.push({data: obj.ifaceOutAs});
+                ifCol.push({data: obj.ifaceOut});
             });
-            return [{data: 'regTime'}].concat(ifCol, [{data: 'bpsSum'}, {data: 'dstNetMask'}, {data: 'dstAs'}]);
+            return [{data: 'regTime'}].concat(ifCol, [{data: 'bpsSum'}, {data: 'dstNetMask'}, {data: 'dstAs', className: 'text-left grid_dstAs'}]);
         }
 
         function reqDynamicGrid (reqOpt) {
@@ -370,7 +417,7 @@
             // header
             var tHeader = '';
             objArry.data.forEach(function (obj) {
-                tHeader += '<th>' + obj.ifaceOutAs + '[' + obj.ifaceOut + ']' + '</th>';
+                tHeader += '<th>' + obj.ifaceOutAs + '<br>[' + obj.ifaceOut + ']' + '</th>';
             });
             // footer
             var tFooter = '';
@@ -397,10 +444,7 @@
             );
         }
 
-        // request chart
-        reqChartData({url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}});
-        reqPieData({url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}});
-        // initGrid();
-        reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+        // request chart, pie, dynamic-grid
+        $reqBtn.trigger('click');
     });
 }(window.Acct2 || {}, jquery));

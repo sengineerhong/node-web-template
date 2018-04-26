@@ -59,10 +59,13 @@ module.exports = {
             -- ,unix_timestamp(a.stamp_updated)-unix_timestamp(a.stamp_inserted) as seconds
             ,count(*) cnt
             ,sum(a.bytes) as byteSum
-            ,a.as_dst as dstAs
+            -- ,a.as_dst as dstAs
+            ,concat(d.as_dst, ':', d.as_eng_name, ':', d.as_org_name, ':', d.country_code) as dstAs 
         from ?? as a
         INNER JOIN pmacct.acct_ifacelist AS b
             ON a.iface_out = b.iface_out
+        INNER JOIN pmacct.acct_dstas_info AS d
+            ON a.as_dst = d.as_dst
         where 
             a.net_dst != '0.0.0.0' and a.as_dst != 0
             and (a.timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
@@ -88,9 +91,9 @@ module.exports = {
                 and (a.timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval ? minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
                 and b.date_time = ( select ifnull(max(date_time), current_date()) from pmacct.acct_ifacelist  where date_time >= date_add(current_date(), interval -10 day) )
                 and b.display_yn = 'Y'
+            order by regTime and dstAs    
         ) c
-        group by c.dstAs
-        order by c.regTime and c.dstAs`,
+        group by c.dstAs`,
     // AcctTest2Chart:
     //     `select
     //         date_format(timestamp_start, "%m-%d %H:%i:%s") as regTime

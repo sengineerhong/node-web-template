@@ -53,3 +53,12 @@ ul.nav-second-level {
 .acct-menu-icon {
     margin-right: 5px;
 }
+.pinkred {
+    color: #ed5565;
+}
+.grid_dstAs {
+    min-width: 400px;
+    /*font-size: smaller;*/
+}
+
+

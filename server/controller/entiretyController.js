@@ -76,14 +76,15 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
         };
         // get iface out list
         let ifoListRows = await entiretyModel.getAcctIfoListGrid(param);
-        // console.log(ifoListRows);
+        // console.log('ifoListRows:' + JSON.stringify(ifoListRows));
         // rows to json
         let ifoListArry = utiles.getMysqlRowToJson(ifoListRows);
         // get grid data
         let data = await entiretyModel.getAcctTest2Grid_reqOnce(param);
         // rows to json
         gridArry = utiles.getMysqlRowToJson(data);
-        // console.log(ifoListArry);
+        // console.log('gridArry:' + JSON.stringify(gridArry));
+        // console.log('ifoListArry:' + JSON.stringify(ifoListArry));
         // trans pivot
         _.forEach(gridArry, function (obj) {
             obj.bpsSum = 0;
@@ -91,21 +92,26 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             _.forEach(ifoListArry, function (ifo) {
                 // check displayYn
                 if (ifo.displayYn === 'Y') {
-                    obj[ifo.ifaceOutAs] = '';
+                    // obj[ifo.ifaceOutAs] = '';
+                    obj[ifo.ifaceOut] = '';
                 }
             });
-            var ifaceOutAs = obj.ifaceOutAs;
+            // var ifaceOutAs = obj.ifaceOutAs;
+            var ifaceOut = obj.ifaceOut;
             var byteSum = obj.byteSum;
             // var cnt = obj.cnt;
-            // console.log(ifaceOutAs);
+            // console.log('obj:' + JSON.stringify(obj));
             _.forEach(obj, function (v, k) {
-                // console.log('===================='+k);
-                // console.log('--------------------'+v);
-                if (k === ifaceOutAs) {
+                // console.log('v--------------------'+v);
+                // console.log('k===================='+k);
+                // if (k === ifaceOutAs) {
+                if (v === ifaceOut) {
+                    // console.log('if v--------------------'+v);
+                    // console.log('if k===================='+k);
                     // Gbps
                     // obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
-                    obj[k] = Number((byteSum / 60 / 125000000).toFixed(3));
-                    obj.bpsSum = Number(obj[k]);
+                    obj[v] = Number((byteSum / 60 / 125000000).toFixed(3));
+                    obj.bpsSum = Number(obj[v]);
                 }
             });
         });

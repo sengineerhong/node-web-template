@@ -94,7 +94,7 @@
             // startDate: moment().subtract(1, 'days'),
             startDate: moment(),
             minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            maxDate: moment(),
+            // maxDate: moment(),
             timePicker: true,
             timePicker24Hour: true,
             timePickerSeconds: true,
