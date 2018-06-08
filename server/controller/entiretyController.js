@@ -3,6 +3,7 @@ const nconf = require('nconf');
 const moment = require('moment');
 const _ = require('lodash');
 const utiles = require('../../common/utiles');
+const whoisapi = require('../../common/whoisapi');
 
 exports.checkTableExist = async (req, res, next) => {
     let data = '';
@@ -88,35 +89,39 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
         // trans pivot
         _.forEach(gridArry, function (obj) {
             obj.bpsSum = 0;
+            obj.peerIpSrcAndAs = '';
             // console.log(ifoListArry);
             _.forEach(ifoListArry, function (ifo) {
                 // check displayYn
                 if (ifo.displayYn === 'Y') {
                     // obj[ifo.ifaceOutAs] = '';
-                    obj[ifo.ifaceOut] = '';
+                    obj[ifo.ifaceOutPeerIp] = '';
                 }
             });
             // var ifaceOutAs = obj.ifaceOutAs;
-            var ifaceOut = obj.ifaceOut;
+            var ifaceOutPeerIp = obj.ifaceOutPeerIp;
             var byteSum = obj.byteSum;
             // var cnt = obj.cnt;
             // console.log('obj:' + JSON.stringify(obj));
             _.forEach(obj, function (v, k) {
-                // console.log('v--------------------'+v);
-                // console.log('k===================='+k);
                 // if (k === ifaceOutAs) {
-                if (v === ifaceOut) {
-                    // console.log('if v--------------------'+v);
-                    // console.log('if k===================='+k);
+                if (v === ifaceOutPeerIp) {
                     // Gbps
                     // obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
                     obj[v] = Number((byteSum / 60 / 125000000).toFixed(3));
                     obj.bpsSum = Number(obj[v]);
                 }
+                obj.peerIpSrcAndAs = obj.peerIpSrcAs + '[' + obj.peerIpSrc  + ']';
             });
         });
         // TODO : 임시 로직 정합성 확인필요
         for (var i = gridArry.length - 1; i >= 0; --i) {
+            // for update dstAs from client-side
+            if (gridArry[i].dstAs === null) {
+                gridArry[i].dstAs = 'reqwhois_' + gridArry[i].dstAsNum;
+                // console.log('gridArry[i]:' + JSON.stringify(gridArry[i]));
+            }
+            // remove bpsSum == 0
             if (gridArry[i].bpsSum === 0) {
                 gridArry.splice(i, 1); // Remove even numbers
             }
@@ -125,7 +130,7 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.json({data: gridArry});
+    return res.json({data: gridArry, searched: req.body.searched});
 };
 
 exports.getAcctTest2Chart = async (req, res, next) => {
@@ -160,6 +165,45 @@ exports.getAcctTest2Pie = async (req, res, next) => {
     return res.json(data);
 };
 
+exports.getAcctTest2DstAs = async (req, res, next) => {
+    try {
+        const param = {
+            dstAsNum: req.body.dstAsNum
+        };
+        // rObj.dstAsNum
+        // rObj.dstAsEngName = '';
+        // rObj.dstAsOrgName = '';
+        // rObj.dstAsCntryCode = '';
+        // rObj.rCode = -1;
+        // 1. make sure db has already got dstAsNum (select count(as_dst) from acct_dstas_info where as_dst=?)
+        const preDstAsRows = await entiretyModel.getAcctTest2DstAs(param);
+        const preDstAsArry = utiles.getMysqlRowToJson(preDstAsRows);
+        // console.log('preDstAsArry:' + preDstAsArry);
+        // 2. if not exist => request whoisapi
+        if (preDstAsArry.length === 0) {
+        // if (preDstAsArry.length !== 0) {
+            const rObj = await whoisapi(param);
+            // 3. update(insert) acct_dstas_info
+            if (rObj.rCode === 1) {
+                await entiretyModel.setAcctTest2DstAs(rObj);
+                // console.log('rObj_1:' + JSON.stringify(rObj));
+                // 4. return acct_dstas_info result (rCode 1 / succ)
+                return res.json(rObj);
+            } else {
+                // 4. return acct_dstas_info result (rCode -1 / fail)
+                rObj.rCode = -1;
+                return res.json(rObj);
+            }
+        } else {
+            // 4. return acct_dstas_info result (rCode 1 / succ)
+            preDstAsArry.rCode = 1;
+            return res.json(preDstAsArry);
+        }
+    } catch (error) {
+        return next(error);
+    }
+};
+
 exports.getAcctIfoListGrid = async (req, res, next) => {
     let data = '';
     try {
@@ -187,7 +231,9 @@ exports.getAcctIfoListGridUpdate = async (req, res, next) => {
         const param = {
             ifaceOut: req.body.ifaceOut,
             ifaceOutAs: req.body.ifaceOutAs,
-            displayYn: req.body.displayYn
+            displayYn: req.body.displayYn,
+            peerIpSrc: req.body.peerIpSrc,
+            peerIpSrcAs: req.body.peerIpSrcAs
         };
         data = await entiretyModel.getAcctIfoListGridUpdate(param);
     } catch (error) {

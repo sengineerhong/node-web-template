@@ -1701,7 +1701,7 @@ table.dataTable thead .sorting_desc_disabled {
     margin-right: 5px;
 }
 .html5buttons {
-    float: right;
+    float: left;
 }
 .html5buttons a {
     border: 1px solid #e7eaec;

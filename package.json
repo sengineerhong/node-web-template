@@ -55,6 +55,7 @@
   "dependencies": {
     "alasql": "^0.4.5",
     "animate.css": "^3.6.1",
+    "axios": "^0.18.0",
     "body-parser": "~1.18.2",
     "bootstrap-daterangepicker": "^2.1.30",
     "bootstrap-datetimepicker-npm": "^4.17.37-npm",
@@ -102,6 +103,8 @@
     "passport-local": "^1.0.0",
     "pdfmake": "^0.1.36",
     "pug": "^2.0.0-rc.4",
+    "randomcolor": "^0.5.3",
+    "save": "^2.3.2",
     "serve-favicon": "~2.4.5",
     "slimscroll": "^0.9.1",
     "ssh2": "^0.6.0",

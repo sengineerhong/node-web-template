@@ -12,6 +12,7 @@ module.exports = (router) => {
     router.route('/acct/test2/grid').post(validation(rule.tab_acct_test2_grid), entirety.checkTableExist, entirety.getAcctTest2Grid_reqOnce);
     router.route('/acct/test2/chart').post(validation(rule.tab_acct_test2_chart), entirety.checkTableExist, entirety.getAcctTest2Chart);
     router.route('/acct/test2/pie').post(validation(rule.tab_acct_test2_pie), entirety.checkTableExist, entirety.getAcctTest2Pie);
+    router.route('/acct/test2/dstas').post(validation(rule.tab_acct_test2_dstas), entirety.getAcctTest2DstAs);
 
     router.route('/acct/ifoList/grid').post(validation(rule.tab_acct_ifoList_grid_select), entirety.getAcctIfoListGrid);
     router.route('/acct/ifoList/grid/update').post(validation(rule.tab_acct_ifoList_grid_update), entirety.getAcctIfoListGridUpdate);

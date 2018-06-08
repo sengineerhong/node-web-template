@@ -81,12 +81,17 @@
                 },
                 columns: [
                     // {data: 'displayYn'},
+                    {data: 'ifaceOut'},
+                    {data: 'ifaceOutAs', className: 'text-right editor editor-iface'},
+                    {data: 'peerIpSrc'},
+                    {data: 'peerIpSrcAs', className: 'text-right editor editor-peer'},
                     {
                         data: 'displayYn',
                         width: 20,
                         render: function (d, t, r, m) {
                             var $select = $('<select></select>', {
-                                'id': 'displayYn_' + m.row
+                                'id': 'displayYn_' + m.row,
+                                'class': 'editor'
                             });
                             var falg = ['Y', 'N'];
                             $.each(falg, function (k, v) {
@@ -102,8 +107,6 @@
                             return $select.prop('outerHTML');
                         }
                     },
-                    {data: 'ifaceOut'},
-                    {data: 'ifaceOutAs', className: 'text-right editor'},
                     {
                         data: null,
                         defaultContent: '<button class="btn btn-small btn-warning">Update</button>',
@@ -111,13 +114,15 @@
                     }
                 ],
                 columnDefs: [
-                    { className: 'text-right', 'targets': [1, 2] },
-                    { className: 'text-center', 'targets': [0, 3] }
+                    { className: 'text-right', 'targets': [0, 1, 2, 3] },
+                    { className: 'text-center', 'targets': [4, 5] }
 
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
-                    $($dGrid.api().column(2)).addClass('sum');
+                    // $($dGrid.api().column(2)).addClass('sum');
+                    // $($dGrid.api().column(3)).addClass('sum');
+                    // $($dGrid.api().column(4)).addClass('sum');
                     //
                     // $(api.column(i).footer()).html('-');
                     //
@@ -152,13 +157,16 @@
 
         /* own control  */
         $dGrid.on('click', 'tbody button', function () {
+            cntFnDrawCB = 0;
             // datatable row data
             var data = $dGrid.api().row($(this).parents('tr')).data();
             // edit data
-            var ifaceOutAs = $(this).closest('td').prev('td').html();
-            var displayYn = $(this).closest('td').prev('td').prev('td').prev('td').children('select').children('option').filter(':selected').val();
+            var ifaceOutAs = $(this).closest('td').prev('td').prev('td').prev('td').prev('td').html();
+            var peerIpSrcAs = $(this).closest('td').prev('td').prev('td').html();
+            var displayYn = $(this).closest('td').prev('td').children('select').children('option').filter(':selected').val();
             // clone datatable column data (ifaceOut)
-            var ifaceOutArry = $dGrid.api().columns('.editor').data().eq(0).slice(0);
+            var ifaceOutArry = $dGrid.api().columns('.editor-iface').data().eq(0).slice(0);
+            var peerIpArry = $dGrid.api().columns('.editor-peer').data().eq(0).slice(0);
             // slice this-row-ifaceOutAs
             var idx = ifaceOutArry.indexOf(data.ifaceOutAs);
             if (idx !== -1) ifaceOutArry.splice(idx, 1);
@@ -176,14 +184,14 @@
             // } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
             //     showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
             // ^[a-zA-Z0-9\(\)\[\]\{\}\/<>|\-_\#]*$
-            if (ifaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(ifaceOutAs)) {
+            if (ifaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(ifaceOutAs) || peerIpSrcAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(peerIpSrcAs)) {
                 showToast('알파벳 또는 숫자 또는 []{}|-_<>()/# 사용 가능');
-            } else if (ifaceOutAs.length > 256) {
+            } else if (ifaceOutAs.length > 256 || peerIpSrcAs.length > 256) {
                 showToast('글자는 최대 256자를 넘을 수 없음');
             } else if (sameNameCnt >= 1) {
-                showToast('동일한 alias 를 사용할 수 없음');
+                showToast('동일한 alias 를 사용할 수 없음(ifaceOutAs)');
             } else {
-                var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs}};
+                var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs, peerIpSrc: data.peerIpSrc, peerIpSrcAs: peerIpSrcAs}};
                 reqGridUpdate(reqOpt);
             }
         });
@@ -192,7 +200,7 @@
         // $('.editor').on( 'click', function () {
 
             // $dGrid.api().cell( this );
-            if ($(e.target).hasClass('editor')) {
+            if ($(e.target).hasClass('editor-iface') || $(e.target).hasClass('editor-peer')) {
                 $(this).attr('contenteditable', 'true');
                 var el = $(this);
                 // We put the cursor at the beginning

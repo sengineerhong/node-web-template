@@ -11,7 +11,7 @@ const tunnel = require('tunnel-ssh');
 exports.checkTableExist = (param) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.CommonTabledExist;
+        const sql = query.selectCommonTabledExist;
 
         pool.query(sql, [param.dbName, param.tbName], (err, rows) => {
             // console.log('=============================1' + param.dbName);
@@ -27,7 +27,7 @@ exports.checkTableExist = (param) => {
 
 exports.getAcctTest1Grid_reqOnce = (param) => {
     return new Promise((resolve, reject) => {
-        const sql = query.AcctTest1Grid_reqOnce;
+        const sql = query.selectAcctTest1Grid_reqOnce;
 
         pool.query(sql, [param.tbName, param.strDate, param.strDate], (err, rows) => {
             if (err) {
@@ -42,7 +42,7 @@ exports.getAcctTest1Grid_reqOnce = (param) => {
 exports.getAcctTest1Chart = (param) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest1Chart;
+        const sql = query.selectAcctTest1Chart;
 
         pool.query(sql, [param.tbName, param.strDate, param.strDate, param.range], (err, rows) => {
             if (err) {
@@ -56,7 +56,7 @@ exports.getAcctTest1Chart = (param) => {
 
 exports.getAcctTest2Grid_reqOnce = (param) => {
     return new Promise((resolve, reject) => {
-        const sql = query.AcctTest2Grid_reqOnce;
+        const sql = query.selectAcctTest2Grid_reqOnce;
 
         pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
@@ -71,7 +71,7 @@ exports.getAcctTest2Grid_reqOnce = (param) => {
 exports.getAcctTest2Chart = (param) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest2Chart;
+        const sql = query.selectAcctTest2Chart;
 
         pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
@@ -86,7 +86,7 @@ exports.getAcctTest2Chart = (param) => {
 exports.getAcctTest2Pie = (param) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest2Pie;
+        const sql = query.selectAcctTest2Pie;
 
         pool.query(sql, [param.tbName, param.strDate, param.interval, param.strDate], (err, rows) => {
             if (err) {
@@ -98,9 +98,37 @@ exports.getAcctTest2Pie = (param) => {
     });
 };
 
+exports.getAcctTest2DstAs = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctTest2DstAs;
+
+        pool.query(sql, [param.dstAsNum], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.setAcctTest2DstAs = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.updateAcctTest2DstAs;
+
+        pool.query(sql, [param.dstAsNum, param.dstAsEngName, param.dstAsOrgName, param.dstAsCntryCode], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 exports.getAcctIfoListGrid = (param) => {
     return new Promise((resolve, reject) => {
-        const sql = query.AcctIfoListGrid;
+        const sql = query.selectAcctIfoListGrid;
 
         pool.query(sql, [param.strDateYMD], (err, rows) => {
             if (err) {
@@ -114,7 +142,7 @@ exports.getAcctIfoListGrid = (param) => {
 
 exports.getAcctIfoListGridDispFlag = (param) => {
     return new Promise((resolve, reject) => {
-        const sql = query.AcctIfoListGridDispFlag;
+        const sql = query.selectAcctIfoListGridDispFlag;
 
         pool.query(sql, [param.displayYn, param.strDateYMD], (err, rows) => {
             if (err) {
@@ -128,8 +156,8 @@ exports.getAcctIfoListGridDispFlag = (param) => {
 
 exports.getAcctIfoListGridUpdate = (param) => {
     return new Promise((resolve, reject) => {
-        const sql = query.AcctIfoListGridUpdate;
-        pool.query(sql, [param.ifaceOutAs, param.displayYn, param.ifaceOut], (err, rows) => {
+        const sql = query.selectAcctIfoListGridUpdate;
+        pool.query(sql, [param.ifaceOutAs, param.displayYn, param.peerIpSrcAs, param.ifaceOut, param.peerIpSrc], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -142,7 +170,7 @@ exports.getAcctIfoListGridUpdate = (param) => {
 exports.getAcctTest1GridTotal = () => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest1GridTotal;
+        const sql = query.selectAcctTest1GridTotal;
 
         pool.query(sql, [], (err, rows) => {
             if (err) {
@@ -157,7 +185,7 @@ exports.getAcctTest1GridTotal = () => {
 exports.getAcctTest1Grid = (req) => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AcctTest1Grid;
+        const sql = query.selectAcctTest1Grid;
 
         pool.query(sql, [parseInt(req.body.iDisplayStart), parseInt(req.body.iDisplayLength)], (err, rows) => {
             if (err) {
@@ -172,7 +200,7 @@ exports.getAcctTest1Grid = (req) => {
 exports.getAllLoginPath = () => {
     return new Promise((resolve, reject) => {
         // const sql = `SELECT * FROM board`;
-        const sql = query.AllLoginPath;
+        const sql = query.selectAllLoginPath;
 
         pool.query(sql, [], (err, rows) => {
             if (err) {

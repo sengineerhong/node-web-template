@@ -38,6 +38,7 @@ import 'Modules/parsleyjs/dist/parsley.min';                                    
 import 'Modules/parsleyjs/src/i18n/ko';                                                         // parsleyjs korean
 import 'Modules/switchery-npm/index';                                                           // switchery
 import 'Modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min';                   // loading-overlay
+import randomColor from 'Modules/randomcolor/randomColor';
 import Logger from 'Modules/js-logger/src/logger.min';                                          // logger
 import Dexie from 'Modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 
@@ -54,6 +55,7 @@ import 'Modules/datatables.net-buttons/js/buttons.print';
 import 'Modules/datatables.net-plugins/api/fnReloadAjax';
 import 'Modules/datatables.net-plugins/api/sum()';
 import 'Modules/datatables.net-plugins/api/average()';
+import 'Modules/datatables.net-plugins/api/fnStandingRedraw';
 // import 'Modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import Chart from 'chart.js';
@@ -73,7 +75,7 @@ window.jquery = jquery;
 // window.$ = jquery;
 window.moment = moment;
 window.Logger = Logger;
-window.Logger = Logger;
+window.randomColor = randomColor;
 window.Dexie = Dexie;
 window.CSRequester = CSRequester;
 window.NProgress = NProgress;
@@ -144,7 +146,7 @@ var serverHandler = function (messages, context) {
 };
 
 Logger.setHandler(function (messages, context) {
-    consoleHandler(messages, context);
+    // consoleHandler(messages, context);
     // serverHandler(messages, context);
 });
 

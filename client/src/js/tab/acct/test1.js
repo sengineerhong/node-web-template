@@ -8,14 +8,11 @@
     }
 
     function updateChart (chart, data) {
-        var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
-        var unit = checkByteUnit(min);
-
         data.forEach(function (item) {
             chart.data.labels.push(item.regTime);
-            chart.data.datasets[0].data.push(genByteUnit(item.byteSum, unit));
+            chart.data.datasets[0].data.push(item.bpsSum);
         });
-        chart.data.datasets[0].label = 'packet usage by minute (' + unit + ')'
+        chart.data.datasets[0].label = 'bps usage by minute (Gbps)';
         chart.update();
     }
 
@@ -25,47 +22,23 @@
         window.plainToast.show();
     }
 
-    function checkByteUnit (num) {
-        if (num < 1024)             { return 'Bytes'; }
-        if (num < 1048576)          { return 'KB'; }
-        if (num < 1073741824)       { return 'MB'; }
-        if (num < 1099511600000)    { return 'GB'; }
-        return 'TB';
-    }
-
-    function genByteUnit (num, unit) {
-        var genNum;
-        switch (unit) {
-            case 'Bytes':
-                genNum = num;
-                break;
-            case 'KB':
-                genNum = num / 1024;
-                break;
-            case 'MB':
-                genNum = num / 1024 / 1024;
-                break;
-            case 'GB':
-                genNum = num / 1024 / 1024 / 1024;
-                break;
-            default:
-                genNum = num / 1024 / 1024 / 1024 / 1024;
-                break;
+    function getMultiSearchValue (length) {
+        var obj = {};
+        for (var i = 0; i < length; i++) {
+            var k = 'multi1_' + i;
+            var v = $('#' + k).val() || '';
+            obj[k] = v;
         }
-        return genNum;
+        return obj;
     }
 
-    function formatBytes (bytes, decimals) {
-        if (bytes === 0) return '0 Bytes';
-        var k = 1024;
-        var dm = decimals || 2;
-        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        var i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i];
-    }
-
-    function byteFormatter (data, type, row) {
-        return formatBytes(data);
+    function setMultiSearchValue (obj) {
+        // console.log('setMultiSearchValue' + JSON.stringify(obj));
+        for (var idx in obj) {
+            if (obj.hasOwnProperty(idx)) {
+                $('#' + idx).val(obj[idx]).keyup();
+            }
+        }
     }
 
     $(function () {
@@ -73,6 +46,7 @@
         let isChartReqEnd = false;
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
+        let isFirstReq = true;
         /* view  */
         const $dGrid = $('#acct1_grid');
         const $chart = $('#acct1_chart');
@@ -113,7 +87,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'packet usage by minute (Bytes)',
+                    label: 'bps usage by minute (Gbps)',
                     data: [],
                     backgroundColor: ['#F67280'],
                     borderWidth: 1,
@@ -131,7 +105,7 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'packet'
+                            labelString: 'Gbps'
                         }
                     }]
                 }
@@ -154,7 +128,9 @@
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
-                pageLength: 25,
+                deferRender: true,
+                language: {search: 'Global Search : '},
+                pageLength: 20,
                 // pagingType: 'full_numbers',
                 bPaginate: true,
                 bLengthChange: false,
@@ -200,9 +176,9 @@
                 */
                 columns: [
                     {'data': 'regTime'},
-                    {'data': 'peerIpSrc'},
                     {'data': 'ifaceIn'},
                     {'data': 'ifaceOut'},
+                    {'data': 'peerIpSrc'},
                     {'data': 'ipSrc'},
                     {'data': 'ipDst'},
                     {'data': 'ipProto'},
@@ -211,7 +187,7 @@
                     {'data': 'portDst'},
                     {'data': 'tcpFlag'},
                     {'data': 'packets'},
-                    {'data': 'byteSum', render: byteFormatter}
+                    {'data': 'bpsSum'}
                 ],
                 columnDefs: [
                     { targets: [0], visible: false, searchable: false },
@@ -219,38 +195,83 @@
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
+                    // append input tag to footer
+                    var api = $dGrid.api();
+                    api.columns().every(function (idx) {
+                        // var title = $(this.footer()).text();
+                        $(this.footer()).html('<input type="text" id="multi1_' + idx + '" class="form-control input-sm grid-multi-search" placeholder="search1|search2|..." />');
+                    });
+                    // append footer tage to header
+                    var $footer = $(api.table().footer());
+                    $(api.table().header()).append($footer.children());
+                    // set multiple-search event (seperator : | )
+                    api.columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change', function () {
+                            if (that.search() !== this.value) {
+                                that.search(this.value.replace(/\s+/g, '|'), false).draw();
+                            }
+                        });
+                    });
+                    // set multi-search value(local)
+                    if (UtilsCmmn.isSupportLS) {
+                        var searched = UtilsCmmn.getObjDataToLS('searched1') || {};
+                        setMultiSearchValue(searched);
+                    }
+                    isFirstReq = false;
                 },
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
+                    {
+                        text: 'clear filed',
+                        className: 'grid-dom-btn1',
+                        action: function (e, dt, node, config) {
+                            $dGrid.api().columns().every(function () {
+                                $('input', this.footer()).val('');
+                                // this.search('').draw();
+                                this.search('');
+                                // remove multi-search value
+                                if (UtilsCmmn.isSupportLS) {
+                                    UtilsCmmn.removeDataToLS('searched1');
+                                }
+                            });
+                            $dGrid.api().draw();
+                        }
+                    },
                     {extend: 'copy'},
                     {extend: 'csv'},
                     {extend: 'excel', title: 'ExampleFile'},
                     {extend: 'pdf', title: 'ExampleFile'},
-
                     {extend: 'print',
                         customize: function (win) {
                             $(win.document.body).addClass('white-bg');
                             $(win.document.body).css('font-size', '10px');
-
                             $(win.document.body).find('table')
                                 .addClass('compact')
                                 .css('font-size', 'inherit');
                         }
                     }
                 ]
-
             });
         }
 
         /* event control  */
         /* request event */
         $reqBtn.on('click', function (e) {
+            // get multi-search value
+            if (!isFirstReq) {
+                var searched = getMultiSearchValue($dGrid.api().columns().header().length);
+                // save multi-search value(local)
+                if (UtilsCmmn.isSupportLS) {
+                    UtilsCmmn.setObjDataToLS('searched1', searched);
+                }
+            }
             // request chart
             var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: $chartRType.filter(':checked').val()}};
             reqChartData(reqOpt);
-
             // request grid
             isGridReqEnd = false;
+            cntFnDrawCB = 0;
             $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
             dtGrid.fnClearTable();
             dtGrid.fnReloadAjax();

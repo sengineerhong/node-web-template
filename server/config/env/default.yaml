@@ -1,2 +1,5 @@
 logger:
     level: info
+whoisapi:
+    kosaUrl: http://whois.kisa.or.kr/openapi/whois.jsp?key=2018012009311480903763&answer=json&query=AS
+    ripeUrl: http://stat.ripe.net/data/abuse-contact-finder/data.json?resource=

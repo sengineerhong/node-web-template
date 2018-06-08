@@ -51,6 +51,11 @@ module.exports = {
             interval: joi.number().required()
         }
     },
+    tab_acct_test2_dstas: {
+        body: {
+            dstAsNum: joi.number().required()
+        }
+    },
     tab_acct_ifoList_grid_select: {
         body: {
             strDateYMD: joi.date().required()
@@ -61,7 +66,9 @@ module.exports = {
             strDateYMD: joi.date().required(),
             displayYn: joi.string().required(),
             ifaceOut: joi.string().required(),
-            ifaceOutAs: joi.string().required()
+            ifaceOutAs: joi.string().required(),
+            peerIpSrc: joi.string().required(),
+            peerIpSrcAs: joi.string().required()
         }
     },
   /**

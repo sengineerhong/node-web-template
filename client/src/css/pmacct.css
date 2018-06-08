@@ -60,5 +60,37 @@ ul.nav-second-level {
     min-width: 400px;
     /*font-size: smaller;*/
 }
-
-
+.margin-b-reset {
+    margin-bottom: 0px !important;
+}
+.grid-dstAs-spinner {
+    margin: 0px 12px;
+}
+.grid-multi-search {
+    font-weight: 500;
+    color: #f67280;
+    width: 100% !important;
+    min-width: 125px;
+}
+.grid-multi-search::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: rgba(246, 114, 128, 0.65);
+}
+.grid-multi-search:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #f67280;
+    opacity: 1;
+}
+.grid-multi-search::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #f67280;
+    opacity: 1;
+}
+.grid-multi-search:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: rgba(246, 114, 128, 0.65);
+}
+.grid-dom-btn1 {
+    margin-right: 5px;
+    background-color: #f6728059;
+}
