@@ -111,11 +111,13 @@ module.exports = {
     //     order by regTime`,
     selectAcctTest2Pie:
         `select 
-            c.ifaceOutAs as ifaceOutAs
+            c.ifaceOut as ifaceOut
+            ,c.ifaceOutAs as ifaceOutAs
             ,round(sum(c.bpsAvg), 2) as bpsSum
         from(
             select
-                b.iface_out_as as ifaceOutAs
+                a.iface_out as ifaceOut
+                ,b.iface_out_as as ifaceOutAs
                 ,round(sum(a.bytes)/60/125000000, 2) as bpsAvg
                 ,concat(a.net_dst, '/', a.mask_dst) as dstNetMask
             from ?? as a
@@ -128,7 +130,8 @@ module.exports = {
                 and b.display_yn = 'Y'
             group by a.iface_out, a.peer_ip_src, a.as_dst, dstNetMask
         ) c
-        group by c.ifaceOutAs`,
+        group by c.ifaceOutAs
+        order by ifaceOut`,
 
     // selectAcctTest2Pie:
     //     `select
@@ -183,7 +186,7 @@ module.exports = {
             ,concat(iface_out, '_', REPLACE(peer_ip_src,'.','')) as ifaceOutPeerIp
         from pmacct.acct_ifacelist
         where date_time=(select max(date_time) from pmacct.acct_ifacelist)
-        order by ifaceOutAs`,
+        order by ifaceOut`,
     selectAcctIfoListGridDispFlag:
         `select 
             date_time as regTime
@@ -195,7 +198,7 @@ module.exports = {
             ,concat(iface_out, '_', REPLACE(peer_ip_src,'.','')) as ifaceOutPeerIp
         from pmacct.acct_ifacelist
         where date_time=(select max(date_time) from pmacct.acct_ifacelist) and display_yn =?
-        order by ifaceOutAs`,
+        order by ifaceOut`,
     selectAcctIfoListGridUpdate:
         `update pmacct.acct_ifacelist
             set iface_out_as = ?, display_yn =?, peer_ip_src_as =?

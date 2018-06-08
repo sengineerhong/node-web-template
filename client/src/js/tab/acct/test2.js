@@ -185,8 +185,6 @@
         const $ifoasModalBtn = $('#acct2_btn_ifoas');
         const $nowBtn = $('#acct2_btn_now');
 
-        const $test = $('#test');
-
         /* init views */
         // init checkbox - icheckbox
         UtilsCmmn.initIcheckbox('acct2_icheck');
@@ -239,18 +237,23 @@
                         if (oSettings.aiDisplay.length === 0) {
                             showToast('해당 기간 데이터 없음');
                         }
+                        // {idx: colCnt, name: ifaceOutPeerIp, cnt: 0}
                         // footer sum - use footer seconds tr
+                        var colCnt = 1;             // necessary to keep the index(pieColor) the same
                         var api = this.api();
                         for (let i = 1; i < options.ifaceLength + 2; i++) {
                             if (i !== options.ifaceLength + 1) {
                                 var tdIdx = i - 1;
-                                $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', UtilsCmmn.hexToRGB(pieColor[i - 1], '0.4')).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
-                                // use footer first tr
-                                // $(api.column(i).footer()).css('background-color', UtilsCmmn.hexToRGB(pieColor[i - 1], '0.4')).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                                // column data is null
+                                if (oSettings.json.colDataCnt[i].cnt === 0) {
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                                } else {
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', UtilsCmmn.hexToRGB(pieColor[colCnt - 1], '0.4')).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
+                                    colCnt++;
+                                }
                             }
                         }
                     }
-                    // console.log('fnDrawCallback:' + oSettings + '|cntFnDrawCB:' + cntFnDrawCB + '|options.ifaceLength:' + options.ifaceLength);
                 },
                 /*
                 ajax: reqAjax({
@@ -300,7 +303,7 @@
                         $('input', this.footer()).on('keyup change', function () {
                         // $('.grid-multi-search').on('keyup change', function () {
                             if (that.search() !== this.value) {
-                                that.search(this.value.replace(/\s+/g, '|'), false).draw();
+                                that.search(this.value.replace(/\s+/g, '|'), true).draw();
                             }
                         });
                     });
@@ -392,10 +395,6 @@
             });
         }
 
-        $test.on('click', function (e) {
-            console.log('a');
-            dtGrid.fnUpdate('Example update', 2, 2); // Single cell
-        });
 
         /* event control  */
         /* request event */

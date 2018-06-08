@@ -209,7 +209,7 @@
                         var that = this;
                         $('input', this.footer()).on('keyup change', function () {
                             if (that.search() !== this.value) {
-                                that.search(this.value.replace(/\s+/g, '|'), false).draw();
+                                that.search(this.value.replace(/\s+/g, '|'), true).draw();
                             }
                         });
                     });

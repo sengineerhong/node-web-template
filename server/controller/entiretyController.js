@@ -65,6 +65,8 @@ exports.getAcctTest1Chart = async (req, res, next) => {
 
 exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
     let gridArry = '';
+    let colDataCnt = [{idx: 0, name: 'empty', cnt: 0}];
+    let colCnt = 1;
     try {
         const param = {
             strDate: req.body.strDate,
@@ -86,6 +88,15 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
         gridArry = utiles.getMysqlRowToJson(data);
         // console.log('gridArry:' + JSON.stringify(gridArry));
         // console.log('ifoListArry:' + JSON.stringify(ifoListArry));
+
+        // calculate column data count for keep the index(pieColor) the same
+        _.forEach(ifoListArry, function (ifo) {
+            // check displayYn
+            if (ifo.displayYn === 'Y') {
+                colDataCnt.push({idx: colCnt, name: ifo.ifaceOutPeerIp, cnt: 0});
+                colCnt++;
+            }
+        });
         // trans pivot
         _.forEach(gridArry, function (obj) {
             obj.bpsSum = 0;
@@ -98,9 +109,11 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
                     obj[ifo.ifaceOutPeerIp] = '';
                 }
             });
+
             // var ifaceOutAs = obj.ifaceOutAs;
             var ifaceOutPeerIp = obj.ifaceOutPeerIp;
             var byteSum = obj.byteSum;
+
             // var cnt = obj.cnt;
             // console.log('obj:' + JSON.stringify(obj));
             _.forEach(obj, function (v, k) {
@@ -110,6 +123,14 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
                     // obj[k] = Number((byteSum / cnt / 125000000).toFixed(2));
                     obj[v] = Number((byteSum / 60 / 125000000).toFixed(3));
                     obj.bpsSum = Number(obj[v]);
+
+                    // calculate column data count for keep the index(pieColor) the same
+                    for (var y = 0; y < colDataCnt.length; y++) {
+                        if (colDataCnt[y].name === ifaceOutPeerIp) {
+                            colDataCnt[y].cnt++;
+                            break;
+                        }
+                    }
                 }
                 obj.peerIpSrcAndAs = obj.peerIpSrcAs + '[' + obj.peerIpSrc  + ']';
             });
@@ -130,7 +151,7 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.json({data: gridArry, searched: req.body.searched});
+    return res.json({data: gridArry, searched: req.body.searched, colDataCnt: colDataCnt});
 };
 
 exports.getAcctTest2Chart = async (req, res, next) => {
