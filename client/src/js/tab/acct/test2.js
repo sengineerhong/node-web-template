@@ -158,6 +158,23 @@
         }
     }
 
+    function setTableTopHorizontalScroll () {
+        var tableContainer = $('.large-table-container-3');
+        var table = $('.large-table-container-3 table');
+        var fakeContainer = $('.large-table-fake-top-scroll-container-3');
+        var fakeDiv = $('.large-table-fake-top-scroll-container-3 div');
+
+        var tableWidth = table.width();
+        fakeDiv.width(tableWidth);
+
+        fakeContainer.scroll(function () {
+            tableContainer.scrollLeft(fakeContainer.scrollLeft());
+        });
+        tableContainer.scroll(function () {
+            fakeContainer.scrollLeft(tableContainer.scrollLeft());
+        });
+    }
+
     $(function () {
         /* flag */
         let isChartReqEnd = false;
@@ -253,6 +270,9 @@
                                 }
                             }
                         }
+
+
+
                     }
                 },
                 /*
@@ -315,10 +335,7 @@
                         setMultiSearchValue(searched);
                     }
                     isFirstReq = false;
-                },
-                dataSrc: function (json) {
-                    console.log(json);
-                    return json.data;
+                    setTableTopHorizontalScroll();
                 },
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
@@ -494,7 +511,7 @@
 
         // modal-close
         $ifoasModal.on('hidden.bs.modal', function () {
-            $nowBtn.trigger('click');
+            // $nowBtn.trigger('click');
         });
 
         function reqChartData (reqOpt) {

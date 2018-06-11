@@ -94,3 +94,19 @@ ul.nav-second-level {
     margin-right: 5px;
     background-color: #f6728059;
 }
+
+.large-table-container-3 {
+    overflow-x: scroll;
+    overflow-y: auto;
+}
+.large-table-container-3 table {
+}
+.large-table-fake-top-scroll-container-3 {
+    overflow-x: scroll;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+.large-table-fake-top-scroll-container-3 div {
+    /*font-size:1px;
+    line-height:1px;*/
+}

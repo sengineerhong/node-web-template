@@ -49,9 +49,13 @@
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
+                scrollY: '500px',
+                scrollCollapse: true,
+                autoWidth: true,
+                paging: false,
                 pageLength: 10,
                 // pagingType: 'full_numbers',
-                bPaginate: true,
+                bPaginate: false,
                 bLengthChange: false,
                 bInfo: false,
                 searching: false,
@@ -120,6 +124,10 @@
                 ],
                 fnInitComplete: function () {
                     $dGrid.css('width', '100%');
+                    setTimeout(function () {
+                        $dGrid.api().columns.adjust().draw();
+                    }, 100);
+
                     // $($dGrid.api().column(2)).addClass('sum');
                     // $($dGrid.api().column(3)).addClass('sum');
                     // $($dGrid.api().column(4)).addClass('sum');
@@ -184,7 +192,7 @@
             // } else if (!/^[a-zA-Z]+$/.test(ifaceOutAs.charAt(0))) {
             //     showToast('첫번째 글짜는 반드시 알파벳을 사용해야 함');
             // ^[a-zA-Z0-9\(\)\[\]\{\}\/<>|\-_\#]*$
-            if (ifaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(ifaceOutAs) || peerIpSrcAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(peerIpSrcAs)) {
+            if (ifaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(ifaceOutAs) || peerIpSrcAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#.]*$/.test(peerIpSrcAs)) {
                 showToast('알파벳 또는 숫자 또는 []{}|-_<>()/# 사용 가능');
             } else if (ifaceOutAs.length > 256 || peerIpSrcAs.length > 256) {
                 showToast('글자는 최대 256자를 넘을 수 없음');
