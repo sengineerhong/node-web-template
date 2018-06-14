@@ -1,5 +1,6 @@
 body {
     background-color: #464343;
+    color: #505253;
 }
 .nav-header {
     background-color: #464343;
@@ -67,8 +68,8 @@ ul.nav-second-level {
     margin: 0px 12px;
 }
 .grid-multi-search {
-    font-weight: 500;
-    color: #f67280;
+    font-weight: 600;
+    color: #f33f52;
     width: 100% !important;
     min-width: 125px;
 }

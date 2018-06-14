@@ -56,9 +56,11 @@ import 'Modules/datatables.net-plugins/api/fnReloadAjax';
 import 'Modules/datatables.net-plugins/api/sum()';
 import 'Modules/datatables.net-plugins/api/average()';
 import 'Modules/datatables.net-plugins/api/fnStandingRedraw';
+import 'Modules/datatables.net-plugins/api/column().title()';
 // import 'Modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import Chart from 'chart.js';
+import 'Modules/chart.piecelabel.js';
 
 /* custom common */
 import 'Venders/js/common/bootstrap-dynamic-tabs-custom';

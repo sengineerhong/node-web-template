@@ -10,32 +10,23 @@
     }
 
     function updateChart (chart, data) {
-        clearChartData(chart);
-        var color = [];
-        var total = 0;
-        data.forEach(function (item, idx) {
-            chart.data.labels.push(item.title);
-            chart.data.datasets[0].data.push(item.sum);
-            total += Number(item.sum);
-            color.push(item.color);
+        data.forEach(function (item) {
+            // console.log(item);
+            chart.data.labels.push(item.dstAs);
+            chart.data.datasets[0].data.push(item.bpsAvg);
         });
-        chart.data.datasets[0].backgroundColor = color;
-        // chart.data.datasets[0].label = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
-        chart.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
+        chart.data.datasets[0].label = 'bps average by dstAs (Gbps)'
         chart.update();
     }
 
     function updatePie (pie, data) {
         // var min =  Math.min.apply(Math, data.map(function (o) { return o.byteSum; }));
         // var unit = checkByteUnit(min);
-        clearChartData(pie);
-        var total = 0;
         data.forEach(function (item) {
-            pie.data.labels.push(item.titleAs);
-            pie.data.datasets[0].data.push(item.sum);
-            total += Number(item.sum);
+            pie.data.labels.push(item.ifaceOutAs);
+            pie.data.datasets[0].data.push(item.bpsSum);
         });
-        pie.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
+        pie.options.title.text = 'bps sum by ifaceOut (Gbps)'
         pie.update();
     }
 
@@ -73,10 +64,10 @@
         data: {
             labels: [],
             datasets: [{
-                label: '',
+                label: 'bps average by dstAs (Gbps)',
                 data: [],
-                backgroundColor: [],
-                // borderColor: '#F67280',
+                backgroundColor: '#F67280',
+                borderColor: '#F67280',
                 borderWidth: 1,
                 fill: 'origin'
             }]
@@ -84,29 +75,15 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'bps sum by iface out (0 Gbps)',
-                fontColor: '#505253'
-            },
-            legend: {
-                display: false,
-                labels: {
-                    boxWidth: 10
-                }
-            },
             scales: {
                 xAxes: [{
                     display: true,
                     scaleLabel: {
                         display: false,
-                        labelString: 'iface out',
+                        labelString: 'dstAs',
                         fontSize: 15,
-                        padding: 1
-                    },
-                    ticks: {
-                        autoSkip: false,
-                        fontColor: '#3f4141'
+                        padding: 1,
+                        fontColor: '#000'
                     }
                 }],
                 yAxes: [{
@@ -114,9 +91,6 @@
                     scaleLabel: {
                         display: true,
                         labelString: 'Gbps'
-                    },
-                    ticks: {
-                        fontColor: '#3f4141'
                     }
                 }]
             }
@@ -124,11 +98,7 @@
     };
     // pie
 
-    const defColor = ['#51574a', '#447c69', '#74c493', '#8e8c6d', '#e4bf80', '#e9d78e', '#e2975d', '#f19670', '#e16552', '#c94a53', '#be5168', '#a34974', '#993767', '#65387d', '#4e2472', '#9163b6', '#e279a3', '#e0598b', '#7c9fb0', '#5698c4', '#9abf88'].map(function (item) { return UtilsCmmn.hexToRGB(item, '0.7'); });
-    const ranColor = randomColor({hue: 'random', luminosity: 'dark', count: 30}).map(function (item) { return UtilsCmmn.hexToRGB(item, '0.4'); });
-    const pieColor = defColor.concat(ranColor);
-    // const pieColor = randomColor({hue: 'random', luminosity: 'dark', count: 30}).map(function (item) { return UtilsCmmn.hexToRGB(item, '0.5'); });
-
+    const pieColor = randomColor({hue: 'random', luminosity: 'dark', count: 50});
     // const pieColor = ['#6C567B', '#C06C84', '#F67280', '#51ADCF', '#35B0AB', '#F8B195', '#97b954', '#a167bf', '#f98684', '#eda053', '#4271c9', '#9fe0e0', '#ff7049', '#63e27f'];
     // const pieColor = ['#a167bf', '#f98684', '#eda053', '#4271c9', '#9fe0e0', '#ff7049', '#63e27f'];
     const pieOptions = {
@@ -144,26 +114,8 @@
             responsive: true,
             maintainAspectRatio: false,
             title: {
-                display: false,
-                text: 'packet usage by ifaceOut',
-                fontColor: '#505253'
-            },
-            legend: {
                 display: true,
-                labels: {
-                    boxWidth: 10,
-                    fontColor: '#505253'
-                }
-            },
-            pieceLabel: {
-                mode: 'percentage',
-                position: 'border',
-                precision: 0,
-                textShadow: false,
-                fontColor: '#3f4141',
-                fontStyle: 'bold',
-                overlap: false,
-                fontSize: 13
+                text: 'packet usage by ifaceOut'
             }
         }
     };
@@ -223,39 +175,13 @@
         });
     }
 
-    function genGraphData (api, ifaceLength) {
-        // necessary to keep the index(pieColor) the same
-        var colCnt = 1;
-        var graphArry = [];
-        for (let i = 1; i < ifaceLength + 2; i++) {
-            if (i !== ifaceLength + 1) {
-                var sum = (api.column(i).data().sum()).toFixed(2);
-                var title = api.column(i).title();
-                var titleAs = title.substr(0, title.indexOf('['));
-                // column data is null
-                if (sum === 0) {
-                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: '#fffff'});
-                } else {
-                    var headerColor = pieColor[colCnt - 1];
-                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
-                    colCnt++;
-                }
-            }
-        }
-        return graphArry;
-    }
-
     $(function () {
-        /* tab id, title, url */
-        var tabObj = UtilsCmmn.getTabInfo('acct2_allwrap');
-
         /* flag */
         let isChartReqEnd = false;
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         let searchHisArry = [];
         let isFirstReq = true;
-        let isChartLinked = true;
         /* view  */
         const $dGridWrap = $('#acct2_gridwrap');
         let $dGrid;
@@ -275,7 +201,6 @@
         const $ifoasModalBody = $('#acct2_body_ifoas');
         const $ifoasModalBtn = $('#acct2_btn_ifoas');
         const $nowBtn = $('#acct2_btn_now');
-        const $linkChartYn = $('#acct2_inputc_linkChartYn');
 
         /* init views */
         // init checkbox - icheckbox
@@ -289,7 +214,6 @@
         // init datatables
         let dtGrid;
         function initGrid (options) {
-            var searchTimer;
             // init datatables
             // activate spinner
             $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
@@ -317,7 +241,7 @@
                     aoData.push({ name: 'strDate', value: $drp.val() });
                     aoData.push({ name: 'interval', value: $intervalRType.filter(':checked').val() });
                     // for multi-search history
-                    aoData.push({ name: 'searched2', value: {multi_1: '0.3'} });
+                    aoData.push({ name: 'searched2', value: {multi_1: '0.4'} });
                 },
                 fnDrawCallback: function (oSettings) {
                     // TODO : 임시로직
@@ -333,29 +257,22 @@
                         // {idx: colCnt, name: ifaceOutPeerIp, cnt: 0}
                         // footer sum - use footer seconds tr
                         var colCnt = 1;             // necessary to keep the index(pieColor) the same
-                        var graphArry = [];
                         var api = this.api();
                         for (let i = 1; i < options.ifaceLength + 2; i++) {
                             if (i !== options.ifaceLength + 1) {
                                 var tdIdx = i - 1;
-                                var sum = (api.column(i).data().sum()).toFixed(2);
-                                var title = api.column(i).title();
-                                var titleAs = title.substr(0, title.indexOf('['));
                                 // column data is null
                                 if (oSettings.json.colDataCnt[i].cnt === 0) {
-                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: '#fffff'});
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
                                 } else {
-                                    var headerColor = pieColor[colCnt - 1];
-                                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
-                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps');
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', UtilsCmmn.hexToRGB(pieColor[colCnt - 1], '0.4')).html((api.column(i).data().sum()).toFixed(2) + ' Gbps');
                                     colCnt++;
                                 }
                             }
                         }
 
-                        updateChart(chart, graphArry);
-                        updatePie(pie, graphArry);
+
+
                     }
                 },
                 /*
@@ -404,9 +321,9 @@
                     $dGrid.api().columns().every(function () {
                         var that = this;
                         $('input', this.footer()).on('keyup change', function () {
+                        // $('.grid-multi-search').on('keyup change', function () {
                             if (that.search() !== this.value) {
-                                // that.search(this.value.replace(/\s+/g, '|'), true, false).draw();
-                                that.search(this.value, true, false).draw();
+                                that.search(this.value.replace(/\s+/g, '|'), true).draw();
                             }
                         });
                     });
@@ -418,7 +335,6 @@
                         setMultiSearchValue(searched);
                     }
                     isFirstReq = false;
-                    // set top-horizontal scroll
                     setTableTopHorizontalScroll();
                 },
                 dom: '<"html5buttons"B>lfrtip',
@@ -456,40 +372,13 @@
             // when search fired, re-caculate footer data
             }).on('search.dt', function () {
                 // footer sum
-                // var api = $dGrid.api();
-                // for (let i = 1; i < options.ifaceLength + 2; i++) {
-                //     // $(api.column(i).footer()).html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
-                //     var tdIdx = i - 1;
-                //     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
-                // }
-                clearTimeout(searchTimer);
-                var colCnt = 1;             // necessary to keep the index(pieColor) the same
-                var graphArry = [];
                 var api = $dGrid.api();
                 for (let i = 1; i < options.ifaceLength + 2; i++) {
-                    if (i !== options.ifaceLength + 1) {
-                        var tdIdx = i - 1;
-                        var sum = (api.column(i, {filter: 'applied'}).data().sum()).toFixed(2);
-                        var title = api.column(i).title();
-                        var titleAs = title.substr(0, title.indexOf('['));
-                        // column data is null
-                        if (sum === 0) {
-                            $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                            graphArry.push({title: title, titleAs: titleAs, sum: sum, color: '#fffff'});
-                        } else {
-                            var headerColor = pieColor[colCnt - 1];
-                            $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                            graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
-                            colCnt++;
-                        }
-                    }
+                    // $(api.column(i).footer()).html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
+                    var tdIdx = i - 1;
+                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
                 }
-                searchTimer = setTimeout(function () {
-                    if (isChartLinked) {
-                        updateChart(chart, graphArry);
-                        updatePie(pie, graphArry);
-                    }
-                }, 2000);
+            // request dstAs from whoisapi
             }).on('click', 'td button', function (e) {
                 var $self = $(this);
                 $self.html('<i class="fa fa-spinner fa-pulse fa-fw grid-dstAs-spinner"></i>');
@@ -503,7 +392,7 @@
                     success: function (data) {
                         var rCode = data.rCode;
                         delete data.rCode;
-                        // console.log('rCode:' + JSON.stringify(rCode));
+                        console.log('rCode:' + JSON.stringify(rCode));
                         if (rCode === 1) {
                             dtGrid.fnUpdate(genObjValueJoinStr(data, ':'), tr, options.ifaceLength + 3, false);
                             dtGrid.fnStandingRedraw();
@@ -523,6 +412,7 @@
             });
         }
 
+
         /* event control  */
         /* request event */
         $reqBtn.on('click', function (e) {
@@ -539,10 +429,10 @@
                 }
             }
             // request chart
-            // var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
-            // reqChartData(reqOpt);
-            // var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
-            // reqPieData(reqOptPie);
+            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqChartData(reqOpt);
+            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqPieData(reqOptPie);
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             // update searched-date filed
@@ -574,10 +464,10 @@
                 }
             }
             // request chart
-            // var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
-            // reqChartData(reqOpt);
-            // var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
-            // reqPieData(reqOptPie);
+            var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqChartData(reqOpt);
+            var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
+            reqPieData(reqOptPie);
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             // update searched-date filed
@@ -599,9 +489,9 @@
                     // setTimeout(AllDailySales.AllDailySalesView.reRenderView, 5);
                 });
                 // check chart request done
-                // if (!isChartReqEnd) $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
+                if (!isChartReqEnd) $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
             } else {
-                // $chartRow.LoadingOverlay('hide', true);
+                $chartRow.LoadingOverlay('hide', true);
                 $chartRow.hide(800);
                 $chartRow.fadeOut('slow');
             }
@@ -622,11 +512,6 @@
         // modal-close
         $ifoasModal.on('hidden.bs.modal', function () {
             // $nowBtn.trigger('click');
-        });
-
-        // chart-row show/hide
-        $linkChartYn.on('ifToggled', function (e) {
-            isChartLinked = this.checked;
         });
 
         function reqChartData (reqOpt) {
@@ -677,7 +562,7 @@
                     options.ifaceLength = data.data.length;
                     // console.log(JSON.stringify(col));
                     initGrid(options);
-                    // $contentWrap.LoadingOverlay('hide', true);
+                    $contentWrap.LoadingOverlay('hide', true);
                 },
                 error: showToast
             }, reqOpt);
@@ -715,10 +600,6 @@
                 '</table>'
             );
         }
-
-        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
-            setTimeout(setTableTopHorizontalScroll, 5);
-        });
 
         // request chart, pie, dynamic-grid
         $reqBtn.trigger('click');

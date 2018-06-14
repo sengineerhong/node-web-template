@@ -8938,7 +8938,8 @@ select.parsley-error {
     margin-bottom: 3px;
 }
 .dashbd-icon {
-    color: #999c9e;
+    /*color: #999c9e;*/
+    color: #505253;
     margin-left: 6px;
 }
 

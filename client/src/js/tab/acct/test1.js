@@ -8,16 +8,18 @@
     }
 
     function updateChart (chart, data) {
+        var total = 0;
         data.forEach(function (item) {
             chart.data.labels.push(item.regTime);
             chart.data.datasets[0].data.push(item.bpsSum);
+            total += Number(item.bpsSum);
         });
-        chart.data.datasets[0].label = 'bps usage by minute (Gbps)';
+        chart.options.title.text = 'bps usage by minute (' + total.toFixed(2) + ' Gbps)'
         chart.update();
     }
 
     function showToast (msg) {
-        console.log('show toast: ' + msg);
+        // console.log('show toast: ' + msg);
         window.plainToast.option({type: 'error', message: msg});
         window.plainToast.show();
     }
@@ -42,6 +44,9 @@
     }
 
     $(function () {
+        /* tab id, title, url */
+        var tabObj = UtilsCmmn.getTabInfo('acct1_allwrap');
+
         /* flag */
         let isChartReqEnd = false;
         let cntFnDrawCB = 0;
@@ -87,25 +92,51 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'bps usage by minute (Gbps)',
+                    label: 'bps usage by minute (0 Gbps)',
                     data: [],
                     backgroundColor: ['#F67280'],
                     borderWidth: 1,
-                    fill: 'origin'
+                    fill: 'origin',
+                    fontColor: '#505253'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: 'bps usage by minute (0 Gbps)',
+                    fontColor: '#505253'
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        boxWidth: 10
+                    }
+                },
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'iface out',
+                            fontSize: 15,
+                            padding: 1
                         },
+                        ticks: {
+                            autoSkip: true,
+                            fontColor: '#3f4141'
+                        }
+                    }],
+                    yAxes: [{
                         display: true,
                         scaleLabel: {
                             display: true,
                             labelString: 'Gbps'
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#3f4141'
                         }
                     }]
                 }
@@ -209,7 +240,8 @@
                         var that = this;
                         $('input', this.footer()).on('keyup change', function () {
                             if (that.search() !== this.value) {
-                                that.search(this.value.replace(/\s+/g, '|'), true).draw();
+                                // that.search(this.value.replace(/\s+/g, '|'), true).draw();
+                                that.search(this.value, true, false).draw();
                             }
                         });
                     });
@@ -315,6 +347,9 @@
                 error: showToast
             }, reqOpt);
         }
+
+        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
+        });
 
         // reset check box(chartRType1-1분)
         // update chart (when load page)

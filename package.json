@@ -60,6 +60,7 @@
     "bootstrap-daterangepicker": "^2.1.30",
     "bootstrap-datetimepicker-npm": "^4.17.37-npm",
     "chart.js": "^2.7.2",
+    "chart.piecelabel.js": "^0.11.0",
     "compression": "^1.7.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.3",
