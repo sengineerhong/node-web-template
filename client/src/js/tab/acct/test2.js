@@ -19,6 +19,7 @@
             total += Number(item.sum);
             color.push(item.color);
         });
+        // console.log(color);
         chart.data.datasets[0].backgroundColor = color;
         // chart.data.datasets[0].label = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
         chart.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
@@ -152,7 +153,11 @@
                 display: true,
                 labels: {
                     boxWidth: 10,
-                    fontColor: '#505253'
+                    fontColor: '#505253',
+                    filter: function (item, chart) {
+                        // skip label if data is 0.00
+                        return (parseFloat(chart.datasets[0].data[item.index]));
+                    }
                 }
             },
             pieceLabel: {
@@ -190,7 +195,7 @@
     function getMultiSearchValue (length) {
         var obj = {};
         for (var i = 0; i < length; i++) {
-            var k = 'multi2_' + i;
+            var k = 'field_' + i;
             var v = $('#' + k).val() || '';
             obj[k] = v;
         }
@@ -254,8 +259,8 @@
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         let searchHisArry = [];
-        let isFirstReq = true;
         let isChartLinked = true;
+        let currentProfileId = 1;
         /* view  */
         const $dGridWrap = $('#acct2_gridwrap');
         let $dGrid;
@@ -276,6 +281,7 @@
         const $ifoasModalBtn = $('#acct2_btn_ifoas');
         const $nowBtn = $('#acct2_btn_now');
         const $linkChartYn = $('#acct2_inputc_linkChartYn');
+        const $profileSelect = $('#acct2_sel2_profile');
 
         /* init views */
         // init checkbox - icheckbox
@@ -316,8 +322,9 @@
                 fnServerParams: function (aoData) {
                     aoData.push({ name: 'strDate', value: $drp.val() });
                     aoData.push({ name: 'interval', value: $intervalRType.filter(':checked').val() });
+                    aoData.push({ name: 'profileId', value: $profileSelect.val() });
                     // for multi-search history
-                    aoData.push({ name: 'searched2', value: {multi_1: '0.3'} });
+                    // aoData.push({ name: 'searched2', value: {multi_1: '0.3'} });
                 },
                 fnDrawCallback: function (oSettings) {
                     // TODO : 임시로직
@@ -332,28 +339,29 @@
                         }
                         // {idx: colCnt, name: ifaceOutPeerIp, cnt: 0}
                         // footer sum - use footer seconds tr
-                        var colCnt = 1;             // necessary to keep the index(pieColor) the same
+                        // var colCnt = 1;             // necessary to keep the index(pieColor) the same
                         var graphArry = [];
                         var api = this.api();
                         for (let i = 1; i < options.ifaceLength + 2; i++) {
-                            if (i !== options.ifaceLength + 1) {
-                                var tdIdx = i - 1;
-                                var sum = (api.column(i).data().sum()).toFixed(2);
-                                var title = api.column(i).title();
-                                var titleAs = title.substr(0, title.indexOf('['));
-                                // column data is null
-                                if (oSettings.json.colDataCnt[i].cnt === 0) {
+                            var tdIdx = i - 1;
+                            var sum = (api.column(i).data().sum()).toFixed(2);
+                            var title = api.column(i).title();
+                            var titleAs = title.substr(0, title.indexOf('['));
+                            var lastIdx = options.ifaceLength + 1;
+                            // var colDataCnt = (i === lastIdx) ? 0 : oSettings.json.colDataCnt[i].cnt;
+                            var headerColor = pieColor[i - 1];
+
+                            if (i !== lastIdx) {
+                                if (parseFloat(sum) === 0) {
                                     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: '#fffff'});
                                 } else {
-                                    var headerColor = pieColor[colCnt - 1];
-                                    graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
                                     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps');
-                                    colCnt++;
                                 }
+                                graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
+                            } else {
+                                $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
                             }
                         }
-
                         updateChart(chart, graphArry);
                         updatePie(pie, graphArry);
                     }
@@ -398,7 +406,7 @@
                     $footer.find('tr:eq(1)').addClass('sum');
                     // set input to tr1(search)
                     $footer.find('tr:eq(0)').children('td').each(function (idx) {
-                        $(this).html('<input type="text" id="multi2_' + idx + '" class="form-control input-sm grid-multi-search" placeholder="search1|search2|..." />');
+                        $(this).html('<input type="text" id="field_' + idx + '" class="form-control input-sm grid-multi-search" placeholder="search1|search2|..." />');
                     });
                     // set event to tr1(search)
                     $dGrid.api().columns().every(function () {
@@ -406,18 +414,41 @@
                         $('input', this.footer()).on('keyup change', function () {
                             if (that.search() !== this.value) {
                                 // that.search(this.value.replace(/\s+/g, '|'), true, false).draw();
-                                that.search(this.value, true, false).draw();
+                                // that.search(this.value, true, false).draw();
+                                // console.log(this.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&'));
+                                that.search(this.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&'), true, false).draw();
                             }
                         });
                     });
                     // append from footer to header
                     $($dGrid.api().table().header()).append($footer.children());
-                    // set multi-search value(local)
-                    if (UtilsCmmn.isSupportLS) {
-                        var searched = UtilsCmmn.getObjDataToLS('searched2') || {};
-                        setMultiSearchValue(searched);
+
+                    // use profile only
+                    if (false) {
+                        var fieldObj = {};
+                        for (let i = 0; i < options.profileData.length; i++) {
+                            fieldObj['field_' + i] = options.profileData[i].fieldIfaceOut;
+                            if (i === options.profileData.length - 1) {
+                                fieldObj['field_' + (i + 1)] = options.profileData[i].profileFieldBpssum;
+                                fieldObj['field_' + (i + 2)] = options.profileData[i].profileFieldPeeripsrc;
+                                fieldObj['field_' + (i + 3)] = options.profileData[i].profileFieldDstnetmask;
+                                fieldObj['field_' + (i + 4)] = options.profileData[i].profileFieldDstas;
+                            }
+                        }
+                        // console.log(fieldObj);
+                        setMultiSearchValue(fieldObj);
                     }
-                    isFirstReq = false;
+
+
+
+
+
+                    // set multi-search value(local)
+                    // if (UtilsCmmn.isSupportLS) {
+                    //     var searched = UtilsCmmn.getObjDataToLS('searched2') || {};
+                    //     setMultiSearchValue(searched);
+                    // }
+
                     // set top-horizontal scroll
                     setTableTopHorizontalScroll();
                 },
@@ -432,9 +463,9 @@
                                 // this.search('').draw();
                                 this.search('');
                                 // remove multi-search value
-                                if (UtilsCmmn.isSupportLS) {
-                                    UtilsCmmn.removeDataToLS('searched2');
-                                }
+                                // if (UtilsCmmn.isSupportLS) {
+                                //     UtilsCmmn.removeDataToLS('searched2');
+                                // }
                             });
                             $dGrid.api().draw();
                         }
@@ -462,26 +493,28 @@
                 //     var tdIdx = i - 1;
                 //     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html((api.column(i, {filter: 'applied'}).data().sum()).toFixed(2) + ' Gbps');
                 // }
+
                 clearTimeout(searchTimer);
-                var colCnt = 1;             // necessary to keep the index(pieColor) the same
+                // var colCnt = 1;             // necessary to keep the index(pieColor) the same
                 var graphArry = [];
                 var api = $dGrid.api();
                 for (let i = 1; i < options.ifaceLength + 2; i++) {
-                    if (i !== options.ifaceLength + 1) {
-                        var tdIdx = i - 1;
-                        var sum = (api.column(i, {filter: 'applied'}).data().sum()).toFixed(2);
-                        var title = api.column(i).title();
-                        var titleAs = title.substr(0, title.indexOf('['));
-                        // column data is null
-                        if (sum === 0) {
+                    var tdIdx = i - 1;
+                    var sum = (api.column(i, {filter: 'applied'}).data().sum()).toFixed(2);
+                    var title = api.column(i).title();
+                    var titleAs = title.substr(0, title.indexOf('['));
+                    var lastIdx = options.ifaceLength + 1;
+                    var headerColor = pieColor[i - 1];
+
+                    if (i !== lastIdx) {
+                        if (parseFloat(sum) === 0) {
                             $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                            graphArry.push({title: title, titleAs: titleAs, sum: sum, color: '#fffff'});
                         } else {
-                            var headerColor = pieColor[colCnt - 1];
-                            $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
-                            graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
-                            colCnt++;
+                            $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps');
                         }
+                        graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
+                    } else {
+                        $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
                     }
                 }
                 searchTimer = setTimeout(function () {
@@ -523,28 +556,94 @@
             });
         }
 
+        function initProfileSelect (reqOpt, isFirstInit) {
+            var select2Opt = {placeholder: 'choose profile ...', width: '100%', data: []}
+            UtilsCmmn.reqDefaultAjax({
+                success: function (res) {
+                    if (isFirstInit) {
+                        $.map(res.data, function (item) {
+                            item.id = item.profileId;
+                            item.text = item.profileName;
+                        });
+                        select2Opt.data = res.data;
+                        $profileSelect.select2(select2Opt);
+                        $profileSelect.val(getValidProfileFromUserInfo(select2Opt.data)).trigger('change');
+
+                        // for sync profileTab crud
+                        window.nowProfileId = parseInt(res.data[0].profileId);
+                        window.nowProfileStatus = 0;    // 0:normal, 1:update, -1:delete
+
+                        // request chart, pie, dynamic-grid
+                        $reqBtn.trigger('click');
+                    } else {
+                        console.log('here');
+                        var isProfileExist = false;
+                        $.map(res.data, function (item) {
+                            item.id = item.profileId;
+                            item.text = item.profileName;
+                            if (window.nowProfileId === parseInt(item.profileId)) {
+                                isProfileExist = true;
+                            }
+                        });
+                        // nowProfileId 이 -1(profile 선택안함) 일 경우 예외처리
+                        if (!isProfileExist && window.nowProfileId === -1) {
+                            isProfileExist = true;
+                        }
+
+                        select2Opt.data = res.data;
+                        $profileSelect.select2(select2Opt);
+                        if (isProfileExist) {
+                            $profileSelect.val(window.nowProfileId).trigger('change');
+                            if (window.nowProfileStatus === 1) {    // 0:normal, 1:update, -1:delete
+                                // request chart, pie, dynamic-grid
+                                $reqBtn.trigger('click');
+                            }
+                        } else {
+                            $profileSelect.val(getValidProfileFromUserInfo(select2Opt.data)).trigger('change');
+                            $reqBtn.trigger('click');
+                        }
+                    }
+                },
+                error: showToast
+            }, reqOpt);
+        }
+
+        function getValidProfileFromUserInfo (profileArry) {
+            var isValidProfile = false;
+            // default is -1 (all ifaceout)
+            var profileSelectVal = -1;
+            // temp : get history data from local db
+            if (UtilsCmmn.isSupportLS) {
+                var userInfo = UtilsCmmn.getObjDataToLS('userInfo') || {};
+                profileSelectVal = userInfo.profileId || -1;
+            }
+            console.log(profileSelectVal);
+            for (var k = 0; k < profileArry.length; k++) {
+                var item = profileArry[k];
+                if (parseInt(item.profileId) === profileSelectVal) {
+                    isValidProfile = true;
+                    break;
+                }
+            }
+            return isValidProfile ? profileSelectVal : -1;
+        }
+
         /* event control  */
+        /* grid event */
+        //
         /* request event */
         $reqBtn.on('click', function (e) {
             // reset drow cb cnt!
             cntFnDrawCB = 0;
             // get multi-search value
-            if (!isFirstReq) {
-                var searched = getMultiSearchValue($dGrid.api().columns().header().length);
-                // console.log($dGrid.api().columns()[0].length);
-                // save multi-search value(local)
-                // console.log(searched);
-                if (UtilsCmmn.isSupportLS) {
-                    UtilsCmmn.setObjDataToLS('searched2', searched);
-                }
-            }
             // request chart
             // var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             // reqChartData(reqOpt);
             // var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             // reqPieData(reqOptPie);
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
-            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+            // reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+            reqDynamicGrid({url: 'api/acct/test2/pIfoList', param: {profileId: $profileSelect.val()}});
             // update searched-date filed
             $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
             /*
@@ -564,22 +663,14 @@
             cal.setStartDate(now);
             $drp.val(now);
             // get multi-search value
-            if (!isFirstReq) {
-                var searched = getMultiSearchValue($dGrid.api().columns().header().length);
-                // console.log($dGrid.api().columns()[0].length);
-                // save multi-search value(local)
-                // console.log(searched);
-                if (UtilsCmmn.isSupportLS) {
-                    UtilsCmmn.setObjDataToLS('searched2', searched);
-                }
-            }
             // request chart
             // var reqOpt = {url: 'api/acct/test2/chart', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             // reqChartData(reqOpt);
             // var reqOptPie = {url: 'api/acct/test2/pie', param: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val()}};
             // reqPieData(reqOptPie);
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
-            reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+            // reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
+            reqDynamicGrid({url: 'api/acct/test2/pIfoList', param: {profileId: $profileSelect.val()}});
             // update searched-date filed
             $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, now) + ']');
             /*
@@ -591,6 +682,11 @@
         });
 
         /* own control  */
+        // profile select2
+        $profileSelect.on('select2:select', function (e) {
+            var data = e.params.data;
+        });
+
         // chart-row show/hide
         $chartYn.on('ifToggled', function (e) {
             if (this.checked) {
@@ -621,7 +717,7 @@
 
         // modal-close
         $ifoasModal.on('hidden.bs.modal', function () {
-            // $nowBtn.trigger('click');
+            $nowBtn.trigger('click');
         });
 
         // chart-row show/hide
@@ -668,16 +764,22 @@
             // isGridReqEnd = false;
             // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
             UtilsCmmn.reqDefaultAjax({
-                success: function (data) {
-                    repaintHtml(data);
+                success: function (res) {
+                    repaintHtml(res.result);
                     $dGrid = $('#acct2_grid');
                     var options = {};
-                    options.columns = getColumns(data);
-                    // console.log(JSON.stringify(options.columns));
-                    options.ifaceLength = data.data.length;
-                    // console.log(JSON.stringify(col));
+                    options.columns = getColumns(res.result);
+                    options.ifaceLength = res.result.data.length;
+                    options.profileData = res.result.data;
+                    // for sync profileTab crud
+                    window.nowProfileId = parseInt(reqOpt.param.profileId);
+                    window.nowProfileStatus = 0;    // 0:normal, 1:update, -1:delete
                     initGrid(options);
                     // $contentWrap.LoadingOverlay('hide', true);
+                    // temp : set history data from local db
+                    if (UtilsCmmn.isSupportLS) {
+                        UtilsCmmn.setObjDataToLS('userInfo', {profileId: parseInt(reqOpt.param.profileId)});
+                    }
                 },
                 error: showToast
             }, reqOpt);
@@ -718,9 +820,11 @@
 
         $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
             setTimeout(setTableTopHorizontalScroll, 5);
+            // TODO : req 를 던져놓고 있는 경우에는 실행하지 말자잉~
+            initProfileSelect({url: 'api/acct/test2/profile', param: {}}, false);
         });
 
-        // request chart, pie, dynamic-grid
-        $reqBtn.trigger('click');
+        initProfileSelect({url: 'api/acct/test2/profile', param: {}}, true);
+
     });
 }(window.Acct2 || {}, jquery));

@@ -118,6 +118,7 @@
                     }
                 ],
                 columnDefs: [
+                    {targets: [4], visible: false, searchable: false},
                     { className: 'text-right', 'targets': [0, 1, 2, 3] },
                     { className: 'text-center', 'targets': [4, 5] }
 
@@ -169,9 +170,11 @@
             // datatable row data
             var data = $dGrid.api().row($(this).parents('tr')).data();
             // edit data
-            var ifaceOutAs = $(this).closest('td').prev('td').prev('td').prev('td').prev('td').html();
-            var peerIpSrcAs = $(this).closest('td').prev('td').prev('td').html();
-            var displayYn = $(this).closest('td').prev('td').children('select').children('option').filter(':selected').val();
+            // var ifaceOutAs = $(this).closest('td').prev('td').prev('td').prev('td').prev('td').html();
+            // var peerIpSrcAs = $(this).closest('td').prev('td').prev('td').html();
+            // var displayYn = $(this).closest('td').prev('td').children('select').children('option').filter(':selected').val();
+            var ifaceOutAs = $(this).closest('td').prev('td').prev('td').prev('td').html();
+            var peerIpSrcAs = $(this).closest('td').prev('td').html();
             // clone datatable column data (ifaceOut)
             var ifaceOutArry = $dGrid.api().columns('.editor-iface').data().eq(0).slice(0);
             var peerIpArry = $dGrid.api().columns('.editor-peer').data().eq(0).slice(0);
@@ -199,7 +202,7 @@
             } else if (sameNameCnt >= 1) {
                 showToast('동일한 alias 를 사용할 수 없음(ifaceOutAs)');
             } else {
-                var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), displayYn: displayYn, ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs, peerIpSrc: data.peerIpSrc, peerIpSrcAs: peerIpSrcAs}};
+                var reqOpt = {url: 'api/acct/ifoList/grid/update', param: {strDateYMD: $drp.val(), ifaceOut: data.ifaceOut, ifaceOutAs: ifaceOutAs, peerIpSrc: data.peerIpSrc, peerIpSrcAs: peerIpSrcAs}};
                 reqGridUpdate(reqOpt);
             }
         });

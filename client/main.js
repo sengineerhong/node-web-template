@@ -8,6 +8,8 @@ import 'Modules/icheck/skins/flat/green.css';
 import 'Modules/switchery-npm/index.css';
 import 'Modules/bootstrap-daterangepicker/daterangepicker.css';
 import 'Modules/bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css';
+import 'select2/dist/css/select2.min.css';
+import 'select2-bootstrap-theme/dist/select2-bootstrap.min.css';
 import 'Modules/devextreme/dist/css/dx.common.css';
 import 'Modules/devextreme/dist/css/generic.light-compact.custom_1120.css';
 /* datatable */
@@ -39,6 +41,7 @@ import 'Modules/parsleyjs/src/i18n/ko';                                         
 import 'Modules/switchery-npm/index';                                                           // switchery
 import 'Modules/gasparesganga-jquery-loading-overlay/src/loadingoverlay.min';                   // loading-overlay
 import randomColor from 'Modules/randomcolor/randomColor';
+import 'select2';                                                                               // select2
 import Logger from 'Modules/js-logger/src/logger.min';                                          // logger
 import Dexie from 'Modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 

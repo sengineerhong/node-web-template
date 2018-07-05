@@ -241,7 +241,8 @@
                         $('input', this.footer()).on('keyup change', function () {
                             if (that.search() !== this.value) {
                                 // that.search(this.value.replace(/\s+/g, '|'), true).draw();
-                                that.search(this.value, true, false).draw();
+                                // that.search(this.value, true, false).draw();
+                                that.search(this.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&'), true, false).draw();
                             }
                         });
                     });

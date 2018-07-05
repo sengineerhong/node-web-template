@@ -13,6 +13,15 @@ module.exports = (router) => {
     router.route('/acct/test2/chart').post(validation(rule.tab_acct_test2_chart), entirety.checkTableExist, entirety.getAcctTest2Chart);
     router.route('/acct/test2/pie').post(validation(rule.tab_acct_test2_pie), entirety.checkTableExist, entirety.getAcctTest2Pie);
     router.route('/acct/test2/dstas').post(validation(rule.tab_acct_test2_dstas), entirety.getAcctTest2DstAs);
+    router.route('/acct/test2/profile').post(entirety.getAcctTest2Profile);
+    router.route('/acct/test2/pIfoList').post(entirety.getAcctPIfoList);
+
+    router.route('/acct/profile/grid').post(entirety.getAcctProfileGrid);
+    router.route('/acct/profile/detail').post(entirety.getAcctProfileDetail);
+    router.route('/acct/profile/ifaceout').post(entirety.getAcctProfileIfaceout);
+    router.route('/acct/profile/update').post(entirety.checkProfileNameWhenUpd, entirety.getAcctProfileUpdate);
+    router.route('/acct/profile/create').post(entirety.checkProfileTotalCnt, entirety.checkProfileName, entirety.getAcctProfileCreate);
+    router.route('/acct/profile/delete').post(entirety.checkProfileCnt, entirety.getAcctProfileDelete);
 
     router.route('/acct/ifoList/grid').post(validation(rule.tab_acct_ifoList_grid_select), entirety.getAcctIfoListGrid);
     router.route('/acct/ifoList/grid/update').post(validation(rule.tab_acct_ifoList_grid_update), entirety.getAcctIfoListGridUpdate);

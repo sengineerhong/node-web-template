@@ -1,7 +1,9 @@
 const db = require('../config/mysql2');
 const pool = db.connPool;
+const transactionWrapper = require('./transactionWrapper');
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
 const query = require('../sql/entiretySql');
 const fakeFilePath = path.resolve(__dirname, '../data');
 const alasql = require('alasql');
@@ -112,6 +114,20 @@ exports.getAcctTest2DstAs = (param) => {
     });
 };
 
+exports.getAcctTest2Profile = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctTest2Profile;
+
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 exports.setAcctTest2DstAs = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.updateAcctTest2DstAs;
@@ -126,11 +142,25 @@ exports.setAcctTest2DstAs = (param) => {
     });
 };
 
+exports.getAcctPIfoList = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctPIfoList;
+
+        pool.query(sql, [param.profileId], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
 exports.getAcctIfoListGrid = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.selectAcctIfoListGrid;
 
-        pool.query(sql, [param.strDateYMD], (err, rows) => {
+        pool.query(sql, (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -157,13 +187,342 @@ exports.getAcctIfoListGridDispFlag = (param) => {
 exports.getAcctIfoListGridUpdate = (param) => {
     return new Promise((resolve, reject) => {
         const sql = query.selectAcctIfoListGridUpdate;
-        pool.query(sql, [param.ifaceOutAs, param.displayYn, param.peerIpSrcAs, param.ifaceOut, param.peerIpSrc], (err, rows) => {
+        pool.query(sql, [param.ifaceOutAs, param.peerIpSrcAs, param.ifaceOut, param.peerIpSrc], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
                 resolve(rows);
             }
         });
+    });
+};
+
+exports.getAcctProfileGrid = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctProfileGrid;
+
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctProfileDetail = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctProfileDetail;
+
+        pool.query(sql, [param.profileId], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctProfileIfaceout = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectAcctProfileIfaceout;
+
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctProfileUpdate = (p) => {
+    return new Promise((resolve, reject) => {
+        transactionWrapper.getConnection(pool)
+            .then(transactionWrapper.beginTransaction)
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `update pmacct.acct_profile
+                        set profile_Name=?, profile_cmmnt=?, profile_field_bpssum=?, profile_field_peeripsrc=?, profile_field_dstas=?, reg_date=current_timestamp(), profile_field_dstnetmask=?
+                        where profile_id=?`;
+                    const qArry = [p.updObj.profileName, p.updObj.profileCmmnt, p.updObj.profileFieldBpssum, p.updObj.profileFieldPeeripsrc, p.updObj.profileFieldDstas, p.updObj.profileFieldDstnetmask, p.updObj.profileId];
+                    context.conn.query(sql, qArry, (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows === 1) {
+                                resolve(context);
+                            } else {
+                                context.error = new Error('update profile(acct_profile) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `delete from pmacct.acct_profile_detail where profile_id = ?`;
+
+                    context.conn.query(sql, [p.updObj.profileId], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows >= 1) {
+                                resolve(context);
+                            } else {
+                                context.error = new Error('update profile(delete/acct_profile_detail) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `insert into pmacct.acct_profile_detail (profile_id, iface_out, peer_ip_src, profile_field_ifaceout) values ?`;
+
+                    // console.log(p.ifaceQArry);
+
+                    context.conn.query(sql, [p.ifaceQArry], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows === p.ifaceQArry.length) {
+                                context.result = {profileId: p.updObj.profileId};
+                                resolve(context);
+                            } else {
+                                context.error = new Error('update profile(insert/acct_profile_detail) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then(transactionWrapper.commitTransaction)
+            .then((context) => {
+                context.conn.release();
+                resolve(context.result);
+            })
+            .catch((context) => {
+                context.conn.rollback(() => {
+                    context.conn.release();
+                    reject(context.error);
+                });
+            });
+    });
+};
+
+exports.getAcctProfileCreate = (p) => {
+    return new Promise((resolve, reject) => {
+        transactionWrapper.getConnection(pool)
+            .then(transactionWrapper.beginTransaction)
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `insert into pmacct.acct_profile
+                        (profile_name, profile_cmmnt, profile_field_bpssum, profile_field_peeripsrc, profile_field_dstas, reg_date, profile_field_dstnetmask)
+                        values (?, ?, ?, ?, ?, current_timestamp(), ?)`;
+                    const qArry = [p.pObj.profileName, p.pObj.profileCmmnt, p.pObj.profileFieldBpssum, p.pObj.profileFieldPeeripsrc, p.pObj.profileFieldDstas, p.pObj.profileFieldDstnetmask];
+                    context.conn.query(sql, qArry, (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows === 1) {
+                                context.result = rows;
+                                resolve(context);
+                            } else {
+                                context.error = new Error('create profile(insert/acct_profile) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `select profile_id as profileId 
+                        from pmacct.acct_profile 
+                        where profile_id = ?`;
+
+                    context.conn.query(sql, [context.result.insertId], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            // context.result = rows;
+                            resolve(context);
+                        }
+                    });
+                });
+            })
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `insert into pmacct.acct_profile_detail (profile_id, iface_out, peer_ip_src, profile_field_ifaceout) values ?`;
+
+                    const profileId = context.result.insertId;
+
+                    let ifaceQArry = [];
+                    _.forEach(p.pObj.ifaceArry, function (item, idx) {
+                        let tempArry = [];
+                        tempArry.push(profileId);
+                        tempArry.push(item.ifaceOut);
+                        tempArry.push(item.peerIpSrc);
+                        tempArry.push(item.fieldIfaceOut);
+                        ifaceQArry.push(tempArry);
+                    });
+                    console.log(ifaceQArry);
+                    context.conn.query(sql, [ifaceQArry], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows === ifaceQArry.length) {
+                                context.result = {profileId: profileId};
+                                resolve(context);
+                            } else {
+                                context.error = new Error('create profile(insert/acct_profile_detail) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then(transactionWrapper.commitTransaction)
+            .then((context) => {
+                context.conn.release();
+                resolve(context.result);
+            })
+            .catch((context) => {
+                console.log(context);
+                context.conn.rollback(() => {
+                    context.conn.release();
+                    reject(context.error);
+                });
+            });
+    });
+};
+
+exports.checkProfileNameWhenUpd = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectProfileNameWhenUpd;
+        pool.query(sql, [param.profileName], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.checkProfileName = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectProfileName;
+        pool.query(sql, [param.profileName], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.checkProfileTotalCnt = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectProfileTotalCnt;
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.checkProfileCnt = (param) => {
+    return new Promise((resolve, reject) => {
+        const sql = query.selectProfileCnt;
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+exports.getAcctProfileDelete = (p) => {
+    return new Promise((resolve, reject) => {
+        transactionWrapper.getConnection(pool)
+            .then(transactionWrapper.beginTransaction)
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `delete from pmacct.acct_profile where profile_id = ?`;
+
+                    context.conn.query(sql, [p.profileId], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows === 1) {
+                                resolve(context);
+                            } else {
+                                context.error = new Error('delete profile(delete/acct_profile) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then((context) => {
+                return new Promise((resolve, reject) => {
+                    const sql =
+                        `delete from pmacct.acct_profile_detail where profile_id = ?`;
+
+                    context.conn.query(sql, [p.profileId], (err, rows) => {
+                        if (err) {
+                            context.error = err;
+                            reject(context);
+                        } else {
+                            if (rows.affectedRows >= 1) {
+                                context.result = {profileId: p.profileId};
+                                resolve(context);
+                            } else {
+                                context.error = new Error('delete profile(delete/acct_profile_detail) error');
+                                reject(context);
+                            }
+                        }
+                    });
+                });
+            })
+            .then(transactionWrapper.commitTransaction)
+            .then((context) => {
+                context.conn.release();
+                resolve(context.result);
+            })
+            .catch((context) => {
+                context.conn.rollback(() => {
+                    context.conn.release();
+                    reject(context.error);
+                });
+            });
     });
 };
 

@@ -75,10 +75,17 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             // strDateYMD: '2018-04-02',
             dbName: req.body.dbName,
             tbName: req.body.tbName,
-            interval: req.body.interval
+            interval: req.body.interval,
+            profileId: req.body.profileId
         };
         // get iface out list
-        let ifoListRows = await entiretyModel.getAcctIfoListGrid(param);
+        let ifoListRows;
+        // separate use profile or not
+        if (parseInt(param.profileId) === -1) {
+            ifoListRows = await entiretyModel.getAcctIfoListGrid(param);
+        } else {
+            ifoListRows = await entiretyModel.getAcctPIfoList(param);
+        }
         // console.log('ifoListRows:' + JSON.stringify(ifoListRows));
         // rows to json
         let ifoListArry = utiles.getMysqlRowToJson(ifoListRows);
@@ -90,13 +97,13 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
         // console.log('ifoListArry:' + JSON.stringify(ifoListArry));
 
         // calculate column data count for keep the index(pieColor) the same
-        _.forEach(ifoListArry, function (ifo) {
-            // check displayYn
-            if (ifo.displayYn === 'Y') {
-                colDataCnt.push({idx: colCnt, name: ifo.ifaceOutPeerIp, cnt: 0});
-                colCnt++;
-            }
-        });
+        // _.forEach(ifoListArry, function (ifo) {
+        //     // check displayYn
+        //     if (ifo.displayYn === 'Y') {
+        //         colDataCnt.push({idx: colCnt, name: ifo.ifaceOutPeerIp, cnt: 0});
+        //         colCnt++;
+        //     }
+        // });
         // trans pivot
         _.forEach(gridArry, function (obj) {
             obj.bpsSum = 0;
@@ -104,10 +111,10 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
             // console.log(ifoListArry);
             _.forEach(ifoListArry, function (ifo) {
                 // check displayYn
-                if (ifo.displayYn === 'Y') {
-                    // obj[ifo.ifaceOutAs] = '';
-                    obj[ifo.ifaceOutPeerIp] = '';
-                }
+                // if (ifo.displayYn === 'Y') {
+                // obj[ifo.ifaceOutAs] = '';
+                obj[ifo.ifaceOutPeerIp] = '';
+                // }
             });
 
             // var ifaceOutAs = obj.ifaceOutAs;
@@ -125,12 +132,12 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
                     obj.bpsSum = Number(obj[v]);
 
                     // calculate column data count for keep the index(pieColor) the same
-                    for (var y = 0; y < colDataCnt.length; y++) {
-                        if (colDataCnt[y].name === ifaceOutPeerIp) {
-                            colDataCnt[y].cnt++;
-                            break;
-                        }
-                    }
+                    // for (var y = 0; y < colDataCnt.length; y++) {
+                    //     if (colDataCnt[y].name === ifaceOutPeerIp) {
+                    //         colDataCnt[y].cnt++;
+                    //         break;
+                    //     }
+                    // }
                 }
                 obj.peerIpSrcAndAs = obj.peerIpSrcAs + '[' + obj.peerIpSrc  + ']';
             });
@@ -151,7 +158,8 @@ exports.getAcctTest2Grid_reqOnce = async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-    return res.json({data: gridArry, searched: req.body.searched, colDataCnt: colDataCnt});
+    // return res.json(utiles.genResObjFormat(1, 'getAcctTest2Grid_reqOnce succeed!', {data: gridArry}));
+    return res.json({data: gridArry});
 };
 
 exports.getAcctTest2Chart = async (req, res, next) => {
@@ -225,6 +233,35 @@ exports.getAcctTest2DstAs = async (req, res, next) => {
     }
 };
 
+exports.getAcctTest2Profile = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {};
+        data = await entiretyModel.getAcctTest2Profile(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json({data: data});
+};
+
+exports.getAcctPIfoList = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            profileId: req.body.profileId
+        };
+
+        if (parseInt(param.profileId) === -1) {
+            data = await entiretyModel.getAcctIfoListGrid(param);
+        } else {
+            data = await entiretyModel.getAcctPIfoList(param);
+        }
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'getAcctPIfoList succeed!', {data: data}));
+};
+
 exports.getAcctIfoListGrid = async (req, res, next) => {
     let data = '';
     try {
@@ -252,7 +289,7 @@ exports.getAcctIfoListGridUpdate = async (req, res, next) => {
         const param = {
             ifaceOut: req.body.ifaceOut,
             ifaceOutAs: req.body.ifaceOutAs,
-            displayYn: req.body.displayYn,
+            // displayYn: req.body.displayYn,
             peerIpSrc: req.body.peerIpSrc,
             peerIpSrcAs: req.body.peerIpSrcAs
         };
@@ -261,6 +298,188 @@ exports.getAcctIfoListGridUpdate = async (req, res, next) => {
         return next(error);
     }
     return res.json(data);
+};
+
+exports.getAcctProfileGrid = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {};
+        data = await entiretyModel.getAcctProfileGrid(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json({data: data});
+};
+
+exports.getAcctProfileDetail = async (req, res, next) => {
+    const data = {};
+    try {
+        const param = {
+            profileId: req.body.profileId
+        };
+        let pDetailRows = await entiretyModel.getAcctProfileDetail(param);
+        // rows to json
+        let pDetailArry = utiles.getMysqlRowToJson(pDetailRows);
+        let ifaceArry = [];
+        let rNum = 1;
+        _.forEach(pDetailArry, function (detail, idx) {
+            const ifaceObj = {};
+            _.forEach(detail, function (v, k) {
+                var isProfileObj = k.startsWith('profile');
+                if (!isProfileObj) {
+                    ifaceObj[k] = v;
+                    ifaceObj.rNum = rNum;
+                } else {
+                    if (idx === 0) {
+                        data[k] = v;
+                    }
+                }
+            });
+            rNum++;
+            ifaceArry.push(ifaceObj);
+        });
+        data.ifaceArry = ifaceArry;
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(data);
+};
+
+exports.getAcctProfileIfaceout = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {};
+        data = await entiretyModel.getAcctProfileIfaceout(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(data);
+};
+
+exports.getAcctProfileUpdate = async (req, res, next) => {
+    let data = '';
+    try {
+        // console.log(req.body.updObj);
+        var profileId = req.body.updObj.profileId;
+        let ifaceQArry = [];
+        _.forEach(req.body.updObj.ifaceArry, function (item, idx) {
+            let tempArry = [];
+            tempArry.push(profileId);
+            tempArry.push(item.ifaceOut);
+            tempArry.push(item.peerIpSrc);
+            tempArry.push(item.fieldIfaceOut);
+            ifaceQArry.push(tempArry);
+        });
+        const param = {
+            updObj: req.body.updObj,
+            ifaceQArry: ifaceQArry
+        };
+        data = await entiretyModel.getAcctProfileUpdate(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'profile update succeed!', data));
+};
+
+exports.getAcctProfileCreate = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            pObj: req.body.profileObj
+        };
+        data = await entiretyModel.getAcctProfileCreate(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'profile create succeed!', data));
+};
+
+exports.checkProfileNameWhenUpd = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            profileId: req.body.updObj.profileId,
+            profileName: req.body.updObj.profileName
+        };
+        data = await entiretyModel.checkProfileNameWhenUpd(param);
+
+        if (data.length > 1) {
+            return res.json(utiles.genResObjFormat(-1, '동일한 profile 이름을 사용할 수 없습니다.', {}));
+        } else if (data.length === 1) {
+            if (data[0].profileId === parseInt(param.profileId)) {
+                next();
+            } else {
+                return res.json(utiles.genResObjFormat(-1, '동일한 profile 이름을 사용할 수 없습니다.', {}));
+            }
+        } else {
+            next();
+        }
+    } catch (error) {
+        return next(error);
+    }
+};
+
+exports.checkProfileName = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            profileName: req.body.profileObj.profileName
+        };
+        data = await entiretyModel.checkProfileName(param);
+
+        if (data[0].profileCnt === 0) {
+            next();
+        } else {
+            return res.json(utiles.genResObjFormat(-1, '동일한 profile 이름을 사용할 수 없습니다.', {}));
+        }
+    } catch (error) {
+        return next(error);
+    }
+};
+
+exports.checkProfileTotalCnt = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {};
+        data = await entiretyModel.checkProfileTotalCnt(param);
+        if (data[0].profileTotalCnt < 10) {
+            next();
+        } else {
+            return res.json(utiles.genResObjFormat(-1, 'profile 은 total 10개를 넘을 수 없습니다.', {}));
+        }
+    } catch (error) {
+        return next(error);
+    }
+};
+
+exports.checkProfileCnt = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {};
+        data = await entiretyModel.checkProfileCnt(param);
+
+        if (data[0].profileCnt > 2) {
+            next();
+        } else {
+            return res.json(utiles.genResObjFormat(-1, 'profile 은 한개 이상 존재해야합니다.', {}));
+        }
+    } catch (error) {
+        return next(error);
+    }
+};
+
+exports.getAcctProfileDelete = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            profileId: req.body.profileId
+        };
+        data = await entiretyModel.getAcctProfileDelete(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'profile delete succeed!', data));
+    // return res.json(data);
 };
 
 exports.getAcctTest1Grid = async (req, res, next) => {

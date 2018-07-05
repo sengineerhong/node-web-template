@@ -7,7 +7,7 @@ nav.navbar-default.navbar-static-side(role='navigation')
                     // <span> <img alt="image" class="img-circle" src="img/profile_small.jpg"> </span>
                     span
                         a(href='')
-                            h1(style='color: white; font-weight: 300;') PMACCT DEV
+                            h1(style='color: white; font-weight: 300;') Flow Traffic Monitoring
                     a.dropdown-toggle(data-toggle='dropdown', href='#')
                         span.clear
                             span.block.m-t-xs
@@ -24,21 +24,25 @@ nav.navbar-default.navbar-static-side(role='navigation')
                         li.divider
                         li
                             a(href='#') Logout
-                .logo-element *ACCT
+                .logo-element FTM
             // sample
-            li.tab_go(data-info='{"id":"acct_test1","title":"acct test1","url":"/view/acct/test1"}')
+            li.tab_go(data-info='{"id":"acct_test2","title":"AS Traffic Viewer","url":"/view/acct/test2"}')
                 a(href='#')
                     i.fa.fa-th-large
-                    span.nav-label acct test1
-            li.tab_go(data-info='{"id":"acct_test2","title":"acct test2","url":"/view/acct/test2"}')
+                    span.nav-label AS Traffic Viewer
+            li.tab_go(data-info='{"id":"acct_test1","title":"Traffic History","url":"/view/acct/test1"}')
                 a(href='#')
                     i.fa.fa-th-large
-                    span.nav-label acct test2
+                    span.nav-label Traffic History
+            li.tab_go(data-info='{"id":"acct_profile","title":"Profile","url":"/view/acct/profile"}')
+                a(href='#')
+                    i.fa.fa-th-large
+                    span.nav-label Profile
             //li.tab_go(data-info='{"id":"acct_ifoList","title":"iface out alias","url":"/view/acct/ifoList"}')
                 a(href='#')
                     i.fa.fa-th-large
                     span.nav-label iface out alias
-            li
+            //li
                 a(href='')
                     i.fa.fa-th-large
                     span.nav-label level1

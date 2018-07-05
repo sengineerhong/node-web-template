@@ -18,7 +18,7 @@
                                                             i.glyphicon.glyphicon-calendar.fa.fa-calendar
                                                         input#acct2_drp_date.datepicker.form-control(type='text')
                                     .col-lg-2.col-md-3.col-sm-3(style='min-width: 213px;')
-                                        label#acct2_label_intervalR Time Interval
+                                         label#acct2_label_intervalR Time Interval
                                          .acct-menu-radio-wrapper
                                             //
                                               <label>기준:
@@ -35,6 +35,11 @@
                                             label(style='margin-left: 3px;')
                                                 input#acct2_inputr_intervalR_10.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-10')
                                                 | 10분
+                                    .col-lg-2.col-md-3.col-sm-3(style='min-width: 230px;')
+                                        form.form-horizontal
+                                            label#acct2_label_profile(for='acct2_sel2_profile') Profile
+                                            select#acct2_sel2_profile.form-control.select2-multiple.m-b.input-lg(style='margin-top: 23px;')
+                                                option(value="-1") 선택안함
                                     .col-lg-2.col-md-3.col-sm-3.pull-left
                                         button#acct2_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
                                         button#acct2_btn_now.btn.btn-danger.btn-rounded(type='button', style='margin-top: 23px; margin-left:6px; padding: 6px 7px;') Now

@@ -13,5 +13,9 @@ module.exports = {
             jArry.push(JSON.parse(JSON.stringify(rows[i])));
         }
         return jArry;
+    },
+
+    genResObjFormat: (code, msg, resultObj) => {
+        return {status: {code: code, msg: msg}, result: resultObj};
     }
 };

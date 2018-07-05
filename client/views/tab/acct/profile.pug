@@ -1,0 +1,92 @@
+#profile_allwrap
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row.plain
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.float-e-margins
+                    #profile_contentwrap.ibox-content
+                        .control-group
+                            #profile_parsley_msgAll
+                            // grid start
+                            #profile_gridwrap.table-responsive
+                                table#profile_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
+                                    thead
+                                        tr
+                                            th Id
+                                            th Name
+                                            th Comment
+                                            th Field bpssum
+                                            th Field peerIpSrc
+                                            th Field dstNetMask
+                                            th Field dstAs
+                                            th Reg date
+                                            th Delete
+                            // grid end
+                            form#profile_form.form-horizontal(data-parsley-validate='')
+                                .form-group
+                                    label.col-sm-2.control-label.profile-text-left(style='font-size: 22px;') profile detail
+                                    .col-sm-10
+                                        button#profile_btn_upd.btn.btn-warning(type='button') update
+                                        span(style='margin: 0px 20px;') or
+                                        button#profile_btn_create.btn.btn-primary(type='button') create
+                                        span.help-block.m-b-none update profile or create new one!
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label Profile Name
+                                    .col-sm-10
+                                        input#profile_name.form-control(type='text', required)
+                                        span.help-block.m-b-none about profile name
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label Profile Comment
+                                    .col-sm-10
+                                        input#profile_cmmnt.form-control(type='text')
+                                        span.help-block.m-b-none about profile comment
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label Ifaceout List
+                                    .col-sm-10
+                                        select#profile_ifaceout.form-control.select2-multiple.m-b
+                                            option
+                                .form-group
+                                    label.col-sm-2.control-label
+                                        |
+                                        br
+                                        small.text-navy Keep Checked Data
+                                    .col-sm-10
+                                        table#profile_ifaceGrid.table.table-striped.table-hover.dataTables-example.dataTable
+                                            thead
+                                                tr
+                                                    th rNum
+                                                    th
+                                                    th ifaceName
+                                                    th ifaceOut
+                                                    th ifaceOutAs
+                                                    th peerIpSrc
+                                                    th peerIpSrcAs
+                                                    th ifaceOut data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label BpsSum Data
+                                    .col-sm-10
+                                        input#profile_field_bpssum.form-control(type='text')
+                                        span.help-block.m-b-none about BpsSum Data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label PeerIpSrc Data
+                                    .col-sm-10
+                                        input#profile_field_peeripsrc.form-control(type='text')
+                                        span.help-block.m-b-none about PeerIpSrc Data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label DstNetMask Data
+                                    .col-sm-10
+                                        input#profile_field_dstnetmask.form-control(type='text')
+                                        span.help-block.m-b-none about DstNetMask Data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label DstAs Data
+                                    .col-sm-10
+                                        input#profile_field_dstas.form-control(type='text')
+                                        span.help-block.m-b-none about DstAs Data
+                                input#profile_id(type='hidden', value='0')
+script(src='/js/tab/acct/profile.js' type='text/javascript')

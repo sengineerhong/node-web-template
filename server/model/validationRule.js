@@ -36,7 +36,8 @@ module.exports = {
     tab_acct_test2_grid: {
         body: {
             strDate: joi.date().required(),
-            interval: joi.number().required()
+            interval: joi.number().required(),
+            profileId: joi.string().required()
         }
     },
     tab_acct_test2_chart: {
@@ -64,7 +65,7 @@ module.exports = {
     tab_acct_ifoList_grid_update: {
         body: {
             strDateYMD: joi.date().required(),
-            displayYn: joi.string().required(),
+            // displayYn: joi.string().required(),
             ifaceOut: joi.string().required(),
             ifaceOutAs: joi.string().required(),
             peerIpSrc: joi.string().required(),

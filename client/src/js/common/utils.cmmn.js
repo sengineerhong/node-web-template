@@ -494,7 +494,7 @@
     UtilsCmmn.toggleParsleyErrorUi = function ($id, parentDivId, isShow) {
         if (isShow) {
             $id.addClass('parsley_errorBox');
-            $id.focus();
+            // $id.focus();
             $id.blur(function (e) {
                 setTimeout(function () {
                     $id.removeClass('parsley_errorBox');

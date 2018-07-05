@@ -10,6 +10,11 @@ module.exports = (router) => {
         res.render('tab/acct/test2');
     });
 
+    // acct profile
+    router.route('/acct/profile').get(function (req, res, next) {
+        res.render('tab/acct/profile');
+    });
+
     // acct ifoList
     router.route('/acct/ifoList').get(function (req, res, next) {
         res.render('tab/acct/ifoList');

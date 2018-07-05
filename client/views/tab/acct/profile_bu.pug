@@ -1,0 +1,135 @@
+#profile_allwrap
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row.plain
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                .ibox.float-e-margins
+                    #profile_contentwrap.ibox-content
+                        .control-group
+                            #profile_parsley_msgAll
+                            // grid start
+                            #profile_gridwrap.table-responsive
+                                table#profile_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
+                                    thead
+                                        tr
+                                            th Id
+                                            th Name
+                                            th Comment
+                                            th Field bpssum
+                                            th Field peerIpSrc
+                                            th Field astNetMask
+                                            th Field dstAs
+                                            th Reg date
+                                            th Delete
+                            // grid end
+                            form.form-horizontal
+                                .row(style='padding: 10px 0px;')
+                                    .col-lg-12(style='min-width: 230px;')
+                                        label create profile
+                                .form-group
+                                    label.col-sm-2.control-label Profile Name
+                                    .col-sm-10
+                                        input#profile_name.form-control(type='text')
+                                        span.help-block.m-b-none about profile name
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label Profile Comment
+                                    .col-sm-10
+                                        input#profile_cmmnt.form-control(type='text')
+                                    span.help-block.m-b-none about profile comment
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label Ifaceout List
+                                    .col-sm-10
+                                        select.form-control.select2-multiple.m-b(multiple='multiple')
+                                            option option 1
+                                            option option 2
+                                            option option 3
+                                            option option 4
+                                .form-group
+                                    label.col-sm-2.control-label
+                                        |
+                                        br
+                                        small.text-navy Keep Checked Data
+                                    .col-sm-10
+                                        .clients-list(style='height: 200px;')
+                                            .full-height-scroll
+                                                .table-responsive
+                                                    table.table.table-striped.table-hover
+                                                        thead
+                                                            tr
+                                                                th
+                                                                th ifaceOut
+                                                                th ifaceOutAs
+                                                                th peerIpSrc
+                                                                th peerIpSrcAs
+                                                                th display
+                                                                th edit
+                                                        tbody
+                                                            tr
+                                                                td.contact-type
+                                                                    a
+                                                                        i.fa.fa-trash.delete-color
+                                                                td  1A__222222[10]
+                                                                td  10
+                                                                td  1A__222222
+                                                                td  116.125.32.1
+                                                                td  116125321___
+                                                                td.client-status
+                                                                    span.label.label-primary Active
+                                                            tr
+                                                                td.contact-type
+                                                                    a
+                                                                        i.fa.fa-trash.delete-color
+                                                                td  1A__222222[10]
+                                                                td  10
+                                                                td  1A__222222
+                                                                td  116.125.32.1
+                                                                td  116125321___
+                                                                td.client-status
+                                                                    span.label.label-primary Active
+                                                            tr
+                                                                td.contact-type
+                                                                    a
+                                                                        i.fa.fa-trash.delete-color
+                                                                td  1A__222222[10]
+                                                                td  10
+                                                                td  1A__222222
+                                                                td  116.125.32.1
+                                                                td  116125321___
+                                                                td.client-status
+                                                                    span.label.label-primary Active
+                                                            tr
+                                                                td.contact-type
+                                                                    a
+                                                                        i.fa.fa-trash.delete-color
+                                                                td  1A__222222[10]
+                                                                td  10
+                                                                td  1A__222222
+                                                                td  116.125.32.1
+                                                                td  116125321___
+                                                                td.client-status
+                                                                    span.label.label-primary Active
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label BpsSum Data
+                                    .col-sm-10
+                                        input#profile_field_bpssum.form-control(type='text')
+                                        span.help-block.m-b-none about BpsSum Data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label DstNetName Data
+                                    .col-sm-10
+                                        input#profile_field_dstnetname.form-control(type='text')
+                                        span.help-block.m-b-none about DstNetName Data
+                                .hr-line-dashed
+                                .form-group
+                                    label.col-sm-2.control-label DstAs Data
+                                    .col-sm-10
+                                        input#profile_field_dstas.form-control(type='text')
+                                        span.help-block.m-b-none about DstAs Data
+                                .hr-line-dashed
+                                .form-group
+                                    .col-sm-4.col-sm-offset-2
+                                        button.btn.btn-white(type='submit') Cancel
+                                        button.btn.btn-primary(type='submit') Save changes
+script(src='/js/tab/acct/profile.js' type='text/javascript')
