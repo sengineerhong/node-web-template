@@ -9,7 +9,7 @@ module.exports = {
     entry: ['bootstrap-loader', 'babel-polyfill', './client/main.js'],
 
     output: {
-        publicPath: './',
+        publicPath: '/',
         path: path.resolve(__dirname, 'client/src/dist'),
         filename: 'bundle.js'
     },
@@ -21,15 +21,6 @@ module.exports = {
     },
     module: {
         rules: [{
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: {
-                loaders: {
-                    sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
-                }
-            }
-        },
-        {
             test: /\.js$/,
             exclude: /(node_modules)/,
             loader: 'babel-loader',
@@ -82,11 +73,24 @@ module.exports = {
         {
             // test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
             test: /\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            use: 'url-loader?limit=10000'
+            use: {
+                loader: 'url-loader',
+                options: {
+                    name: '[name].[ext]?[hash]',
+                    publicPath: './',
+                    limit: 100000
+                }
+            }
         },
         {
             test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
-            use: 'file-loader'
+            use: {
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?[hash]',
+                    publicPath: './'
+                }
+            }
         },
         {
             test: /bootstrap-sass\/assets\/javascripts\//, use: 'imports-loader?jQuery=jquery' }

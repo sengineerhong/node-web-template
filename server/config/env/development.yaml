@@ -8,7 +8,7 @@ db_maria:
     database: pmacct
     poolLimit: 10
     sshUse: Y
-    sshHost: 180.210.48.229
+    sshHost: 101.79.76.114
     sshPort: 22022
     sshUser: honguser01
     sshPw: ghdtmdals01!

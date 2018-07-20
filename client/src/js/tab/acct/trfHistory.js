@@ -1,33 +1,83 @@
 /* eslint-disable no-undef */
-(function (Acct1, $) {
-    function clearChartData (chart) {
-        chart.data.labels = [];
-        chart.data.datasets[0].data = [];
-        chart.data.datasets[0].label = '';
-        // chart.update();
-    }
-
-    function updateChart (chart, data) {
-        var total = 0;
-        data.forEach(function (item) {
-            chart.data.labels.push(item.regTime);
-            chart.data.datasets[0].data.push(item.bpsSum);
-            total += Number(item.bpsSum);
-        });
-        chart.options.title.text = 'bps usage by minute (' + total.toFixed(2) + ' Gbps)'
-        chart.update();
-    }
-
-    function showToast (msg) {
-        // console.log('show toast: ' + msg);
-        window.plainToast.option({type: 'error', message: msg});
-        window.plainToast.show();
-    }
+(function (TrfHistory, $) {
+    /* local storage name - trfViewer 의 경우는 profile 로 대체함 */
+    const LS_MULTI_SEARCH = 'trfH_multi_search';
+    /* options */
+    // daterangepicker
+    const drpOptions = {
+        singleDatePicker: true,
+        // startDate: moment().subtract(1, 'days'),
+        startDate: moment(),
+        minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+        // maxDate: moment(),
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }
+    };
+    // chart
+    const chartOptions = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'bps usage by minute (0 Gbps)',
+                data: [],
+                backgroundColor: ['#F67280'],
+                borderWidth: 1,
+                fill: 'origin',
+                fontColor: '#505253'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'bps usage by minute (0 Gbps)',
+                fontColor: '#505253'
+            },
+            legend: {
+                display: false,
+                labels: {
+                    boxWidth: 10
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'iface out',
+                        fontSize: 15,
+                        padding: 1
+                    },
+                    ticks: {
+                        autoSkip: true,
+                        fontColor: '#3f4141'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Gbps'
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: '#3f4141'
+                    }
+                }]
+            }
+        }
+    };
 
     function getMultiSearchValue (length) {
         var obj = {};
         for (var i = 0; i < length; i++) {
-            var k = 'multi1_' + i;
+            var k = LS_MULTI_SEARCH + '_' + i;
             var v = $('#' + k).val() || '';
             obj[k] = v;
         }
@@ -35,7 +85,6 @@
     }
 
     function setMultiSearchValue (obj) {
-        // console.log('setMultiSearchValue' + JSON.stringify(obj));
         for (var idx in obj) {
             if (obj.hasOwnProperty(idx)) {
                 $('#' + idx).val(obj[idx]).keyup();
@@ -44,108 +93,30 @@
     }
 
     $(function () {
-        /* tab id, title, url */
-        var tabObj = UtilsCmmn.getTabInfo('acct1_allwrap');
+        /* tab info - id, title, url */
+        const tabObj = UtilsCmmn.getTabInfo('trfH_allwrap');
 
         /* flag */
-        let isChartReqEnd = false;
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         let isFirstReq = true;
-        /* view  */
-        const $dGrid = $('#acct1_grid');
-        const $chart = $('#acct1_chart');
-        const $reqBtn = $('#acct1_btn_req');
-        const $drp = $('#acct1_drp_date');
-        const $chartYn = $('#acct1_inputc_chartYn');
-        const $chartRow = $('#acct1_chartRow');
-        // const $form = $('#acct1_form');                                         // parsley validation form
-        const $chartRType = $("input[name='acct1_inputr_chartR']");             // radio name
-        const $chartRType1 = $('#acct1_inputr_chartR_1');
-        const $contentWrap = $('#acct1_contentwrap');
+        let isChartReqEnd = false;
 
-        /* options */
-        // LoadingOverlay
-        const LoadingOverlayOpt = {size: '10%', color: 'rgba(255, 255, 255, 0.6)'};
-        // daterangepicker
-        const drpOptions = {
-            singleDatePicker: true,
-            // startDate: moment().subtract(1, 'days'),
-            startDate: moment(),
-            minDate: moment('2018-04-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-            // maxDate: moment(),
-            timePicker: true,
-            timePicker24Hour: true,
-            timePickerSeconds: true,
-            locale: {
-                format: 'YYYY-MM-DD HH:mm:ss'
-            }
-            // isInvalidDate: function (date) {
-            //     if (moment(date).format('YYYY-MM-DD') === '2018-03-15') {
-            //         return true;
-            //     }
-            // }
-        };
-        // chart
-        const chartOptions = {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'bps usage by minute (0 Gbps)',
-                    data: [],
-                    backgroundColor: ['#F67280'],
-                    borderWidth: 1,
-                    fill: 'origin',
-                    fontColor: '#505253'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                title: {
-                    display: true,
-                    text: 'bps usage by minute (0 Gbps)',
-                    fontColor: '#505253'
-                },
-                legend: {
-                    display: false,
-                    labels: {
-                        boxWidth: 10
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: false,
-                            labelString: 'iface out',
-                            fontSize: 15,
-                            padding: 1
-                        },
-                        ticks: {
-                            autoSkip: true,
-                            fontColor: '#3f4141'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Gbps'
-                        },
-                        ticks: {
-                            beginAtZero: true,
-                            fontColor: '#3f4141'
-                        }
-                    }]
-                }
-            }
-        };
+        /* view  */
+        const $contentWrap = $('#trfH_contentwrap');
+        const $dGrid = $('#trfH_grid');
+        const $chart = $('#trfH_chart');
+        const $reqBtn = $('#trfH_btn_req');
+        const $drp = $('#trfH_drp_date');
+        const $chartYn = $('#trfH_inputc_chartYn');
+        const $chartRow = $('#trfH_chartRow');
+        const $form = $('#trfH_form');                                         // parsley validation form
+        const $chartRType = $("input[name='trfH_inputr_chartR']");             // radio name
+        const $chartRType1 = $('#trfH_inputr_chartR_1');
 
         /* init views */
         // init checkbox - icheckbox
-        UtilsCmmn.initIcheckbox('acct1_icheck');
+        UtilsCmmn.initIcheckbox('trfH_icheck');
         // init drp
         UtilsCmmn.initDaterangepicker($drp, drpOptions);
         // init chart
@@ -155,7 +126,7 @@
         function initGrid () {
             // init datatables
             // activate spinner
-            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            UtilsCmmn.showOverlay($contentWrap);
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
@@ -172,39 +143,43 @@
                 // bAutoWidth: false,
                 // scrollX: true,
                 bProcessing: false,
-                // bServerSide: true,
-                sAjaxSource: 'api/acct/test1/grid',
-                sServerMethod: 'POST',
-                fnServerParams: function (aoData) {
-                    aoData.push({ 'name': 'strDate', 'value': $drp.val() });
+                ajax: {
+                    url: 'api/trf/history',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: function (data) {
+                        data.strDate = $drp.val();
+                    },
+                    dataSrc: function (res) {
+                        if (res.status.code === 1) {
+                            return res.result.data;
+                        } else {
+                            UtilsCmmn.showToast(res.status.msg, false, {});
+                            return [];
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = UtilsCmmn.getAjaxErrorMsg(jqXHR, exception);
+                        UtilsCmmn.showToast(msg, false, {});
+                    }
+
                 },
+                // fnServerParams: function (aoData) {
+                //     aoData.push({ 'name': 'strDate', 'value': $drp.val() });
+                // },
                 fnDrawCallback: function (oSettings) {
                     // TODO : 임시로직
                     cntFnDrawCB++;
                     if (cntFnDrawCB === 2 && !isGridReqEnd) {
                         // if (oSettings.aiDisplay.length !== 0 && !isGridReqEnd) {
-                        $contentWrap.LoadingOverlay('hide', true);
+                        UtilsCmmn.hideOverlay($contentWrap);
                         isGridReqEnd = true;
                         cntFnDrawCB = 0;
                         if (oSettings.aiDisplay.length === 0) {
-                            showToast('해당 기간 데이터 없음');
+                            UtilsCmmn.showToast('해당 시간 데이터 없음', false, {});
                         }
                     }
                 },
-                /*
-                ajax: reqAjax({
-                    success: function (data) {
-                        $('#test1').DataTable().api().ajax.reload();
-                    },
-                    error: showToast
-                }, {url: 'api/acct/test1/grid', param: {strDate: $drp.val()}}),
-                ajax: {
-                    url: 'api/acct/test1/grid',
-                    type: 'POST',
-                    data: {strDate: 1234},
-                    // contentType: 'application/json;charset=UTF-8'
-                },
-                */
                 columns: [
                     {'data': 'regTime'},
                     {'data': 'ifaceIn'},
@@ -248,7 +223,7 @@
                     });
                     // set multi-search value(local)
                     if (UtilsCmmn.isSupportLS) {
-                        var searched = UtilsCmmn.getObjDataToLS('searched1') || {};
+                        var searched = UtilsCmmn.getObjDataToLS(LS_MULTI_SEARCH) || {};
                         setMultiSearchValue(searched);
                     }
                     isFirstReq = false;
@@ -288,39 +263,75 @@
             });
         }
 
+        /* view control  */
+        // request chart
+        function reqChartData (reqOpt) {
+            UtilsCmmn.showOverlay($chartRow);
+            isChartReqEnd = false;
+
+            UtilsCmmn.clearChart(chart);
+
+            UtilsCmmn.reqDefaultAjax({
+                success: function (res) {
+                    UtilsCmmn.hideOverlay($chartRow);
+                    isChartReqEnd = true;
+                    if (res.status.code === 1) {
+                        updateChart(chart, res.result.data);
+                    } else {
+                        UtilsCmmn.showToast(res.status.msg, false, {});
+                    }
+                },
+                error: function (msg) {
+                    UtilsCmmn.hideOverlay($chartRow);
+                    isChartReqEnd = true;
+                    UtilsCmmn.showToast(msg, false, {});
+                }
+            }, reqOpt);
+        }
+        // update chart
+        function updateChart (chart, data) {
+            var total = 0;
+            data.forEach(function (item) {
+                chart.data.labels.push(item.regTime);
+                chart.data.datasets[0].data.push(item.bpsSum);
+                total += Number(item.bpsSum);
+            });
+            chart.options.title.text = 'bps usage by minute (' + total.toFixed(2) + ' Gbps)'
+            chart.update();
+        }
+
         /* event control  */
-        /* request event */
+        // request event
         $reqBtn.on('click', function (e) {
             // get multi-search value
             if (!isFirstReq) {
                 var searched = getMultiSearchValue($dGrid.api().columns().header().length);
                 // save multi-search value(local)
                 if (UtilsCmmn.isSupportLS) {
-                    UtilsCmmn.setObjDataToLS('searched1', searched);
+                    UtilsCmmn.setObjDataToLS(LS_MULTI_SEARCH, searched);
                 }
             }
             // request chart
-            var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: $chartRType.filter(':checked').val()}};
+            var reqOpt = {url: 'api/trf/bpsUsage', type: 'get', param: {strDate: $drp.val(), range: $chartRType.filter(':checked').val()}};
+            // var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: $chartRType.filter(':checked').val()}};
             reqChartData(reqOpt);
             // request grid
             isGridReqEnd = false;
             cntFnDrawCB = 0;
-            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            UtilsCmmn.showOverlay($contentWrap);
             dtGrid.fnClearTable();
             dtGrid.fnReloadAjax();
         });
+
         /* own control  */
         // chart-row show/hide
         $chartYn.on('ifToggled', function (e) {
             if (this.checked) {
                 $chartRow.show(800);
-                $chartRow.fadeIn('slow', function () {
-                    // setTimeout(AllDailySales.AllDailySalesView.reRenderView, 5);
-                });
-                // check chart request done
-                if (!isChartReqEnd) $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
+                $chartRow.fadeIn('slow', function () {});
+                if (!isChartReqEnd) UtilsCmmn.showOverlay($chartRow);
             } else {
-                $chartRow.LoadingOverlay('hide', true);
+                UtilsCmmn.hideOverlay($chartRow);
                 $chartRow.hide(800);
                 $chartRow.fadeOut('slow');
             }
@@ -329,32 +340,18 @@
         // radio checked event
         $chartRType.on('ifChecked', function (e) {
             var chartR = $(this).val();
-            var reqOpt = {url: 'api/acct/test1/chart', param: {strDate: $drp.val(), range: chartR}};
-
+            var reqOpt = {url: 'api/trf/bpsUsage', type: 'get', param: {strDate: $drp.val(), range: chartR}};
             reqChartData(reqOpt);
         });
 
-        function reqChartData (reqOpt) {
-            $chartRow.LoadingOverlay('show', LoadingOverlayOpt);
-            isChartReqEnd = false;
-            clearChartData(chart);
-            UtilsCmmn.reqDefaultAjax({
-                success: function (data) {
-                    updateChart(chart, data);
-                    $chartRow.LoadingOverlay('hide', true);
+        // tab shown event
+        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {});
 
-                    isChartReqEnd = true;
-                },
-                error: showToast
-            }, reqOpt);
-        }
-
-        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
-        });
-
+        /* request! */
         // reset check box(chartRType1-1분)
-        // update chart (when load page)
+        // request chart (when load page)
         $chartRType1.iCheck('check');
+        // request grid
         initGrid();
     });
-}(window.Acct1 || {}, jquery));
+}(window.TrfHistory || {}, jquery));

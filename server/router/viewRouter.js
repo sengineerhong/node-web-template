@@ -1,33 +1,23 @@
 module.exports = (router) => {
 
-    // acct test1
-    router.route('/acct/test1').get(function (req, res, next) {
-        res.render('tab/acct/test1');
+    // ftm traffic history
+    router.route('/acct/trfHistory').get(function (req, res, next) {
+        res.render('tab/acct/trfHistory');
     });
 
-    // acct test2
-    router.route('/acct/test2').get(function (req, res, next) {
-        res.render('tab/acct/test2');
+    // ftm as traffic viewer
+    router.route('/acct/trfViewer').get(function (req, res, next) {
+        res.render('tab/acct/trfViewer');
     });
 
-    // acct profile
+    // ftm profile
     router.route('/acct/profile').get(function (req, res, next) {
         res.render('tab/acct/profile');
     });
 
-    // acct ifoList
+    // ftm ifoList
     router.route('/acct/ifoList').get(function (req, res, next) {
         res.render('tab/acct/ifoList');
-    });
-
-    // main page
-    router.route('/all/dashboard').get(function (req, res, next) {
-        res.render('tab/all/dashboard', { title: 'Express' });
-    });
-
-    // main page
-    router.route('/all/dailysales').get(function (req, res, next) {
-        res.render('tab/all/dailySales', { title: 'Express' });
     });
 
     return router;

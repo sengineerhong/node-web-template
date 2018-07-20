@@ -1,29 +1,29 @@
-#acct1_allwrap
+#trfH_allwrap
     .wrapper.wrapper-content.animated.fadeInRight
         .row.plain
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 .ibox.float-e-margins
-                    #acct1_contentwrap.ibox-content
+                    #trfH_contentwrap.ibox-content
                         .control-group
-                            #acct1_parsley_msgAll
-                            form#acct1_form(data-parsley-validate='')
+                            #trfH_parsley_msgAll
+                            form#trfH_form(data-parsley-validate='')
                                 .row(style='padding: 10px 0px;')
                                     .col-lg-3.col-md-3.col-sm-3.col-xs-3
                                         form.form-horizontal
-                                            label#acct1_label_date(for='acct1_drp_date') 조회시작시간 (- 30분)
+                                            label#trfH_label_date(for='trfH_drp_date') 조회시작시간 (- 30분)
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
                                                         span.add-on.input-group-addon
                                                             i.glyphicon.glyphicon-calendar.fa.fa-calendar
-                                                        input#acct1_drp_date.datepicker.form-control(type='text')
+                                                        input#trfH_drp_date.datepicker.form-control(type='text')
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
-                                        button#acct1_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
+                                        button#trfH_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
-                                        input#acct1_inputc_chartYn.acct1_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
-                                        label.orange(for='acct1_inputc_chartYn') chart
+                                        input#trfH_inputc_chartYn.trfH_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                        label.orange(for='trfH_inputc_chartYn') chart
                             h5 * 현재는 지정된 시간부터 - 30분이 조회됨
-                            #acct1_chartRow(style='display: block; ')
+                            #trfH_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins
                                         .ibox-title
@@ -33,28 +33,28 @@
                                                       <label>기준:
                                                       </label>
                                                     label(style='margin-left: 1px;')
-                                                        input#acct1_inputr_chartR_1.acct1_icheck(type='radio', name='acct1_inputr_chartR', value='1')
+                                                        input#trfH_inputr_chartR_1.trfH_icheck(type='radio', name='trfH_inputr_chartR', value='1')
                                                         |                                        1분
                                                     label(style='margin-left: 1px;')
-                                                        input#acct1_inputr_chartR_5.acct1_icheck(checked='', type='radio', name='acct1_inputr_chartR', value='3')
+                                                        input#trfH_inputr_chartR_5.trfH_icheck(checked='', type='radio', name='trfH_inputr_chartR', value='3')
                                                         |                                        3분
                                                     label(style='margin-left: 1px;')
-                                                        input#acct1_inputr_chartR_10.acct1_icheck(type='radio', name='acct1_inputr_chartR', value='5')
+                                                        input#trfH_inputr_chartR_10.trfH_icheck(type='radio', name='trfH_inputr_chartR', value='5')
                                                         |                                        5분
                                                     label(style='margin-left: 1px;')
-                                                        input#acct1_inputr_chartR_30.acct1_icheck(type='radio', name='acct1_inputr_chartR', value='10')
+                                                        input#trfH_inputr_chartR_30.trfH_icheck(type='radio', name='trfH_inputr_chartR', value='10')
                                                         |                                        10분
                                             h5.orange [packet usage chart]
                                         .ibox-content
                                             // border_force orange_border
                                             .row
                                                 .col-lg-12.col-md-12.col-sm-12.col-xs-12
-                                                    #acct1_chartwrap(style='width: 100%;height:320px')
-                                                        canvas#acct1_chart
+                                                    #trfH_chartwrap(style='width: 100%;height:320px')
+                                                        canvas#trfH_chart
                             .x_content
                                 // grid start
-                                #acct1_gridwrap.table-responsive
-                                    table#acct1_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
+                                #trfH_gridwrap.table-responsive
+                                    table#trfH_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
                                         thead
                                             tr
                                                 th regTime
@@ -87,4 +87,4 @@
                                                 th bpsSum
                                 // grid end
 
-script(src='/js/tab/acct/test1.js' type='text/javascript')
+script(src='/js/tab/acct/trfHistory.js' type='text/javascript')

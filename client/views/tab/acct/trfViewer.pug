@@ -1,55 +1,55 @@
-#acct2_allwrap
+#trfV_allwrap
     .wrapper.wrapper-content.animated.fadeInRight
         .row.plain
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 .ibox.float-e-margins
-                    #acct2_contentwrap.ibox-content
+                    #trfV_contentwrap.ibox-content
                         .control-group
-                            #acct2_parsley_msgAll
-                            form#acct2_form(data-parsley-validate='')
+                            #trfV_parsley_msgAll
+                            form#trfV_form(data-parsley-validate='')
                                 .row(style='padding: 10px 0px;')
                                     .col-lg-2.col-md-3.col-sm-3(style='min-width: 230px;')
                                         form.form-horizontal
-                                            label#acct2_label_date(for='acct2_drp_date') 조회시작시간
+                                            label#trfV_label_date(for='trfV_drp_date') 조회시작시간
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
                                                         span.add-on.input-group-addon
                                                             i.glyphicon.glyphicon-calendar.fa.fa-calendar
-                                                        input#acct2_drp_date.datepicker.form-control(type='text')
+                                                        input#trfV_drp_date.datepicker.form-control(type='text')
                                     .col-lg-2.col-md-3.col-sm-3(style='min-width: 213px;')
-                                         label#acct2_label_intervalR Time Interval
+                                         label#trfV_label_intervalR Time Interval
                                          .acct-menu-radio-wrapper
                                             //
                                               <label>기준:
                                               </label>
                                             label(style='margin-left: 3px;')
-                                                input#acct2_inputr_intervalR_1.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-1' checked='')
+                                                input#trfV_inputr_intervalR_1.trfV_icheck(type='radio', name='trfV_inputr_intervalR', value='-1' checked='')
                                                 | 1분
                                             label(style='margin-left: 3px;')
-                                                input#acct2_inputr_intervalR_3.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-3')
+                                                input#trfV_inputr_intervalR_3.trfV_icheck(type='radio', name='trfV_inputr_intervalR', value='-3')
                                                 | 3분
                                             label(style='margin-left: 3px;')
-                                                input#acct2_inputr_intervalR_5.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-5')
+                                                input#trfV_inputr_intervalR_5.trfV_icheck(type='radio', name='trfV_inputr_intervalR', value='-5')
                                                 | 5분
                                             label(style='margin-left: 3px;')
-                                                input#acct2_inputr_intervalR_10.acct2_icheck(type='radio', name='acct2_inputr_intervalR', value='-10')
+                                                input#trfV_inputr_intervalR_10.trfV_icheck(type='radio', name='trfV_inputr_intervalR', value='-10')
                                                 | 10분
                                     .col-lg-2.col-md-3.col-sm-3(style='min-width: 230px;')
                                         form.form-horizontal
-                                            label#acct2_label_profile(for='acct2_sel2_profile') Profile
-                                            select#acct2_sel2_profile.form-control.select2-multiple.m-b.input-lg(style='margin-top: 23px;')
+                                            label#trfV_label_profile(for='trfV_sel2_profile') Profile
+                                            select#trfV_sel2_profile.form-control.select2-multiple.m-b.input-lg(style='margin-top: 23px;')
                                                 option(value="-1") 선택안함
                                     .col-lg-2.col-md-3.col-sm-3.pull-left
-                                        button#acct2_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
-                                        button#acct2_btn_now.btn.btn-danger.btn-rounded(type='button', style='margin-top: 23px; margin-left:6px; padding: 6px 7px;') Now
+                                        button#trfV_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
+                                        button#trfV_btn_now.btn.btn-danger.btn-rounded(type='button', style='margin-top: 23px; margin-left:6px; padding: 6px 7px;') Now
                                     //.col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
                                     //    label Settings
-                                    //    button#acct2_btn_ifoas.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
+                                    //    button#trfV_btn_ifoas.btn.btn-warning(type='button', style='margin-top: 0px;') IFO AS
 
                                     //.col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
-                                    //    input#acct2_inputc_chartYn.acct2_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
-                                    //    label.orange(for='acct2_inputc_chartYn') chart
+                                    //    input#trfV_inputc_chartYn.trfV_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                    //    label.orange(for='trfV_inputc_chartYn') chart
                                     .col-lg-2.col-md-2.col-sm-2.pull-right(style='text-align: right; min-width: 110px;')
                                         .dropdown.acct-menu-font
                                             a.dropdown-toggle.dashbd-icon(data-toggle='dropdown', aria-expanded='false')
@@ -57,7 +57,7 @@
                                                 | Settings
                                             ul.dropdown-menu.dropdown-menu-right.animated.fadeInRight
                                                 li
-                                                    a#acct2_btn_ifoas(href='#')
+                                                    a#trfV_btn_ifoas(href='#')
                                                         .inline
                                                             i.fa.fa-pencil-square-o.fa-lg.acct-menu-icon
                                                             label Set Infaceout Alias
@@ -65,23 +65,23 @@
                                                 li
                                                     a(href='#')
                                                         .inline
-                                                            input#acct2_inputc_chartYn.acct2_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
-                                                            label(for='acct2_inputc_chartYn', style='margin-left: 5px;') Show Chart
+                                                            input#trfV_inputc_chartYn.trfV_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                                            label(for='trfV_inputc_chartYn', style='margin-left: 5px;') Show Chart
                                                 li.divider
                                                     li
                                                         a(href='#')
                                                             .inline
-                                                                input#acct2_inputc_linkChartYn.acct2_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
-                                                                label(for='acct2_inputc_linkChartYn', style='margin-left: 5px;') Link Chart
+                                                                input#trfV_inputc_linkChartYn.trfV_icheck.acct-menu-icon(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
+                                                                label(for='trfV_inputc_linkChartYn', style='margin-left: 5px;') Link Chart
 
                             h5
                                 |* 지정된 시간부터
-                                #acct2_interval_msg.inline
+                                #trfV_interval_msg.inline
                                     |&nbsp;&nbsp;-1
                                 |분이 조회됨
-                                #acct2_timehis_msg.inline
+                                #trfV_timehis_msg.inline
                                     | &nbsp;&nbsp;[searched : 2018-04-26 09:47:39]
-                            #acct2_chartRow(style='display: block; ')
+                            #trfV_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins
                                         .ibox-title
@@ -90,27 +90,27 @@
                                             // border_force orange_border
                                             .row
                                                 .col-lg-9.col-md-9.col-sm-12.col-xs-12
-                                                    #acct2_chartwrap(style='width: 100%;height:320px')
-                                                        canvas#acct2_chart
+                                                    #trfV_chartwrap(style='width: 100%;height:320px')
+                                                        canvas#trfV_chart
                                                 .col-lg-3.col-md-3.col-sm-12.col-xs-12
-                                                    #acct2_piewrap(style='width: 100%;height:320px')
-                                                        canvas#acct2_pie
+                                                    #trfV_piewrap(style='width: 100%;height:320px')
+                                                        canvas#trfV_pie
                             .x_content
                                 .large-table-fake-top-scroll-container-3
                                     div
                                         |&nbsp; 
                                 // grid start
-                                #acct2_gridwrap.large-table-container-3
+                                #trfV_gridwrap.large-table-container-3
                                 // grid end
                                 // modal
-                                #acct2_modal_ifoas.modal.fade(role='dialog')
+                                #trfV_modal_ifoas.modal.fade(role='dialog')
                                     .modal-dialog.modal-lg
                                         // Modal content
                                         .modal-content
                                             .modal-header
                                                 button.close(type='button', data-dismiss='modal') ×
                                                 h4.modal-title Set iface out alias
-                                            #acct2_body_ifoas.modal-body
+                                            #trfV_body_ifoas.modal-body
                                             .modal-footer
                                                 button.btn.btn-default(type='button', data-dismiss='modal') Close
-script(src='/js/tab/acct/test2.js' type='text/javascript')
+script(src='/js/tab/acct/trfViewer.js' type='text/javascript')

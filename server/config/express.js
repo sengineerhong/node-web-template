@@ -30,7 +30,7 @@ module.exports = function () {
     app.use(session({
         saveUninitialized: true,
         resave: true,
-        secret: 'asdf'
+        secret: 'ftmsession'
     }));
 
     // allow cross domain
@@ -45,11 +45,11 @@ module.exports = function () {
 
     // set main page
     app.get('/', function (req, res) {
-        res.redirect('/pmacct');
+        res.redirect('/ftm');
     });
 
     // check session alive
-    app.get('/pmacct', function (req, res) {
+    app.get('/ftm', function (req, res) {
         if (true) {
             res.render('main/plain');
         } else {

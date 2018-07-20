@@ -768,5 +768,95 @@
         }
     };
 
+    UtilsCmmn.showToast = function (msg, isError, options) {
+        if (toastr) {
+            toastr.options = $.extend({
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'fadeIn',
+                timeOut: 3000
+            }, options);
+            if (!isError) {
+                toastr.error(msg || 'error!');
+            } else {
+                toastr.success(msg || 'success!');
+            }
+        } else {
+            alert(msg);
+        }
+    };
+
+    UtilsCmmn.showOverlay = function ($id) {
+        $id.LoadingOverlay('show', {size: '10%', color: 'rgba(255, 255, 255, 0.6)'});
+    };
+
+    UtilsCmmn.hideOverlay = function ($id) {
+        $id.LoadingOverlay('hide', true);
+    };
+
+    /* for chart.js - datasets depth 0 */
+    UtilsCmmn.clearChart = function (chart) {
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[0].label = '';
+        chart.options.title.text = '';
+    };
+
+    UtilsCmmn.reqDefaultAjax = function (callback, options) {
+        $.ajax({
+            url: options.url,
+            type: options.type || 'POST',
+            data: options.param,
+            success: function (resData) {
+                callback.success(resData);
+            },
+            error: function (jqXHR, exception) {
+                var msg = UtilsCmmn.getAjaxErrorMsg(jqXHR, exception);
+                callback.error(msg);
+            }
+        });
+    };
+
+    UtilsCmmn.getDtableAjaxObj = function (url, qParam) {
+        return {
+            contentType: 'application/json;charset=UTF-8',
+            url: url,
+            type: 'get',
+            data: qParam,
+            dataSrc: function (res) {
+                if (res.status.code === 1) {
+                    return res.result.data;
+                } else {
+                    UtilsCmmn.showToast(res.status.msg, false, {});
+                    return [];
+                }
+            },
+            error: function (jqXHR, exception) {
+                var msg = UtilsCmmn.getAjaxErrorMsg(jqXHR, exception);
+                UtilsCmmn.showToast(msg, false, {});
+            }
+        };
+    };
+
+    UtilsCmmn.getAjaxErrorMsg = function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status === 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status === 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'session time out! Please, Login.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        return msg;
+    };
+
     UtilsCmmn.fn.init.prototype = UtilsCmmn.fn;
 })(jQuery, window);

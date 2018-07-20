@@ -14,7 +14,8 @@
         "CSRequester": false,
         "Globalize": false,
         "Logger": false,
-        "moment": false
+        "moment": false,
+        "toastr": false
     },
     "extends": "standard",
     "plugins": [

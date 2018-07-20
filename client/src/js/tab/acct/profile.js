@@ -1,159 +1,67 @@
 /* eslint-disable no-undef */
 (function (Profile, $) {
 
-    function showToast (msg) {
-        // console.log('show toast: ' + msg);
-        window.plainToast.option({type: 'error', message: msg});
-        window.plainToast.show();
-    }
-
     $(function () {
         /* tab id, title, url */
         const tabObj = UtilsCmmn.getTabInfo('profile_allwrap');
-        const allwrapId = 'crosssales_allwrap';
+
         /* flag */
-        // let isChartReqEnd = false;
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
         let rNumIfaceGd = 0;
-        // let isChartReqEnd = false;
+
         /* view  */
-        const $dtGrid = $('#profile_grid');
-        const $dtGridWrap = $('#profile_gridwrap');
+        const $contentWrap = $('#profile_contentwrap');
+        const $dGrid = $('#profile_grid');
+
+        // profile area
         const $updBtn = $('#profile_btn_upd');
         const $createBtn = $('#profile_btn_create');
-        // const $intervalRType = $("input[name='profile_inputr_intervalR']");          // radio name
-        const $intervalMsg = $('#profile_interval_msg');
-        // const $form = $('#profile_form');                                         // parsley validation form
-        const $contentWrap = $('#profile_contentwrap');
-        const $profileId = $('#profile_id');
+        const $form = $('#profile_form');                                           // parsley validation form
+        const $ifaceDGrid = $('#profile_ifaceGrid');
+        const $ifaceSelect = $('#profile_ifaceout');
+        const $profileId = $('#profile_id');                                        // hidden - for remember current profile
         const $profileName = $('#profile_name');
         const $profileCmmnt = $('#profile_cmmnt');
         const $profileFieldBpssum = $('#profile_field_bpssum');
         const $profileFieldPeeripsrc = $('#profile_field_peeripsrc');
         const $profileFieldDstnetmask = $('#profile_field_dstnetmask');
         const $profileFieldDstas = $('#profile_field_dstas');
-        const $ifacedtGrid = $('#profile_ifaceGrid');
-        const $form = $('#profile_form');
-
-
-        const $ifaceSelect = $('#profile_ifaceout');
-
-
-        function reqProfileDetail (reqOpt) {
-            // isGridReqEnd = false;
-            // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            UtilsCmmn.reqDefaultAjax({
-                success: function (data) {
-                    setProfileDetailHtml(data);
-                    $.map(data.ifaceArry, function (item) {
-                        item.ifaceName = item.ifaceOutAs + '[' + item.ifaceOut + ']';
-                    });
-                    initIfaceGrid(data.ifaceArry);
-                },
-                error: showToast
-            }, reqOpt);
-        }
-
-        function setProfileDetailHtml (data) {
-            // console.log('show toast: ' + msg);
-            $profileName.val(data.profileName);
-            $profileCmmnt.val(data.profileCmmnt);
-            $profileFieldBpssum.val(data.profileFieldBpssum);
-            $profileFieldPeeripsrc.val(data.profileFieldPeeripsrc);
-            $profileFieldDstnetmask.val(data.profileFieldDstnetmask);
-            $profileFieldDstas.val(data.profileFieldDstas);
-        }
-
-        // LoadingOverlay
-        const LoadingOverlayOpt = {size: '10%', color: 'rgba(255, 255, 255, 0.6)'};
 
         function initIfaceSelect (reqOpt) {
-            // isGridReqEnd = false;
-            // $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
-            var select2Opt = {placeholder: 'choose ifaceout...', width: '100%', data: []}
+            var select2Opt = {placeholder: 'choose ifaceout...', width: '100%', data: []};
             UtilsCmmn.reqDefaultAjax({
-                success: function (data) {
-                    $.map(data, function (item) {
-                        item.id = item.ifaceOut + '_' + item.peerIpSrc;
-                        item.text = item.ifaceOutAs + '[' + item.ifaceOut + ']';
-                    });
-                    select2Opt.data = data;
-                    $ifaceSelect.select2(select2Opt);
+                success: function (res) {
+                    if (res.status.code === 1) {
+                        $.map(res.result.data, function (item) {
+                            item.id = item.ifaceOut + '_' + item.peerIpSrc;
+                            item.text = item.ifaceOutAs + '[' + item.ifaceOut + ']';
+                        });
+                        select2Opt.data = res.result.data;
+                        $ifaceSelect.select2(select2Opt);
+                    } else {
+                        $ifaceSelect.select2(select2Opt);
+                    }
                 },
-                error: showToast
+                error: function (msg) {
+                    UtilsCmmn.showToast(msg, false, {});
+                }
             }, reqOpt);
         }
 
-        $ifaceSelect.on('select2:select', function (e) {
-            var data = e.params.data;
-            // validation
-            var isNewIface = true;
-            var gridData = $ifacedtGrid.api().data().toArray();
-            for (var i = 0; i < gridData.length; i++) {
-                if (gridData[i].ifaceOut === data.ifaceOut && gridData[i].peerIpSrc === data.peerIpSrc) {
-                    isNewIface = false;
-                    break;
-                }
-            }
-            if (isNewIface) {
-                $ifacedtGrid.api().row.add(
-                    {
-                        'rNum': rNumIfaceGd--,
-                        'ifaceName': data.ifaceOutAs + '[' + data.ifaceOut + ']',
-                        'ifaceOut': data.ifaceOut,
-                        'ifaceOutAs': data.ifaceOutAs,
-                        'peerIpSrc': data.peerIpSrc,
-                        'peerIpSrcAs': data.peerIpSrcAs,
-                        'fieldIfaceOut': ''
-                    }).draw(false);
-            } else {
-                showToast('이미 존재하는 ifaceout 입니다.');
-            }
-        });
-
-        // $('.select2-multiple').select2({
-        //     ajax: {
-        //         url: 'api/acct/profile/ifaceout',
-        //         dataType: 'json',
-        //         type: 'POST',
-        //         processResults: function (data) {
-        //             console.log(data);
-        //             return {
-        //                 results: $.map(data, function (item) {
-        //                     return {
-        //                         text: item.ifaceOutAs,
-        //                         id: item.ifaceOut + '_' + item.peerIpSrc
-        //                     };
-        //                 })
-        //             };
-        //         },
-        //         cache: true
-        //     },
-        //     allowClear: true,
-        //     placeholder: 'ifaceout',
-        //     tags: false
-        // });
-
-        // Add slimscroll to element
-        // $('.full-height-scroll').slimscroll({
-        //     height: '100px'
-        // })
-
         /* init views */
-        // init checkbox - icheckbox
-        // UtilsCmmn.initIcheckbox('profile_icheck');
         // init select2
-        initIfaceSelect({url: 'api/acct/profile/ifaceout', param: {}});
-        // init datatables
-        let dtGrid;
+        initIfaceSelect({url: 'api/trf/ifaceout', type: 'get', param: {}});
+        // init profile datatables
+        let dGrid;
         function initGrid () {
             // init datatables
             // activate spinner
-            $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+            UtilsCmmn.showOverlay($contentWrap);
             isGridReqEnd = false;
             // datatables
-            dtGrid = $dtGrid.dataTable({
+            dGrid = $dGrid.dataTable({
+                language: {search: 'Profile Search : '},
                 destroy: true,
                 scrollY: '180px',
                 autoWidth: true,
@@ -170,44 +78,56 @@
                 // scrollX: true,
                 bProcessing: false,
                 // bServerSide: true,
-                sAjaxSource: 'api/acct/profile/grid',
-                sServerMethod: 'POST',
-                fnServerParams: function (aoData) {
-                    // aoData.push({ 'name': 'strDateYMD', 'value': $drp.val() });
+                ajax: {
+                    url: 'api/trf/profile',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: {},
+                    dataSrc: function (res) {
+                        if (res.status.code === 1) {
+                            return res.result.data;
+                        } else {
+                            UtilsCmmn.showToast(res.status.msg, false, {});
+                            return [];
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = UtilsCmmn.getAjaxErrorMsg(jqXHR, exception);
+                        UtilsCmmn.showToast(msg, false, {});
+                    }
+
                 },
+                // sAjaxSource: 'api/acct/profile/grid',
+                // sServerMethod: 'POST',
+                // fnServerParams: function (aoData) {},
                 fnDrawCallback: function (oSettings) {
-                    // TODO : 임시로직
+                    // TODO : temp
                     cntFnDrawCB++;
                     if (cntFnDrawCB === 2 && !isGridReqEnd) {
                         // if (oSettings.aiDisplay.length !== 0 && !isGridReqEnd) {
-                        $contentWrap.LoadingOverlay('hide', true);
+                        UtilsCmmn.hideOverlay($contentWrap);
                         isGridReqEnd = true;
                         cntFnDrawCB = 0;
-                        // if (oSettings.aiDisplay.length === 0) {
-                        //     showToast('not exist profile');
-                        // }
-
-                        var profileId = $profileId.val();
-                        var selectRowIdx = 0;
-                        var profileTdArry = [];
-                        $('#profile_grid td.profileId').each(function () {
-                            profileTdArry.push($(this).html());
-                        });
-                        for (var j = 0; j < profileTdArry.length; j++) {
-                            if (profileId === profileTdArry[j]) {
-                                selectRowIdx = j;
-                                break;
+                        // 초기 프로파일이 0개 일 경우
+                        if (oSettings.aiDisplay.length === 0) {
+                            UtilsCmmn.showToast('저장된 프로파일 없음!', false, {});
+                            initIfaceGrid();
+                        } else {
+                            var profileId = $profileId.val();
+                            var selectRowIdx = 0;
+                            var profileTdArry = [];
+                            $('#profile_grid td.profileId').each(function () {
+                                profileTdArry.push($(this).html());
+                            });
+                            for (var j = 0; j < profileTdArry.length; j++) {
+                                if (profileId === profileTdArry[j]) {
+                                    selectRowIdx = j;
+                                    break;
+                                }
                             }
+                            // row selection trigger
+                            $('#profile_grid tbody tr:eq(' + selectRowIdx + ')').click();
                         }
-                        //
-                        // for (var j = 0; j < oSettings.aiDisplay.length; j++) {
-                        //     if (parseInt(profileId) === oSettings.aiDisplay[j]) {
-                        //         selectRowIdx = j;
-                        //         break;
-                        //     }
-                        // }
-                        // first row selection trigger
-                        $('#profile_grid tbody tr:eq(' + selectRowIdx + ')').click();
                     }
                 },
                 columns: [
@@ -234,16 +154,15 @@
                 ],
                 order: [[0, 'desc']],
                 fnInitComplete: function () {
-                    $dtGrid.css('width', '100%');
+                    $dGrid.css('width', '100%');
                 }
             });
         }
 
-        // init datatables
-        let ifaceDtGrid;
+        // init ifaceout datatables
         function initIfaceGrid (ifaceArry) {
             // datatables
-            ifaceDtGrid = $ifacedtGrid.dataTable({
+            $ifaceDGrid.dataTable({
                 destroy: true,
                 scrollY: '300px',
                 scrollCollapse: true,
@@ -260,7 +179,7 @@
                 // scrollX: true,
                 bProcessing: false,
                 // bServerSide: true,
-                data: ifaceArry,
+                data: ifaceArry || [],
                 columns: [
                     // {data: 'displayYn'},
                     {data: 'rNum'},
@@ -284,9 +203,9 @@
                 ],
                 order: [[0, 'asc']],
                 fnInitComplete: function () {
-                    $dtGrid.css('width', '100%');
+                    $dGrid.css('width', '100%');
                     setTimeout(function () {
-                        // $dtGrid.api().columns.adjust().draw();
+                        // $dGrid.api().columns.adjust().draw();
                     }, 100);
                 },
                 createdRow: function (row, data, dataIndex) {
@@ -297,63 +216,62 @@
             });
         }
 
-        /* event control  */
+        /* view control  */
         /* grid event */
-        // delete profile
-        $dtGrid.on('click', 'tbody button', function (e) {
+        // profile grid - delete profile
+        $dGrid.on('click', 'tbody button', function (e) {
             e.stopPropagation();
-            $contentWrap.LoadingOverlay('show', true);
-            var data = $dtGrid.api().row($(this).parents('tr')).data();
-            var reqOpt = { url: 'api/acct/profile/delete', param: {profileId: data.profileId} };
+            UtilsCmmn.showOverlay($contentWrap);
+            var data = $dGrid.api().row($(this).parents('tr')).data();
+            var reqOpt = { url: 'api/trf/profile/' + data.profileId, type: 'delete', param: {} };
             UtilsCmmn.reqDefaultAjax({
                 success: function (res) {
-                    $contentWrap.LoadingOverlay('hide', true);
+                    UtilsCmmn.hideOverlay($contentWrap);
+                    cntFnDrawCB = 0;
+                    isGridReqEnd = false;
                     if (res.status.code === 1) {
-                        cntFnDrawCB = 0;
-                        isGridReqEnd = false;
-                        dtGrid.fnClearTable();
-                        dtGrid.fnReloadAjax();
+                        dGrid.fnClearTable();
+                        dGrid.fnReloadAjax();
 
                         // for sync profileTab crud
                         if (window.nowProfileId === parseInt(res.profileId)) {
                             window.nowProfileStatus = -1;   // 0:normal, 1:update, -1:delete
                         }
                     } else {
-                        showToast(res.status.msg);
+                        UtilsCmmn.showToast(res.status.msg, false, {});
                     }
                 },
                 error: function (msg) {
-                    $contentWrap.LoadingOverlay('hide', true);
-                    showToast(msg);
+                    UtilsCmmn.hideOverlay($contentWrap);
+                    UtilsCmmn.showToast(msg, false, {});
                 }
             }, reqOpt);
             // td:not(:has(button))
         });
-        // change profile detail
-        $dtGrid.on('click', 'tbody tr', function (e) {
+        // profile grid - change profile detail
+        $dGrid.on('click', 'tbody tr', function (e) {
             if (!$(this).hasClass('grid-row-selected')) {
-                dtGrid.$('tr.grid-row-selected').removeClass('grid-row-selected');
+                dGrid.$('tr.grid-row-selected').removeClass('grid-row-selected');
                 $(this).addClass('grid-row-selected');
-                var data = dtGrid.api().row(this).data();
+                var data = dGrid.api().row(this).data();
                 var profileId = data.profileId;
                 $profileId.val(profileId);
-                reqProfileDetail({url: 'api/acct/profile/detail', param: {profileId: profileId}});
+                reqProfileDetail({url: 'api/trf/profile/' + profileId, type: 'get'});
             }
         });
-        // delete ifaceout list
-        $ifacedtGrid.on('click', 'i.fa-trash', function () {
-            var gridData = $ifacedtGrid.api().data().toArray();
+        // iface grid - delete ifaceout list
+        $ifaceDGrid.on('click', 'i.fa-trash', function () {
+            var gridData = $ifaceDGrid.api().data().toArray();
 
             if (gridData.length > 1) {
-                $ifacedtGrid.api().row($(this).parents('tr')).remove().draw();
+                $ifaceDGrid.api().row($(this).parents('tr')).remove().draw();
             } else {
-                showToast('ifaceout 은 한개 이상 존재해야합니다.');
+                UtilsCmmn.showToast('ifaceout 은 한개 이상 존재해야합니다.', false, {});
             }
         });
         // edit field ifaceout
-        $ifacedtGrid.on('click', 'tbody td', function (e) {
+        $ifaceDGrid.on('click', 'tbody td', function (e) {
             // $('.editor').on( 'click', function () {
-
             // $dGrid.api().cell( this );
             if ($(e.target).hasClass('editor')) {
                 $(this).attr('contenteditable', 'true');
@@ -367,21 +285,97 @@
                     // sel.removeAllRanges();
                     sel.addRange(range);
                 }
-                // The cell have now the focus
-                // el.focus(endEdition);
                 el.focus();
             }
         });
+        // set profile detail field data to html
+        function setProfileDetailHtml (data) {
+            // console.log('show toast: ' + msg);
+            $profileName.val(data.profileName);
+            $profileCmmnt.val(data.profileCmmnt);
+            $profileFieldBpssum.val(data.profileFieldBpssum);
+            $profileFieldPeeripsrc.val(data.profileFieldPeeripsrc);
+            $profileFieldDstnetmask.val(data.profileFieldDstnetmask);
+            $profileFieldDstas.val(data.profileFieldDstas);
+        }
 
-        /* request event */
+        /* select2 event */
+        // append iface data to ifaceGrid
+        $ifaceSelect.on('select2:select', function (e) {
+            var data = e.params.data;
+            // validation
+            var isNewIface = true;
+            var gridData = $ifaceDGrid.api().data().toArray();
+            for (var i = 0; i < gridData.length; i++) {
+                if (gridData[i].ifaceOut === data.ifaceOut && gridData[i].peerIpSrc === data.peerIpSrc) {
+                    isNewIface = false;
+                    break;
+                }
+            }
+            if (isNewIface) {
+                $ifaceDGrid.api().row.add(
+                    {
+                        'rNum': rNumIfaceGd--,
+                        'ifaceName': data.ifaceOutAs + '[' + data.ifaceOut + ']',
+                        'ifaceOut': data.ifaceOut,
+                        'ifaceOutAs': data.ifaceOutAs,
+                        'peerIpSrc': data.peerIpSrc,
+                        'peerIpSrcAs': data.peerIpSrcAs,
+                        'fieldIfaceOut': ''
+                    }).draw(false);
+            } else {
+                UtilsCmmn.showToast('이미 존재하는 ifaceout 입니다.', false, {});
+            }
+        });
+
+        /* validation */
+        /* parsley validation evnet */
+        $form.parsley().on('form:validate', function (formInstance) {
+            var isValidAll = $ifaceDGrid.api().data().toArray().length !== 0;
+
+            if (!isValidAll) {
+                UtilsCmmn.showToast('ifaceout 은 한개 이상 존재해야합니다.', false, {});
+                $ifaceSelect.next().addClass('parsley_errorBox');
+                setTimeout(function () {
+                    $ifaceSelect.next().removeClass('parsley_errorBox');
+                }, 3000);
+
+                formInstance.validationResult = false;
+                return;
+            }
+            // complete validation!
+            formInstance.validationResult = true;
+        });
+
+        /* event control  */
+        // get profile detail data event
+        function reqProfileDetail (reqOpt) {
+            // isGridReqEnd = false;
+            UtilsCmmn.reqDefaultAjax({
+                success: function (res) {
+                    if (res.status.code === 1) {
+                        setProfileDetailHtml(res.result.data);
+                        $.map(res.result.data.ifaceArry, function (item) {
+                            item.ifaceName = item.ifaceOutAs + '[' + item.ifaceOut + ']';
+                        });
+                        initIfaceGrid(res.result.data.ifaceArry);
+                    } else {
+                        UtilsCmmn.showToast(res.status.msg, false, {});
+                    }
+                },
+                error: function (msg) {
+                    UtilsCmmn.showToast(msg, false, {});
+                }
+            }, reqOpt);
+        }
+
+        // update profile event
         $updBtn.on('click', function (e) {
-
             // rest validation
             $form.parsley().reset();
-
             var isValid = $form.parsley().validate();
             if (isValid) {
-                $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+                UtilsCmmn.showOverlay($contentWrap);
 
                 var updObj = {
                     profileId: $profileId.val(),
@@ -395,7 +389,7 @@
                 };
 
                 // original grid data
-                var gridData = $ifacedtGrid.api().data().toArray();
+                var gridData = $ifaceDGrid.api().data().toArray();
                 // edit data - fieldIfaceOut
                 var editArry = [];
                 // get edit data
@@ -408,44 +402,43 @@
                 });
                 updObj.ifaceArry = gridData;
                 // request
-                var reqOpt = { url: 'api/acct/profile/update', param: {updObj: updObj} };
+                var reqOpt = { url: 'api/trf/profile/' + updObj.profileId, type: 'put', param: {updObj: updObj} };
                 UtilsCmmn.reqDefaultAjax({
                     success: function (res) {
-                        $contentWrap.LoadingOverlay('hide', true);
+                        UtilsCmmn.hideOverlay($contentWrap);
+                        cntFnDrawCB = 0;
+                        isGridReqEnd = false;
                         if (res.status.code === 1) {
                             $profileId.val(res.result.profileId);
-                            cntFnDrawCB = 0;
-                            isGridReqEnd = false;
-                            dtGrid.fnClearTable();
-                            dtGrid.fnReloadAjax();
-
+                            dGrid.fnClearTable();
+                            dGrid.fnReloadAjax();
 
                             // reqProfileDetail({url: 'api/acct/profile/detail', param: {profileId: res.result.profileId}});
-                            console.log(res.profileId);
+                            // console.log(res.profileId);
                             // for sync profileTab crud
                             if (window.nowProfileId === parseInt(res.result.profileId)) {
                                 window.nowProfileStatus = 1;   // 0:normal, 1:update, -1:delete
                             }
                         } else {
-                            showToast(res.status.msg);
+                            UtilsCmmn.showToast(res.status.msg, false, {});
                         }
                     },
                     error: function (msg) {
-                        $contentWrap.LoadingOverlay('hide', true);
-                        showToast(msg);
+                        UtilsCmmn.hideOverlay($contentWrap);
+                        UtilsCmmn.showToast(msg, false, {});
                     }
                 }, reqOpt);
             }
         });
 
+        // create profile event
         $createBtn.on('click', function (e) {
-
             // rest validation
             $form.parsley().reset();
 
             var isValid = $form.parsley().validate();
             if (isValid) {
-                $contentWrap.LoadingOverlay('show', LoadingOverlayOpt);
+                UtilsCmmn.showOverlay($contentWrap);
                 var profileObj = {
                     profileName: $profileName.val(),
                     profileCmmnt: $profileCmmnt.val(),
@@ -457,7 +450,7 @@
                 };
 
                 // original grid data
-                var gridData = $ifacedtGrid.api().data().toArray();
+                var gridData = $ifaceDGrid.api().data().toArray();
                 // edit data - fieldIfaceOut
                 var editArry = [];
                 // get edit data
@@ -470,58 +463,32 @@
                 });
                 profileObj.ifaceArry = gridData;
                 // request
-                var reqOpt = { url: 'api/acct/profile/create', param: {profileObj: profileObj} };
+                var reqOpt = { url: 'api/trf/profile', type: 'post', param: {profileObj: profileObj} };
                 UtilsCmmn.reqDefaultAjax({
                     success: function (res) {
-                        $contentWrap.LoadingOverlay('hide', true);
+                        UtilsCmmn.hideOverlay($contentWrap);
+                        cntFnDrawCB = 0;
+                        isGridReqEnd = false;
                         if (res.status.code === 1) {
                             $profileId.val(res.result.profileId);
-                            cntFnDrawCB = 0;
-                            isGridReqEnd = false;
-                            dtGrid.fnClearTable();
-                            dtGrid.fnReloadAjax();
+                            dGrid.fnClearTable();
+                            dGrid.fnReloadAjax();
                         } else {
-                            showToast(res.status.msg);
+                            UtilsCmmn.showToast(res.status.msg, false, {});
                         }
                     },
                     error: function (msg) {
-                        $contentWrap.LoadingOverlay('hide', true);
-                        showToast(msg);
+                        UtilsCmmn.hideOverlay($contentWrap);
+                        UtilsCmmn.showToast(msg, false, {});
                     }
                 }, reqOpt);
             }
         });
 
-        /* validation */
-        /* parsley validation evnet */
-        $form.parsley().on('form:validate', function (formInstance) {
+        // tab shown event
+        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {});
 
-            var errMsg = '*validation message!';
-            var isValidAll = false;
-
-            isValidAll = $ifacedtGrid.api().data().toArray().length !== 0;
-
-            if (!isValidAll) {
-                showToast('ifaceout 은 한개 이상 존재해야합니다.');
-
-                $ifaceSelect.next().addClass('parsley_errorBox');
-                setTimeout(function () {
-                    $ifaceSelect.next().removeClass('parsley_errorBox');
-                }, 3000);
-
-                formInstance.validationResult = false;
-                return;
-            }
-            // complete validation!
-            formInstance.validationResult = true;
-        });
-        /* own control  */
-        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
-
-        });
-
-        // request chart, pie, dynamic-grid
-        // $reqBtn.trigger('click');
+        /* request! */
         initGrid();
     });
 }(window.Profile || {}, jquery));
