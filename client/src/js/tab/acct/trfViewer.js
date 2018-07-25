@@ -5,7 +5,7 @@
     /* options */
     // random color
     const defColor = ['#51574a', '#447c69', '#74c493', '#8e8c6d', '#e4bf80', '#e9d78e', '#e2975d', '#f19670', '#e16552', '#c94a53', '#be5168', '#a34974', '#993767', '#65387d', '#4e2472', '#9163b6', '#e279a3', '#e0598b', '#7c9fb0', '#5698c4', '#9abf88'].map(function (item) { return UtilsCmmn.hexToRGB(item, '0.7'); });
-    const ranColor = randomColor({hue: 'random', luminosity: 'dark', count: 30}).map(function (item) { return UtilsCmmn.hexToRGB(item, '0.4'); });
+    const ranColor = randomColor({hue: 'random', luminosity: 'dark', count: 100}).map(function (item) { return UtilsCmmn.hexToRGB(item, '0.4'); });
     const pieColor = defColor.concat(ranColor);
     // daterangepicker
     const drpOptions = {

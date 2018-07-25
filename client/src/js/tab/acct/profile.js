@@ -28,19 +28,53 @@
         const $profileFieldDstnetmask = $('#profile_field_dstnetmask');
         const $profileFieldDstas = $('#profile_field_dstas');
 
-        function initIfaceSelect (reqOpt) {
-            var select2Opt = {placeholder: 'choose ifaceout...', width: '100%', data: []};
+        /* for dynamic select2 options - */
+        const ifaceSelect2Opt = {placeholder: 'choose ifaceout...', width: '100%', data: []};
+
+        function getIfaceSelectOptions (ifaceOrg, ifaceProfile, disabled) {
+            let i = 0;
+            const orgLen = ifaceOrg.length;
+            const profileLen = ifaceProfile.length;
+            // select2 ifaceout array data
+            for (; i < orgLen; i += 1) {
+                // profile ifaceout array data
+                let j = 0;
+                for (; j < profileLen; j += 1) {
+                    // if (ifaceOrg[i].id === ifaceProfile[j].ifaceOut + '_' + ifaceProfile[j].peerIpSrc) {
+                    if (ifaceOrg[i].ifaceOut === ifaceProfile[j].ifaceOut && ifaceOrg[i].peerIpSrc === ifaceProfile[j].peerIpSrc) {
+                        ifaceOrg[i].disabled = disabled;
+                        break;
+                    }
+                }
+            }
+            return ifaceOrg;
+        }
+
+        function resetIfaceSelectOptions () {
+            // $ifaceSelect.select2('destroy');
+            // $ifaceSelect.val([]);
+            $ifaceSelect.empty().trigger('change');
+            var newOption = new Option('', '', false, false);
+            $ifaceSelect.append(newOption).trigger('change');
+        }
+
+        function initIfaceSelect (reqOpt, ifaceProfile) {
             UtilsCmmn.reqDefaultAjax({
                 success: function (res) {
                     if (res.status.code === 1) {
                         $.map(res.result.data, function (item) {
                             item.id = item.ifaceOut + '_' + item.peerIpSrc;
                             item.text = item.ifaceOutAs + '[' + item.ifaceOut + ']';
+                            item.disabled = false;
                         });
-                        select2Opt.data = res.result.data;
-                        $ifaceSelect.select2(select2Opt);
+                        // get disabled options
+                        ifaceSelect2Opt.data = getIfaceSelectOptions(res.result.data, ifaceProfile, true);
+                        // reset select2 options(html)
+                        resetIfaceSelectOptions();
+                        // init select2
+                        $ifaceSelect.select2(ifaceSelect2Opt);
                     } else {
-                        $ifaceSelect.select2(select2Opt);
+                        $ifaceSelect.select2(ifaceSelect2Opt);
                     }
                 },
                 error: function (msg) {
@@ -51,7 +85,7 @@
 
         /* init views */
         // init select2
-        initIfaceSelect({url: 'api/trf/ifaceout', type: 'get', param: {}});
+        // initIfaceSelect({url: 'api/trf/ifaceout', type: 'get', param: {}});
         // init profile datatables
         let dGrid;
         function initGrid () {
@@ -113,18 +147,26 @@
                             UtilsCmmn.showToast('저장된 프로파일 없음!', false, {});
                             initIfaceGrid();
                         } else {
-                            var profileId = $profileId.val();
+                            var profileId = parseInt($profileId.val());
                             var selectRowIdx = 0;
-                            var profileTdArry = [];
-                            $('#profile_grid td.profileId').each(function () {
-                                profileTdArry.push($(this).html());
-                            });
+                            var profileTdArry = this.api().column(0).data().toArray();
+
                             for (var j = 0; j < profileTdArry.length; j++) {
                                 if (profileId === profileTdArry[j]) {
                                     selectRowIdx = j;
                                     break;
                                 }
                             }
+                            var pageLength = this.api().page.info().length;
+                            var goToPage = Math.floor((selectRowIdx) / pageLength);
+                            this.api().page(goToPage).draw('page');
+
+                            if (selectRowIdx > 4) {
+                                selectRowIdx = selectRowIdx - 5;
+                                // this.api().page('next').draw('page');
+                                // this.api().page(1).draw('page');
+                            }
+                            // this.api().page(parseInt(selectRowIdx / this.api().page.len(), 10)).draw(false);
                             // row selection trigger
                             $('#profile_grid tbody tr:eq(' + selectRowIdx + ')').click();
                         }
@@ -147,6 +189,7 @@
                     }
                 ],
                 columnDefs: [
+                    {targets: [0], visible: false, searchable: false},
                     {targets: [3, 4, 5, 6], visible: false, searchable: false},
                     { className: 'text-left', 'targets': [1, 2, 3, 4, 5, 6] },
                     { className: 'text-center', 'targets': [0, 7, 8] }
@@ -207,6 +250,29 @@
                     setTimeout(function () {
                         // $dGrid.api().columns.adjust().draw();
                     }, 100);
+                    // var ifaceSelect2Opt = {placeholder: 'choose ifaceout...', width: '100%', data: []};
+                    // $ifaceSelect.select2(ifaceSelect2Opt);
+
+                    // init select2
+                    var ifaceDGridArry = $ifaceDGrid.api().data().toArray();
+                    if (!ifaceSelect2Opt.data.length) {
+                        // requset new data
+                        initIfaceSelect({url: 'api/trf/ifaceout', type: 'get', param: {}}, ifaceDGridArry);
+                    } else {
+                        // use memory - ifaceSelect2Opt
+                        $.map(ifaceSelect2Opt.data, function (item) {
+                            item.disabled = false;
+                        });
+                        // get disabled options
+                        ifaceSelect2Opt.data = getIfaceSelectOptions(ifaceSelect2Opt.data, ifaceDGridArry, true);
+                        // reset select2 options(html)
+                        resetIfaceSelectOptions();
+                        // init select2
+                        $ifaceSelect.select2(ifaceSelect2Opt);
+                    }
+
+
+
                 },
                 createdRow: function (row, data, dataIndex) {
                     if (data.rNum <= 0) {
@@ -264,7 +330,15 @@
             var gridData = $ifaceDGrid.api().data().toArray();
 
             if (gridData.length > 1) {
-                $ifaceDGrid.api().row($(this).parents('tr')).remove().draw();
+                var row = $ifaceDGrid.api().row($(this).parents('tr'));
+                var data = row.data();
+                ifaceSelect2Opt.data = getIfaceSelectOptions(ifaceSelect2Opt.data, [data], false);
+                // reset select2 options(html)
+                resetIfaceSelectOptions();
+                // init select2
+                $ifaceSelect.select2(ifaceSelect2Opt);
+                // $ifaceDGrid.api().row($(this).parents('tr')).remove().draw();
+                row.remove().draw();
             } else {
                 UtilsCmmn.showToast('ifaceout 은 한개 이상 존재해야합니다.', false, {});
             }
@@ -290,7 +364,6 @@
         });
         // set profile detail field data to html
         function setProfileDetailHtml (data) {
-            // console.log('show toast: ' + msg);
             $profileName.val(data.profileName);
             $profileCmmnt.val(data.profileCmmnt);
             $profileFieldBpssum.val(data.profileFieldBpssum);
@@ -313,20 +386,25 @@
                 }
             }
             if (isNewIface) {
-                $ifaceDGrid.api().row.add(
-                    {
-                        'rNum': rNumIfaceGd--,
-                        'ifaceName': data.ifaceOutAs + '[' + data.ifaceOut + ']',
-                        'ifaceOut': data.ifaceOut,
-                        'ifaceOutAs': data.ifaceOutAs,
-                        'peerIpSrc': data.peerIpSrc,
-                        'peerIpSrcAs': data.peerIpSrcAs,
-                        'fieldIfaceOut': ''
-                    }).draw(false);
+                var addObj = {
+                    rNum: rNumIfaceGd--,
+                    ifaceName: data.ifaceOutAs + '[' + data.ifaceOut + ']',
+                    ifaceOut: data.ifaceOut,
+                    ifaceOutAs: data.ifaceOutAs,
+                    peerIpSrc: data.peerIpSrc,
+                    peerIpSrcAs: data.peerIpSrcAs,
+                    fieldIfaceOut: ''
+                }
+                $ifaceDGrid.api().row.add(addObj).draw(false);
+                e.params.data.disabled = true;
+                ifaceSelect2Opt.data = getIfaceSelectOptions(ifaceSelect2Opt.data, [addObj], true);
+
             } else {
                 UtilsCmmn.showToast('이미 존재하는 ifaceout 입니다.', false, {});
             }
         });
+
+
 
         /* validation */
         /* parsley validation evnet */
@@ -413,8 +491,6 @@
                             dGrid.fnClearTable();
                             dGrid.fnReloadAjax();
 
-                            // reqProfileDetail({url: 'api/acct/profile/detail', param: {profileId: res.result.profileId}});
-                            // console.log(res.profileId);
                             // for sync profileTab crud
                             if (window.nowProfileId === parseInt(res.result.profileId)) {
                                 window.nowProfileStatus = 1;   // 0:normal, 1:update, -1:delete
