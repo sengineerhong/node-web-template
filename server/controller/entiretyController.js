@@ -4,6 +4,8 @@ const moment = require('moment');
 const _ = require('lodash');
 const utiles = require('../../common/utiles');
 const whoisapi = require('../../common/whoisapi');
+const validation = require('express-validation');
+const rule = require('../model/validationRule');
 
 exports.checkTableExist = async (req, res, next) => {
     let data = '';
@@ -408,6 +410,7 @@ exports.getTrfIfoAlias = async (req, res, next) => {
     return res.json(utiles.genResObjFormat(1, 'getTrfIfoAlias succeed!', {data: data}));
 };
 
+/*
 exports.updateTrfIfoAlias = async (req, res, next) => {
     let data = '';
     try {
@@ -424,3 +427,78 @@ exports.updateTrfIfoAlias = async (req, res, next) => {
     }
     return res.json(data);
 };
+*/
+
+exports.updateTrfIfoAlias = async (req, res, next) => {
+    let data = '';
+    try {
+        const param = {
+            ifaceOut: req.params.ifaceOut,
+            ifaceOutAs: req.body.ifaceOutAs,
+            // displayYn: req.body.displayYn,
+            peerIpSrc: req.body.peerIpSrc,
+            peerIpSrcAs: req.body.peerIpSrcAs
+        };
+        data = await entiretyM.updateTrfIfoAlias(param);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'updateTrfIfoAlias succeed!', {data: data}));
+};
+
+exports.updateTrfIfoAliasAll = async (req, res, next) => {
+    let data = '';
+    try {
+        let ifoAsArray = req.body.ifoAsArray;
+        console.log(req.body.ifoAsArray);
+        let sql = buildUpdAtOnceQuery(ifoAsArray);
+
+        data = await entiretyM.updateTrfIfoAliasAll(sql);
+    } catch (error) {
+        return next(error);
+    }
+    return res.json(utiles.genResObjFormat(1, 'updateTrfIfoAlias succeed!', {data: data}));
+};
+
+function buildUpdAtOnceQuery (ifoAsArray) {
+    let i = 0;
+    let len = ifoAsArray.length;
+
+    let setIfoAsField = '';
+    let setpIpAsField = '';
+    let whereField = '';
+
+    for (; i < len; i += 1) {
+        let ifaceOut = ifoAsArray[i].ifaceOut;
+        let peerIpSrc = ifoAsArray[i].peerIpSrc;
+        let ifaceOutAs = ifoAsArray[i].ifaceOutAs;
+        let peerIpSrcAs = ifoAsArray[i].peerIpSrcAs;
+        let caseField = 'when (iface_out = "' + ifaceOut + '" and peer_ip_src = "' + peerIpSrc + '") THEN ';
+        let inField = '("' + ifaceOut + '", "' + peerIpSrc + '"), ';
+
+        setIfoAsField += caseField + ' "' + ifaceOutAs + '" ';
+        setpIpAsField += caseField + ' "' + peerIpSrcAs + '" ';
+        whereField += inField;
+    }
+
+    let sql = 'update pmacct.acct_ifacelist_test set ' +
+        'iface_out_as = case ' + setIfoAsField +
+        'end, ' +
+        'peer_ip_src_as = case ' + setpIpAsField +
+        'end ' +
+        'where (iface_out, peer_ip_src) IN (' + whereField.substring(0, whereField.length - 2) + ')';
+
+    console.log(sql);
+    return sql;
+
+}
+// `UPDATE pmacct.acct_ifacelist_test SET
+//     iface_out_as = CASE
+//     WHEN (iface_out = '10' AND peer_ip_src = '116.125.32.1') THEN 'testtest21'
+//     WHEN (iface_out = '10' AND peer_ip_src = '192.168.100.1') THEN 'DDA_11111'
+//     END,
+//         peer_ip_src_as = CASE
+//     WHEN (iface_out = '10' AND peer_ip_src = '116.125.32.1') THEN 'testtest22_h'
+//     WHEN (iface_out = '10' AND peer_ip_src = '192.168.100.1') THEN '1921681001AA11_h'
+//     END
+//     WHERE (iface_out, peer_ip_src) IN (('10','116.125.32.1'), ('10', '192.168.100.1'))`

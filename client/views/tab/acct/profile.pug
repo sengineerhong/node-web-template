@@ -23,11 +23,11 @@
                             // grid end
                             form#profile_form.form-horizontal(data-parsley-validate='')
                                 .form-group
-                                    label.col-sm-2.control-label.profile-text-left(style='font-size: 22px;') profile detail
+                                    label.col-sm-2.control-label.profile-text-left(style='font-size: 22px;') Profile Detail
                                     .col-sm-10
-                                        button#profile_btn_upd.btn.btn-warning(type='button') update
+                                        button#profile_btn_upd.btn.btn-warning(type='button') Update
                                         span(style='margin: 0px 20px;') or
-                                        button#profile_btn_create.btn.btn-primary(type='button') create
+                                        button#profile_btn_create.btn.btn-primary(type='button') Create
                                         span.help-block.m-b-none update profile or create new one!
                                 .hr-line-dashed
                                 .form-group
@@ -50,8 +50,10 @@
                                 .form-group
                                     label.col-sm-2.control-label
                                         |
-                                        br
-                                        small.text-navy Keep Checked Data
+                                        //a
+                                        //    i.fa.fa-trash.pinkred delete all
+                                        button#profile_btn_delAll.btn.btn-small.btn-danger(type='button') Delete All Lists
+                                        //small.text-navy Delete all ifaceout lists.
                                     .col-sm-10
                                         table#profile_ifaceGrid.table.table-striped.table-hover.dataTables-example.dataTable
                                             thead

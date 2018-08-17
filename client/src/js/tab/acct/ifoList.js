@@ -19,6 +19,7 @@
         /* flag */
         let cntFnDrawCB = 0;
         let isGridReqEnd = false;
+        let ifoListGridOrg = [];                // ifoList gird original data array for update at once!
 
         /* view  */
         const $contentWrap = $('#ifoList_contentwrap');
@@ -26,6 +27,10 @@
         const $reqBtn = $('#ifoList_btn_req');
         const $drp = $('#ifoList_drp_date');
         const $form = $('#ifoList_form');                                         // parsley validation form
+        const $updAllBtn = $('#ifoList_btn_delAll');
+        const $markTarget = $('#ifoList_allwrap table');
+        const $markTargetIfoAs = $('#ifoList_allwrap table tr td:nth-child(2)');
+        const $markTargetpIpAs = $('#ifoList_allwrap table tr td:nth-child(4)');
 
         /* init views */
         // init checkbox - icheckbox
@@ -41,10 +46,11 @@
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
+                scroller: true,
                 scrollY: '500px',
                 scrollCollapse: true,
                 autoWidth: true,
-                paging: false,
+                paging: true,
                 pageLength: 10,
                 // pagingType: 'full_numbers',
                 bPaginate: false,
@@ -141,6 +147,9 @@
                     setTimeout(function () {
                         $dGrid.api().columns.adjust().draw();
                     }, 100);
+
+                    ifoListGridOrg = $dGrid.api().data().toArray();
+                    console.log(ifoListGridOrg);
                 }
             });
         }
@@ -148,11 +157,14 @@
         function reqGridUpdate (reqOpt) {
             UtilsCmmn.showOverlay($contentWrap);
             UtilsCmmn.reqDefaultAjax({
-                success: function (data) {
-                    // console.log('ifoListGridUpdate : ' + JSON.stringify(data));
+                success: function (res) {
                     UtilsCmmn.hideOverlay($contentWrap);
-                    // refresh
-                    $reqBtn.trigger('click');
+                    if (res.status.code === 1) {
+                        // refresh
+                        $reqBtn.trigger('click');
+                    } else {
+                        UtilsCmmn.showToast('alias 업데이트 실패', false, {});
+                    }
                 },
                 error: function (msg) {
                     UtilsCmmn.showToast(msg, false, {});
@@ -190,6 +202,192 @@
             dtGrid.fnReloadAjax();
         });
 
+        function hasDuplicates (array) {
+            var rObj = {invalidIdx: -1, value: ''};
+            var valuesSoFar = Object.create(null);
+            for (var i = 0; i < array.length; ++i) {
+                var value = array[i];
+                if (value in valuesSoFar) {
+                    rObj.invalidIdx = i;
+                    rObj.value = value;
+                    return rObj;
+                }
+                valuesSoFar[value] = true;
+            }
+            rObj.invalidIdx = -1;
+            rObj.value = '';
+            return rObj;
+        }
+
+        function getErrorMsg (invalidType) {
+            var errMsg = 'validateion error';
+
+            if (invalidType === 1 || invalidType === 2) {
+                errMsg = '알파벳 또는 숫자 또는 []{}|-_<>()/# 사용 가능';
+            } else if (invalidType === 3 || invalidType === 4) {
+                errMsg = '글자는 최대 256자를 넘을 수 없음';
+            } else if (invalidType === 5 || invalidType === 6) {
+                errMsg = '동일한 alias 를 사용할 수 없음';
+            }
+            return errMsg;
+        }
+
+        function setEditable ($div) {
+            var el = $div;
+            el.attr('contenteditable', 'true');
+            // do not use enter key
+            el.keypress(function (e) {
+                return e.which !== 13;
+            });
+            el.keydown(function (e) {
+                $markTarget.unmark();
+            });
+            var range = document.createRange();
+            var sel = window.getSelection();
+            if (el[0].childNodes.length > 0) {
+                range.setStart(el[0].childNodes[0], el[0].childNodes[0].length);
+                range.collapse(true);
+                // sel.removeAllRanges();
+                sel.addRange(range);
+            }
+            el.focus();
+        }
+
+        function setInvalidNotiWhenUpdOnce (invalidType, invalidIdx) {
+            console.log(invalidType + '|' + invalidIdx);
+
+            // 1. getErrorMsg
+            var errMsg = getErrorMsg(invalidType);
+            // 2. show toast
+            UtilsCmmn.showToast(errMsg, false, {});
+            // 3. set focus
+            var $div;
+            var rowIdx = invalidIdx + 1;
+            if (invalidType % 2 === 0) {
+                $div = $dGrid.find('tr:eq(' + rowIdx + ')').find('td:eq(3)');
+            } else {
+                $div = $dGrid.find('tr:eq(' + rowIdx + ')').find('td:eq(1)');
+            }
+            setEditable($div);
+            dtGrid.api().scroller().scrollToRow(invalidIdx);
+        }
+
+        // update all(update at once) event
+        $updAllBtn.on('click', function (e) {
+
+            // clear mark text
+            $markTarget.unmark();
+            // var $focused = $(':focus').blur();
+
+            let isValidAll = true;
+            let invalidIdx = -1;
+            let invalidType = -1;
+            let i = 0;
+            let len = ifoListGridOrg.length;
+            // let len = 5;
+            let uptArry = [];
+            let uptIfaceAs = [];
+            let uptPeerAs = [];
+
+            // get edit data
+            $('#ifoList_grid td.editor-iface').each(function () { uptIfaceAs.push($(this).html()); });
+            $('#ifoList_grid td.editor-peer').each(function () { uptPeerAs.push($(this).html()); });
+
+            console.log('hh');
+
+            // check each data
+            for (; i < len; i += 1) {
+
+                let ifaceOutAs = ifoListGridOrg[i].ifaceOutAs;
+                let uptIfaceOutAs = uptIfaceAs[i];
+                let peerIpSrcAs = ifoListGridOrg[i].peerIpSrcAs;
+                let uptPeerIpSrcAs = uptPeerAs[i];
+                invalidIdx = i;
+
+                // 1. check ifaceOutAs & check peerIpSrcAs
+                if (uptIfaceOutAs.length === 0 || ifaceOutAs !== uptIfaceOutAs || uptPeerIpSrcAs.length === 0 || peerIpSrcAs !== uptPeerIpSrcAs) {
+                    // a. ifaceOutAs length, character set
+                    if (uptIfaceOutAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(uptIfaceOutAs)) {
+                        invalidType = 1;
+                        isValidAll = false;
+                    // b. ifaceOutAs max length
+                    } else if (uptIfaceOutAs.length > 256) {
+                        invalidType = 3;
+                        isValidAll = false;
+                    // c. peerIpSrcAs length, character set
+                    } else if (uptPeerIpSrcAs.length === 0 || !/^[a-zA-Z0-9()[\]{}/<>|\-_#]*$/.test(uptPeerIpSrcAs)) {
+                        invalidType = 2;
+                        isValidAll = false;
+                    // d. peerIpSrcAs max length
+                    } else if (uptPeerIpSrcAs.length > 256) {
+                        invalidType = 4;
+                        isValidAll = false;
+                    } else {
+                        ifoListGridOrg[i].ifaceOutAs = uptIfaceOutAs;
+                        ifoListGridOrg[i].peerIpSrcAs = uptPeerIpSrcAs;
+                        isValidAll = true;
+                    }
+
+                    // 2. check ifaceOutAs and peerIpSrcAs invalid type
+                    if (isValidAll) {
+                        uptArry.push(ifoListGridOrg[i]);
+                    } else {
+                        setInvalidNotiWhenUpdOnce(invalidType, invalidIdx);
+                        break;
+                        // return;
+                    }
+                }
+
+                // 3. reset flag
+                // isValidAll = true;
+            }
+
+            if (isValidAll) {
+                // check data duplication // if ((new Set(uptIfaceAs)).size !== uptIfaceAs.length) {}
+                // 1. check ifaceOutAs
+
+                let dupInfo = hasDuplicates(uptIfaceAs);
+                // let dupInfo = hasDuplicates(uptIfaceAs.slice(0, 4));
+                let invalidValue = dupInfo.value;
+                invalidIdx = dupInfo.invalidIdx;
+                if (invalidIdx !== -1) {
+                    const $markTargetIfoAs = $('#ifoList_allwrap table tr td:nth-child(2)');
+                    setTextMarked(invalidValue, $markTargetIfoAs);
+                    invalidType = 5;
+                    setInvalidNotiWhenUpdOnce(invalidType, invalidIdx);
+                    return;
+                }
+                // 2. check peerIpSrcAs
+                dupInfo = hasDuplicates(uptIfaceAs);
+                // dupInfo = hasDuplicates(uptPeerAs.slice(0, 4));
+                invalidValue = dupInfo.value;
+                invalidIdx = dupInfo.invalidIdx;
+                if (invalidIdx !== -1) {
+                    const $markTargetpIpAs = $('#ifoList_allwrap table tr td:nth-child(4)');
+                    setTextMarked(invalidValue, $markTargetpIpAs);
+                    invalidType = 6;
+                    setInvalidNotiWhenUpdOnce(invalidType, invalidIdx);
+                    return;
+                }
+                if (uptArry.length) {
+                    // request update event!
+                    var reqOpt = {url: 'api/trf/ifaceout/alias', type: 'put', param: {ifoAsArray: uptArry}};
+                    reqGridUpdate(reqOpt);
+                } else {
+                    UtilsCmmn.showToast('변경된 내용이 없습니다', false, {});
+                }
+            }
+            console.log(uptArry);
+        });
+
+        function setTextMarked (text, $target) {
+            $target.unmark({
+                done: function () {
+                    $target.mark(text, {className: 'mark-red', caseSensitive: true});
+                }
+            });
+        }
+
         // update event
         $dGrid.on('click', 'tbody button', function () {
             cntFnDrawCB = 0;
@@ -216,7 +414,7 @@
             } else if (ifaceOutAs.length > 256 || peerIpSrcAs.length > 256) {
                 UtilsCmmn.showToast('글자는 최대 256자를 넘을 수 없음', false, {});
             } else if (sameNameCnt >= 1) {
-                UtilsCmmn.showToast('동일한 alias 를 사용할 수 없음(ifaceOutAs)', false, {});
+                UtilsCmmn.showToast('동일한 alias 를 사용할 수 없음', false, {});
             } else {
                 var reqOpt = {url: 'api/trf/ifaceout/alias/' + data.ifaceOut, type: 'put', param: {strDate: $drp.val(), ifaceOutAs: ifaceOutAs, peerIpSrc: data.peerIpSrc, peerIpSrcAs: peerIpSrcAs}};
                 reqGridUpdate(reqOpt);
@@ -228,17 +426,7 @@
         $dGrid.on('click', 'tbody td:not(:has(button))', function (e) {
 
             if ($(e.target).hasClass('editor-iface') || $(e.target).hasClass('editor-peer')) {
-                $(this).attr('contenteditable', 'true');
-                var el = $(this);
-                var range = document.createRange();
-                var sel = window.getSelection();
-                if (el[0].childNodes.length > 0) {
-                    range.setStart(el[0].childNodes[0], el[0].childNodes[0].length);
-                    range.collapse(true);
-                    // sel.removeAllRanges();
-                    sel.addRange(range);
-                }
-                el.focus();
+                setEditable($(this));
             }
         });
 

@@ -86,6 +86,12 @@ module.exports = {
             peerIpSrcAs: joi.string().required()
         }
     },
+    // update at once ifaceout/peeripsrc alias
+    update_trf_alias_all: {
+        body: {
+            ifoAsArray: joi.array().min(1)
+        }
+    },
 
     /**
      * User Validation

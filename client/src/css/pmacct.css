@@ -149,3 +149,9 @@ ul.nav-second-level {
     top: 1px;
     right: 1px;
     width: 20px; }
+
+.mark-red {
+    background: rgba(237, 85, 101, 0.67);
+    color: black;
+}
+[contenteditable="true"] br { display: none }

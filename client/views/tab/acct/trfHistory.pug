@@ -10,19 +10,23 @@
                                 .row(style='padding: 10px 0px;')
                                     .col-lg-3.col-md-3.col-sm-3.col-xs-3
                                         form.form-horizontal
-                                            label#trfH_label_date(for='trfH_drp_date') 조회시작시간 (- 30분)
+                                            label#trfH_label_date(for='trfH_drp_date') 조회시작시간
                                             .control-group
                                                 .controls
                                                     .input-prepend.input-group
                                                         span.add-on.input-group-addon
                                                             i.glyphicon.glyphicon-calendar.fa.fa-calendar
                                                         input#trfH_drp_date.datepicker.form-control(type='text')
-                                    .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-left
+                                    .col-lg-2.col-md-3.col-sm-3.pull-left
                                         button#trfH_btn_req.btn.btn-primary(type='button', style='margin-top: 23px;') Go
+                                        button#trfH_btn_now.btn.btn-danger.btn-rounded(type='button', style='margin-top: 23px; margin-left:6px; padding: 6px 7px;') Now
                                     .col-lg-1.col-md-1.col-sm-1.col-xs-1.pull-right(style='text-align: right;')
                                         input#trfH_inputc_chartYn.trfH_icheck(checked='', type='checkbox', value='useYn2', style='position: absolute; opacity: 0;')
                                         label.orange(for='trfH_inputc_chartYn') chart
-                            h5 * 현재는 지정된 시간부터 - 30분이 조회됨
+                            h5
+                                |* 지정된 시간부터 - 30분이 조회됨
+                                #trfH_timehis_msg.inline
+                                    | &nbsp;&nbsp;[searched : no history]
                             #trfH_chartRow(style='display: block; ')
                                 .row
                                     .ibox.float-e-margins
@@ -52,8 +56,11 @@
                                                     #trfH_chartwrap(style='width: 100%;height:320px')
                                                         canvas#trfH_chart
                             .x_content
+                                #trfH_gridtopscroll.large-table-fake-top-scroll-container-3
+                                    div
+                                        | &nbsp;
                                 // grid start
-                                #trfH_gridwrap.table-responsive
+                                #trfH_gridwrap.large-table-container-3
                                     table#trfH_grid.table.table-striped.table-bordered.table-hover.dataTables-example.dataTable
                                         thead
                                             tr

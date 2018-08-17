@@ -555,3 +555,21 @@ exports.updateTrfIfoAlias = (param) => {
         });
     });
 };
+
+/**
+ * @description (MODEL) update ifaceout & peerIpSrc alias
+ * @param param {object}
+ * @returns {Promise<T>}
+ */
+exports.updateTrfIfoAliasAll = (sql) => {
+    return new Promise((resolve, reject) => {
+        // const sql = query.updateTrfIfoAlias;
+        pool.query(sql, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};

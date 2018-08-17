@@ -41,11 +41,12 @@ module.exports = (router) => {
     router.route('/trf/ifaceout/date').get(entiretyC.getTrfAvailableDateIfo);
     // get ifaceout list(include alias data) by strDate
     router.route('/trf/ifaceout/alias')
-        .get(validation(rule.get_trf_alias), entiretyC.getTrfIfoAlias);
+        .get(validation(rule.get_trf_alias), entiretyC.getTrfIfoAlias)
+        // update all
+        .put(validation(rule.update_trf_alias_all), entiretyC.updateTrfIfoAliasAll);
     // ifaceout alias CRUD by ifaceout & peeripsrc
     // update
     router.route('/trf/ifaceout/alias/:ifaceOut')
         .put(validation(rule.update_trf_alias), entiretyC.updateTrfIfoAlias);
-
     return router;
 };

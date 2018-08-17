@@ -92,6 +92,34 @@
         }
     }
 
+    function genSearchTimeHistory (arry, time) {
+        arry.unshift(time);
+        // keep history length (under 3)
+        if (arry.length > 3) {
+            arry.splice(3, 1);
+        }
+        var first = '<div class="pinkred inline">' + arry[0] + '</div>';
+        // 2018-04-26 11:26:21
+        return first + arry.join(', ').substring(19);
+    }
+
+    function setTableTopHorizontalScroll () {
+        var tableContainer = $('#trfH_gridwrap');
+        var table = $('#trfH_gridwrap table');
+        var fakeContainer = $('#trfH_gridtopscroll');
+        var fakeDiv = $('#trfH_gridtopscroll div');
+
+        var tableWidth = table.width();
+        fakeDiv.width(tableWidth);
+
+        fakeContainer.scroll(function () {
+            tableContainer.scrollLeft(fakeContainer.scrollLeft());
+        });
+        tableContainer.scroll(function () {
+            fakeContainer.scrollLeft(tableContainer.scrollLeft());
+        });
+    }
+
     $(function () {
         /* tab info - id, title, url */
         const tabObj = UtilsCmmn.getTabInfo('trfH_allwrap');
@@ -101,24 +129,28 @@
         let isGridReqEnd = false;
         let isFirstReq = true;
         let isChartReqEnd = false;
+        let searchHisArry = [];
+        let reqStrDate = '';
 
         /* view  */
         const $contentWrap = $('#trfH_contentwrap');
         const $dGrid = $('#trfH_grid');
         const $chart = $('#trfH_chart');
         const $reqBtn = $('#trfH_btn_req');
+        const $nowBtn = $('#trfH_btn_now');
         const $drp = $('#trfH_drp_date');
         const $chartYn = $('#trfH_inputc_chartYn');
         const $chartRow = $('#trfH_chartRow');
         const $form = $('#trfH_form');                                         // parsley validation form
         const $chartRType = $("input[name='trfH_inputr_chartR']");             // radio name
         const $chartRType1 = $('#trfH_inputr_chartR_1');
+        const $timehisMsg = $('#trfH_timehis_msg');
 
         /* init views */
         // init checkbox - icheckbox
         UtilsCmmn.initIcheckbox('trfH_icheck');
         // init drp
-        UtilsCmmn.initDaterangepicker($drp, drpOptions);
+        var cal = UtilsCmmn.initDaterangepicker($drp, drpOptions);
         // init chart
         var chart = new Chart($chart, chartOptions);
         // init datatables
@@ -151,6 +183,9 @@
                         data.strDate = $drp.val();
                     },
                     dataSrc: function (res) {
+                        // update searched-date filed
+                        $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
+
                         if (res.status.code === 1) {
                             return res.result.data;
                         } else {
@@ -227,6 +262,9 @@
                         setMultiSearchValue(searched);
                     }
                     isFirstReq = false;
+
+                    // set top-horizontal scroll
+                    setTableTopHorizontalScroll();
                 },
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
@@ -301,8 +339,7 @@
         }
 
         /* event control  */
-        // request event
-        $reqBtn.on('click', function (e) {
+        function reqEvent (strDate) {
             // get multi-search value
             if (!isFirstReq) {
                 var searched = getMultiSearchValue($dGrid.api().columns().header().length);
@@ -321,6 +358,20 @@
             UtilsCmmn.showOverlay($contentWrap);
             dtGrid.fnClearTable();
             dtGrid.fnReloadAjax();
+        }
+
+        // request event
+        $reqBtn.on('click', function (e) {
+            reqEvent();
+        });
+
+        // request(now) event
+        $nowBtn.on('click', function (e) {
+            // get now & set now to cal
+            var now = moment().format('YYYY-MM-DD HH:mm:ss');
+            cal.setStartDate(now);
+            $drp.val(now);
+            reqEvent();
         });
 
         /* own control  */
@@ -345,7 +396,9 @@
         });
 
         // tab shown event
-        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {});
+        $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
+            setTimeout(setTableTopHorizontalScroll, 5);
+        });
 
         /* request! */
         // reset check box(chartRType1-1분)

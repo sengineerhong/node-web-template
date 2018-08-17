@@ -44,6 +44,7 @@ import randomColor from 'Modules/randomcolor/randomColor';                      
 import 'select2/dist/js/select2.min';                                                           // select2
 import toastr from 'toastr/build/toastr.min';                                                   // toastr
 import Logger from 'Modules/js-logger/src/logger.min';                                          // logger
+import 'Modules/mark.js/dist/jquery.mark.es6.min';                                                        // mark.js
 import Dexie from 'Modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 
 /* DevExtreme */
@@ -60,6 +61,8 @@ import 'Modules/datatables.net-plugins/api/sum()';
 import 'Modules/datatables.net-plugins/api/average()';
 import 'Modules/datatables.net-plugins/api/fnStandingRedraw';
 import 'Modules/datatables.net-plugins/api/column().title()';
+import 'Modules/datatables.net-scroller/js/dataTables.scroller.min';
+// require('datatables.net-scroller')(window, jquery);
 // import 'Modules/datatables.net-responsive-bs/js/responsive.bootstrap.min';
 
 import 'chart.js';

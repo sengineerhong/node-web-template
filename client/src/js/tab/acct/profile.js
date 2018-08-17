@@ -13,6 +13,7 @@
         /* view  */
         const $contentWrap = $('#profile_contentwrap');
         const $dGrid = $('#profile_grid');
+        const $delAllBtn = $('#profile_btn_delAll');
 
         // profile area
         const $updBtn = $('#profile_btn_upd');
@@ -39,11 +40,15 @@
             for (; i < orgLen; i += 1) {
                 // profile ifaceout array data
                 let j = 0;
-                for (; j < profileLen; j += 1) {
-                    // if (ifaceOrg[i].id === ifaceProfile[j].ifaceOut + '_' + ifaceProfile[j].peerIpSrc) {
-                    if (ifaceOrg[i].ifaceOut === ifaceProfile[j].ifaceOut && ifaceOrg[i].peerIpSrc === ifaceProfile[j].peerIpSrc) {
-                        ifaceOrg[i].disabled = disabled;
-                        break;
+                if (!profileLen) {
+                    ifaceOrg[i].disabled = disabled;
+                } else {
+                    for (; j < profileLen; j += 1) {
+                        // if (ifaceOrg[i].id === ifaceProfile[j].ifaceOut + '_' + ifaceProfile[j].peerIpSrc) {
+                        if (ifaceOrg[i].ifaceOut === ifaceProfile[j].ifaceOut && ifaceOrg[i].peerIpSrc === ifaceProfile[j].peerIpSrc) {
+                            ifaceOrg[i].disabled = disabled;
+                            break;
+                        }
                     }
                 }
             }
@@ -270,9 +275,6 @@
                         // init select2
                         $ifaceSelect.select2(ifaceSelect2Opt);
                     }
-
-
-
                 },
                 createdRow: function (row, data, dataIndex) {
                     if (data.rNum <= 0) {
@@ -372,6 +374,16 @@
             $profileFieldDstas.val(data.profileFieldDstas);
         }
 
+        // delete all ifaceout lists
+        $delAllBtn.on('click', function (e) {
+            $ifaceDGrid.api().clear().draw();
+            // get IfaceSelect options (all enable)
+            ifaceSelect2Opt.data = getIfaceSelectOptions(ifaceSelect2Opt.data, [], false);
+            resetIfaceSelectOptions();
+            // init select2
+            $ifaceSelect.select2(ifaceSelect2Opt);
+        });
+
         /* select2 event */
         // append iface data to ifaceGrid
         $ifaceSelect.on('select2:select', function (e) {
@@ -403,8 +415,6 @@
                 UtilsCmmn.showToast('이미 존재하는 ifaceout 입니다.', false, {});
             }
         });
-
-
 
         /* validation */
         /* parsley validation evnet */

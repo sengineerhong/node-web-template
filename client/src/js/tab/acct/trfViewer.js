@@ -166,10 +166,10 @@
     }
 
     function setTableTopHorizontalScroll () {
-        var tableContainer = $('.large-table-container-3');
-        var table = $('.large-table-container-3 table');
-        var fakeContainer = $('.large-table-fake-top-scroll-container-3');
-        var fakeDiv = $('.large-table-fake-top-scroll-container-3 div');
+        var tableContainer = $('#trfV_gridwrap');
+        var table = $('#trfV_gridwrap table');
+        var fakeContainer = $('#trfV_gridtopscroll');
+        var fakeDiv = $('#trfV_gridtopscroll div');
 
         var tableWidth = table.width();
         fakeDiv.width(tableWidth);
@@ -254,6 +254,9 @@
                     data: {strDate: $drp.val(), interval: $intervalRType.filter(':checked').val(), profileId: $profileSelect.val()},
                     contentType: 'application/json;charset=UTF-8',
                     dataSrc: function (res) {
+                        // update searched-date filed
+                        $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
+
                         if (res.status.code === 1) {
                             return res.result.data;
                         } else {
@@ -635,30 +638,25 @@
         }
 
         /* event control  */
-        // request event
-        $reqBtn.on('click', function (e) {
+        function reqEvent () {
             // reset drow cb cnt!
             cntFnDrawCB = 0;
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             // reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             reqDynamicGrid({url: 'api/trf/ifaceList', type: 'get', param: {profileId: $profileSelect.val()}});
-            // update searched-date filed
-            $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
+        }
+
+        // request event
+        $reqBtn.on('click', function (e) {
+            reqEvent();
         });
 
         // request(now) event
         $nowBtn.on('click', function (e) {
-            // reset drow cb cnt!
-            cntFnDrawCB = 0;
-            // get now & set now to cal
             var now = moment().format('YYYY-MM-DD HH:mm:ss');
             cal.setStartDate(now);
             $drp.val(now);
-            // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
-            // reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
-            reqDynamicGrid({url: 'api/trf/ifaceList', type: 'get', param: {profileId: $profileSelect.val()}});
-            // update searched-date filed
-            $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, now) + ']');
+            reqEvent();
         });
 
         /* own control  */
