@@ -191,6 +191,7 @@
         let isGridReqEnd = false;
         let searchHisArry = [];
         let isChartLinked = true;
+        let isGridInited = false;
 
         /* view  */
         const $contentWrap = $('#trfV_contentwrap');
@@ -214,6 +215,8 @@
         const $ifoasModalBody = $('#trfV_body_ifoas');
         const $ifoasModalBtn = $('#trfV_btn_ifoas');
 
+        const $gSearchInput = $('#test');
+
         /* init views */
         // init checkbox - icheckbox
         UtilsCmmn.initIcheckbox('trfV_icheck');
@@ -233,7 +236,7 @@
             isGridReqEnd = false;
             // datatables
             dtGrid = $dGrid.dataTable({
-                language: {search: 'Global Search : '},
+                language: {search: 'Global Search(OR) : ', searchPlaceholder: 'search1|search2|...'},
                 autoWidth: false,
                 pageLength: 20,
                 // pagingType: 'full_numbers',
@@ -303,7 +306,10 @@
                                 if (parseFloat(sum) === 0.00) {
                                     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
                                 } else {
-                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps');
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps').on('click', function () {
+                                        // console.log($(this).index());
+                                        // $(this).index();
+                                    });
                                 }
                                 graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
                             } else {
@@ -312,6 +318,29 @@
                         }
                         updateChart(chart, graphArry);
                         updatePie(pie, graphArry);
+                        // mark text - for go or now request
+                        if ($gSearchInput.val() !== '') {
+                            // gen regEx pattern & text mark
+                            setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
+                        }
+                    }
+                    // mark text - for page changed
+                    if (isGridInited) {
+                        // global search
+                        if ($gSearchInput.val() !== '') {
+                            // gen regEx pattern & text mark
+                            setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
+                        }
+                        // multi search
+                        $('#trfV_grid .grid-multi-search').each(function (idx, el) {
+                            var markText = $(this).val();
+                            if (markText !== '') {
+                                var tdIdx = idx + 1;
+                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
+                                // gen regEx pattern & text mark
+                                setRegExMarked(new RegExp(genGridRegExPattern($(this).val()), 'g'), markTarget);
+                            }
+                        });
                     }
                 },
                 columns: options.columns,
@@ -337,18 +366,34 @@
                     $footer.find('tr:eq(1)').addClass('sum');
                     // set input to tr1(search)
                     $footer.find('tr:eq(0)').children('td').each(function (idx) {
-                        $(this).html('<input type="text" id="field_' + idx + '" class="form-control input-sm grid-multi-search" placeholder="search1|search2|..." />');
+                    // <i class="fa fa-unlock fa-lg badge"></i>
+                        $(this).html('<span class="fa fa-unlock fa-lg badge-td"></span><input type="text" id="field_' + idx + '" class="form-control input-sm grid-multi-search" placeholder="search1|search2|..." />');
                     });
                     // set event to tr1(search)
                     $dGrid.api().columns().every(function () {
                         var that = this;
                         $('input', this.footer()).on('keyup change', function () {
-                            if (that.search() !== this.value) {
-                                // that.search(this.value.replace(/\s+/g, '|'), true, false).draw();
-                                // that.search(this.value, true, false).draw();
-                                // console.log(this.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&'));
-                                that.search(this.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&'), true, false).draw();
+
+                            // if (that.search() !== this.value) {
+                            // if ($gSearchInput.val() !== this.value) {
+                            var tdIdx = $(this).parent().index() + 1;
+                            var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
+                            // gen regEx pattern
+                            var rexPattern = genGridRegExPattern(this.value);
+                            // datable search
+                            that.search(rexPattern, true, false).draw();
+                            // mark text
+                            setRegExMarked(new RegExp(rexPattern, 'g'), markTarget);
+                            // if multi search text is empty, reset global mark text
+                            if (this.value === '' && $gSearchInput.val() !== '') {
+                                setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
                             }
+                            // if this multi-search was off, unmark text
+                            var isSearchOff = $(this).prev().hasClass('badge-td-off');
+                            if (isSearchOff) {
+                                setRegExMarked(new RegExp(rexPattern, 'g'), markTarget);
+                            }
+                            // }
                         });
                     });
                     // append from footer to header
@@ -371,23 +416,62 @@
                     }
                     // set top-horizontal scroll
                     setTableTopHorizontalScroll();
+
+                    // global search custom logic (union or)
+                    $gSearchInput.on('keyup change', function () {
+                        // gen regEx pattern
+                        var rexPattern = genGridRegExPattern($(this).val());
+                        // datable search
+                        $dGrid.api().search(rexPattern, true, false).draw();
+                        // text mark
+                        setRegExMarked(new RegExp(rexPattern, 'g'), $dGrid);
+                        // remark multi search
+                        $('#trfV_grid .grid-multi-search').each(function (idx, el) {
+                            var markText = $(this).val();
+                            if (markText !== '') {
+                                var tdIdx = idx + 1;
+                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
+                                // gen regEx pattern & text mark
+                                setRegExMarked(new RegExp(genGridRegExPattern($(this).val()), 'g'), markTarget);
+                            }
+                        });
+                    });
+                    $('#trfV_grid_filter > label > input').hide();
+                    $('#trfV_grid_filter').append($gSearchInput.show());
+
+
+                    isGridInited = true;
                 },
+                // dom: '<"html5buttons"B>lfrtip',
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
                     {
-                        text: 'clear filed',
+                        text: 'Clear Filed',
                         className: 'grid-dom-btn1',
                         action: function (e, dt, node, config) {
-                            $dGrid.api().columns().every(function () {
+                            // clean input field and search function
+                            $dGrid.api().columns().every(function (idx) {
                                 $('input', this.footer()).val('');
-                                // this.search('').draw();
                                 this.search('');
                                 // remove multi-search value
                                 // if (UtilsCmmn.isSupportLS) {
                                 //     UtilsCmmn.removeDataToLS('searched2');
                                 // }
                             });
+                            // redraw grid
                             $dGrid.api().draw();
+                            // remark multi search - must exe! after draw function
+                            $('#trfV_grid .grid-multi-search').each(function (idx, el) {
+                                var tdIdx = idx + 1;
+                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
+                                // gen regEx pattern & text mark
+                                setRegExMarked(new RegExp(genGridRegExPattern(''), 'g'), markTarget);
+                            });
+                            // remark global search
+                            // if multi search text is empty, reset global mark text
+                            if ($gSearchInput.val() !== '') {
+                                setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
+                            }
                         }
                     },
                     {extend: 'copy'},
@@ -433,6 +517,7 @@
                         updatePie(pie, graphArry);
                     }
                 }, 2000);
+            // get empty dstAs
             }).on('click', 'td button', function (e) {
                 var $self = $(this);
                 $self.html('<i class="fa fa-spinner fa-pulse fa-fw grid-dstAs-spinner"></i>');
@@ -461,7 +546,62 @@
                         td.addClass('pinkred');
                     }
                 }, reqOpt);
+            // search toggle badge
+            }).on('click', 'td .badge-td', function (e) {
+                var $self = $(this);
+                var $parent = $self.parent();
+                var tdIdx = $parent.index() + 1;
+
+                // set search off
+                if ($self.hasClass('fa-unlock')) {
+                    $self.addClass('badge-td-off');
+                    $self.toggleClass('fa-unlock fa-lock');
+                    // disabled
+                    $self.next().prop('disabled', true);
+                    // clear input data
+                    $self.next().val('');
+                    // search false
+                    setColumnSearchable(tdIdx, false);
+                    // for grid redraw
+                    $self.next().trigger('change');
+                // set search on
+                } else {
+                    $self.removeClass('badge-td-off');
+                    $self.toggleClass('fa-lock fa-unlock');
+                    // enabled
+                    $self.next().prop('disabled', false);
+                    // clear input data
+                    $self.next().val('');
+                    // search true
+                    setColumnSearchable(tdIdx, true);
+                    // for grid redraw
+                    $self.next().trigger('change');
+                }
+                // if global search text not empty? redraw grid
+                if ($gSearchInput.val() !== '') {
+                    // $gSearchInput.trigger('change');
+                }
             });
+        }
+
+        function genGridRegExPattern (gSearchVal) {
+            var rexPattern = gSearchVal.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&');
+            return rexPattern;
+        }
+
+        function setRegExMarked (regEx, $target) {
+            $target.unmark({
+                done: function () {
+                    $target.markRegExp(regEx, {caseSensitive: true});
+                }
+            });
+        }
+
+        function setColumnSearchable (idx, searchable) {
+            // console.log($dGrid.api().settings()[0]);
+            $dGrid.api().settings()[0].aoColumns[idx].bSearchable = searchable;
+            // console.log($dGrid.api().settings()[0]);
+            $dGrid.api().rows().invalidate().draw(false);
         }
 
         function initProfileSelect (reqOpt, isFirstInit) {
@@ -641,6 +781,8 @@
         function reqEvent () {
             // reset drow cb cnt!
             cntFnDrawCB = 0;
+            // for check grid init complete(catch page event)
+            isGridInited = false;
             // request grid - 1.create html from ifoList/grid query / 2. initgrid test2/grid query
             // reqDynamicGrid({url: 'api/acct/ifoList/grid', param: {strDateYMD: $drp.val(), displayYn: 'Y'}});
             reqDynamicGrid({url: 'api/trf/ifaceList', type: 'get', param: {profileId: $profileSelect.val()}});

@@ -72,6 +72,7 @@ ul.nav-second-level {
     color: #f33f52;
     width: 100% !important;
     min-width: 125px;
+    margin-top: -10px;
 }
 .grid-multi-search::-webkit-input-placeholder {
     /* WebKit, Blink, Edge */
@@ -155,3 +156,33 @@ ul.nav-second-level {
     color: black;
 }
 [contenteditable="true"] br { display: none }
+
+
+/* td icon test */
+.badge-td {
+    position: relative;
+    float: left;
+    border-radius: 10rem;
+    color: #fff;
+    background-color: #f86c6b;
+    padding: 4px 7px;
+    display: inline-block;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+.badge-td:hover{
+    /*color: inherit;
+    border: 1px solid #d2d2d2;*/
+    background-color: #f86c6ba6;
+    cursor: pointer;
+}
+.badge-td-off{
+    background-color: rgb(148, 148, 148);
+}
+.badge-td-off:hover{
+    background-color: rgb(186, 185, 185) !important;
+}
