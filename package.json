@@ -86,6 +86,7 @@
     "joi": "^13.1.2",
     "jquery": "^2.2.4",
     "jquery-knob": "^1.2.11",
+    "jquery-mousewheel": "^3.1.13",
     "jquery-ui": "^1.12.1",
     "jquery-ui-dist": "^1.12.1",
     "js-yaml": "^3.10.0",

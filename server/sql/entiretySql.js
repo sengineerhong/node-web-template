@@ -31,7 +31,8 @@ module.exports = {
             net_dst != '0.0.0.0' and as_dst != 0 
 	        and (timestamp_start between date_add(DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'), interval -30 minute) and DATE_FORMAT(?, '%Y-%m-%d %H:%i:00'))
         group by ip_dst
-        order by regTime`,
+        order by regTime
+        limit 0, 50`,
     getTrfBpsUsage:
         `select regTime, sum(bpsSum) as bpsSum
         from (
@@ -49,7 +50,7 @@ module.exports = {
         ) as a
         group by unix_timestamp(a.orgTime) DIV ?	
         -- group by hour(a.orgTime), floor(minute(a.orgTime)/?)
-        -- limit 0, 10`,
+        limit 0, 10`,
 
     /* viewer tab */
     getTrfIfoList:

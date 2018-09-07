@@ -137,51 +137,6 @@
         return isValidProfile ? profileSelectVal : -1;
     }
 
-    function genSearchTimeHistory (arry, time) {
-        arry.unshift(time);
-        // keep history length (under 3)
-        if (arry.length > 3) {
-            arry.splice(3, 1);
-        }
-        var first = '<div class="pinkred inline">' + arry[0] + '</div>';
-        // 2018-04-26 11:26:21
-        return first + arry.join(', ').substring(19);
-    }
-
-    function genObjValueJoinStr (obj, coupler) {
-        var strArry = [];
-        $.each(obj, function (idx, val) {
-            if (val) strArry.push(val);
-        });
-        return strArry.join(coupler);
-    }
-
-    function setMultiSearchValue (obj) {
-        // console.log('setMultiSearchValue' + JSON.stringify(obj));
-        for (var idx in obj) {
-            if (obj.hasOwnProperty(idx)) {
-                $('#' + idx).val(obj[idx]).keyup();
-            }
-        }
-    }
-
-    function setTableTopHorizontalScroll () {
-        var tableContainer = $('#trfV_gridwrap');
-        var table = $('#trfV_gridwrap table');
-        var fakeContainer = $('#trfV_gridtopscroll');
-        var fakeDiv = $('#trfV_gridtopscroll div');
-
-        var tableWidth = table.width();
-        fakeDiv.width(tableWidth);
-
-        fakeContainer.scroll(function () {
-            tableContainer.scrollLeft(fakeContainer.scrollLeft());
-        });
-        tableContainer.scroll(function () {
-            fakeContainer.scrollLeft(tableContainer.scrollLeft());
-        });
-    }
-
     $(function () {
         /* tab id, title, url */
         const tabObj = UtilsCmmn.getTabInfo('trfV_allwrap');
@@ -196,6 +151,7 @@
         /* view  */
         const $contentWrap = $('#trfV_contentwrap');
         const $dGridWrap = $('#trfV_gridwrap');
+        const $dGridTopScroll = $('#trfV_gridtopscroll');
         let $dGrid;
         const $chart = $('#trfV_chart');
         const $pie = $('#trfV_pie');
@@ -214,8 +170,7 @@
         const $ifoasModal = $('#trfV_modal_ifoas');
         const $ifoasModalBody = $('#trfV_body_ifoas');
         const $ifoasModalBtn = $('#trfV_btn_ifoas');
-
-        const $gSearchInput = $('#test');
+        const $gSearchInput = $('#trfV_inputt_gridsearch');
 
         /* init views */
         // init checkbox - icheckbox
@@ -258,7 +213,7 @@
                     contentType: 'application/json;charset=UTF-8',
                     dataSrc: function (res) {
                         // update searched-date filed
-                        $timehisMsg.html('&nbsp&nbsp[searched : ' + genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
+                        $timehisMsg.html('&nbsp&nbsp[searched : ' + UtilsCmmn.genSearchTimeHistory(searchHisArry, $drp.val()) + ']');
 
                         if (res.status.code === 1) {
                             return res.result.data;
@@ -306,10 +261,7 @@
                                 if (parseFloat(sum) === 0.00) {
                                     $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').html(sum + ' Gbps');
                                 } else {
-                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps').on('click', function () {
-                                        // console.log($(this).index());
-                                        // $(this).index();
-                                    });
+                                    $(api.column(i).footer()).closest('tr').next().find('td:eq(' + tdIdx + ')').css('background-color', headerColor).html(sum + ' Gbps');
                                 }
                                 graphArry.push({title: title, titleAs: titleAs, sum: sum, color: headerColor});
                             } else {
@@ -318,29 +270,15 @@
                         }
                         updateChart(chart, graphArry);
                         updatePie(pie, graphArry);
-                        // mark text - for go or now request
-                        if ($gSearchInput.val() !== '') {
-                            // gen regEx pattern & text mark
-                            setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
-                        }
+                        // mark global search text - for go or now request
+                        UtilsCmmn.markDtGlobalSearchText($dGrid, $gSearchInput.val());
                     }
                     // mark text - for page changed
                     if (isGridInited) {
                         // global search
-                        if ($gSearchInput.val() !== '') {
-                            // gen regEx pattern & text mark
-                            setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
-                        }
+                        UtilsCmmn.markDtGlobalSearchText($dGrid, $gSearchInput.val());
                         // multi search
-                        $('#trfV_grid .grid-multi-search').each(function (idx, el) {
-                            var markText = $(this).val();
-                            if (markText !== '') {
-                                var tdIdx = idx + 1;
-                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
-                                // gen regEx pattern & text mark
-                                setRegExMarked(new RegExp(genGridRegExPattern($(this).val()), 'g'), markTarget);
-                            }
-                        });
+                        UtilsCmmn.markDtMultiSearchText($dGrid);
                     }
                 },
                 columns: options.columns,
@@ -373,26 +311,17 @@
                     $dGrid.api().columns().every(function () {
                         var that = this;
                         $('input', this.footer()).on('keyup change', function () {
-
                             // if (that.search() !== this.value) {
                             // if ($gSearchInput.val() !== this.value) {
                             var tdIdx = $(this).parent().index() + 1;
                             var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
+
                             // gen regEx pattern
-                            var rexPattern = genGridRegExPattern(this.value);
+                            var rexPattern = UtilsCmmn.genGridSearchRegExPattern(this.value);
                             // datable search
                             that.search(rexPattern, true, false).draw();
                             // mark text
-                            setRegExMarked(new RegExp(rexPattern, 'g'), markTarget);
-                            // if multi search text is empty, reset global mark text
-                            if (this.value === '' && $gSearchInput.val() !== '') {
-                                setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
-                            }
-                            // if this multi-search was off, unmark text
-                            var isSearchOff = $(this).prev().hasClass('badge-td-off');
-                            if (isSearchOff) {
-                                setRegExMarked(new RegExp(rexPattern, 'g'), markTarget);
-                            }
+                            UtilsCmmn.setRegExMarked(new RegExp(rexPattern, 'g'), markTarget);
                             // }
                         });
                     });
@@ -412,41 +341,77 @@
                             }
                         }
                         // console.log(fieldObj);
-                        setMultiSearchValue(fieldObj);
+                        UtilsCmmn.setMultiSearchValue(fieldObj);
                     }
                     // set top-horizontal scroll
-                    setTableTopHorizontalScroll();
+                    UtilsCmmn.setTableTopHorizontalScroll($dGridWrap, $dGridTopScroll);
+                    // attach mouse wheel event to grid HorizontalScroll (CTRL + mouse wheel)
+                    UtilsCmmn.attachMouseWheelEventToTableHScroll($dGridWrap);
+                    // for floating component(grid button, global search box)
+                    $dGridWrap.scrollEnd(function () {
+                        var position = $dGridWrap.scrollLeft();
+                        $dGridWrap.find('.html5buttons').animate({left: position}, 300);
+                        $dGridWrap.find('#trfV_grid_filter').animate({right: 0 - position}, 300);
+                    }, 300);
 
                     // global search custom logic (union or)
                     $gSearchInput.on('keyup change', function () {
                         // gen regEx pattern
-                        var rexPattern = genGridRegExPattern($(this).val());
+                        var rexPattern = UtilsCmmn.genGridSearchRegExPattern($(this).val());
                         // datable search
                         $dGrid.api().search(rexPattern, true, false).draw();
                         // text mark
-                        setRegExMarked(new RegExp(rexPattern, 'g'), $dGrid);
+                        UtilsCmmn.setRegExMarked(new RegExp(rexPattern, 'g'), $dGrid.find('tbody'));
                         // remark multi search
-                        $('#trfV_grid .grid-multi-search').each(function (idx, el) {
-                            var markText = $(this).val();
-                            if (markText !== '') {
-                                var tdIdx = idx + 1;
-                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
-                                // gen regEx pattern & text mark
-                                setRegExMarked(new RegExp(genGridRegExPattern($(this).val()), 'g'), markTarget);
-                            }
-                        });
+                        UtilsCmmn.markDtMultiSearchText($dGrid);
                     });
+                    // global search custom - replace org position
                     $('#trfV_grid_filter > label > input').hide();
                     $('#trfV_grid_filter').append($gSearchInput.show());
 
-
+                    // inited flag
                     isGridInited = true;
                 },
-                // dom: '<"html5buttons"B>lfrtip',
                 dom: '<"html5buttons"B>lfrtip',
                 buttons: [
                     {
-                        text: 'Clear Filed',
+                        text: 'Search<br>Off',
+                        className: 'badge-btn',
+                        action: function (e, dt, node, config) {
+                            // toggle search off UI
+                            var $SearchOnBtn = $('#trfV_grid_wrapper .badge-btn');
+                            var isNowOff = $SearchOnBtn.hasClass('badge-btn-off');
+                            if (!isNowOff) {
+                                $SearchOnBtn.html('<span>Search<br>On</span>');
+                                $SearchOnBtn.addClass('badge-btn-off');
+                            } else {
+                                $SearchOnBtn.html('<span>Search<br>Off</span>');
+                                $SearchOnBtn.removeClass('badge-btn-off');
+                            }
+                            // toggle multi search badge UI & search on/off
+                            $('#trfV_grid td .badge-td').each(function (idx, el) {
+                                var $self = $(this);
+                                var $parent = $self.parent();
+                                var tdIdx = $parent.index() + 1;
+                                // toggle multi search badge UI
+                                UtilsCmmn.toggleMultiSearchBadge($self, isNowOff);
+                                // search false
+                                UtilsCmmn.setColumnSearchable($dGrid, tdIdx, isNowOff);
+                            });
+                            // set grid invalidate
+                            UtilsCmmn.setColumnInvalidate($dGrid, -1);
+                            // clean multi search
+                            $dGrid.api().columns().every(function () {
+                                this.search('', true, false);
+                            });
+                            // redraw grid
+                            $dGrid.api().draw(false);
+                            // unmark all text & remark global search text (it is toggle logic)
+                            UtilsCmmn.setRegExMarked(new RegExp(UtilsCmmn.genGridSearchRegExPattern($gSearchInput.val()), 'g'), $dGrid.find('tbody'));
+                        }
+                    },
+                    {
+                        text: 'Clear<br>Filed',
                         className: 'grid-dom-btn1',
                         action: function (e, dt, node, config) {
                             // clean input field and search function
@@ -459,19 +424,11 @@
                                 // }
                             });
                             // redraw grid
-                            $dGrid.api().draw();
-                            // remark multi search - must exe! after draw function
-                            $('#trfV_grid .grid-multi-search').each(function (idx, el) {
-                                var tdIdx = idx + 1;
-                                var markTarget = $('#trfV_allwrap table tr td:nth-child(' + tdIdx + ')');
-                                // gen regEx pattern & text mark
-                                setRegExMarked(new RegExp(genGridRegExPattern(''), 'g'), markTarget);
-                            });
-                            // remark global search
-                            // if multi search text is empty, reset global mark text
-                            if ($gSearchInput.val() !== '') {
-                                setRegExMarked(new RegExp(genGridRegExPattern($gSearchInput.val()), 'g'), $dGrid);
-                            }
+                            $dGrid.api().draw(false);
+                            // clear mark text all
+                            UtilsCmmn.unmarkText($dGrid);
+                            // remark global search text
+                            UtilsCmmn.markDtGlobalSearchText($dGrid, $gSearchInput.val());
                         }
                     },
                     {extend: 'copy'},
@@ -531,7 +488,7 @@
                     success: function (res) {
                         var uptCellIdx = options.ifaceLength + 4;
                         if (res.status.code === 1) {
-                            dtGrid.fnUpdate(genObjValueJoinStr(res.result, ':'), tr, uptCellIdx, false);
+                            dtGrid.fnUpdate(UtilsCmmn.genObjValueJoinStr(res.result, ':'), tr, uptCellIdx, false);
                             dtGrid.fnStandingRedraw();
                             td.addClass('orange');
                         } else {
@@ -551,61 +508,21 @@
                 var $self = $(this);
                 var $parent = $self.parent();
                 var tdIdx = $parent.index() + 1;
+                var isNowOff = $self.hasClass('fa-unlock');
 
-                // set search off
-                if ($self.hasClass('fa-unlock')) {
-                    $self.addClass('badge-td-off');
-                    $self.toggleClass('fa-unlock fa-lock');
-                    // disabled
-                    $self.next().prop('disabled', true);
-                    // clear input data
-                    $self.next().val('');
-                    // search false
-                    setColumnSearchable(tdIdx, false);
-                    // for grid redraw
-                    $self.next().trigger('change');
-                // set search on
-                } else {
-                    $self.removeClass('badge-td-off');
-                    $self.toggleClass('fa-lock fa-unlock');
-                    // enabled
-                    $self.next().prop('disabled', false);
-                    // clear input data
-                    $self.next().val('');
-                    // search true
-                    setColumnSearchable(tdIdx, true);
-                    // for grid redraw
-                    $self.next().trigger('change');
-                }
-                // if global search text not empty? redraw grid
-                if ($gSearchInput.val() !== '') {
-                    // $gSearchInput.trigger('change');
-                }
+                // grid column search UI on/off
+                UtilsCmmn.toggleMultiSearchBadge($self, !isNowOff);
+                // grid column search function on/off
+                UtilsCmmn.setColumnSearchable($dGrid, tdIdx, !isNowOff);
+                // grid invalidate
+                UtilsCmmn.setColumnInvalidate($dGrid, tdIdx);
+                // grid column search clear
+                $dGrid.api().columns(tdIdx).search('', true, false).draw();
             });
-        }
-
-        function genGridRegExPattern (gSearchVal) {
-            var rexPattern = gSearchVal.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&');
-            return rexPattern;
-        }
-
-        function setRegExMarked (regEx, $target) {
-            $target.unmark({
-                done: function () {
-                    $target.markRegExp(regEx, {caseSensitive: true});
-                }
-            });
-        }
-
-        function setColumnSearchable (idx, searchable) {
-            // console.log($dGrid.api().settings()[0]);
-            $dGrid.api().settings()[0].aoColumns[idx].bSearchable = searchable;
-            // console.log($dGrid.api().settings()[0]);
-            $dGrid.api().rows().invalidate().draw(false);
         }
 
         function initProfileSelect (reqOpt, isFirstInit) {
-            var select2Opt = {placeholder: 'choose profile ...', width: '100%', data: []}
+            var select2Opt = {placeholder: 'choose profile ...', width: '100%', data: []};
             UtilsCmmn.reqDefaultAjax({
                 success: function (res) {
                     if (res.status.code === 1) {
@@ -684,7 +601,7 @@
             // console.log(color);
             chart.data.datasets[0].backgroundColor = color;
             // chart.data.datasets[0].label = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
-            chart.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
+            chart.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)';
             chart.update();
         }
 
@@ -697,7 +614,7 @@
                 pie.data.datasets[0].data.push(item.sum);
                 total += Number(item.sum);
             });
-            pie.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)'
+            pie.options.title.text = 'bps sum by iface out (' + total.toFixed(2) + ' Gbps)';
             pie.update();
         }
 
@@ -722,7 +639,7 @@
                         var options = {};
                         options.columns = getColumns(res.result);
                         options.ifaceLength = res.result.data.length;
-                        options.useProfile = parseInt(reqOpt.param.profileId) !== -1
+                        options.useProfile = parseInt(reqOpt.param.profileId) !== -1;
                         options.profileData = res.result.data;
                         // for sync profileTab crud
                         window.nowProfileId = parseInt(reqOpt.param.profileId);
@@ -842,7 +759,7 @@
 
         // tab shown event
         $("a[href='#" + tabObj.id + "']").on('shown.bs.tab', function (e) {
-            setTimeout(setTableTopHorizontalScroll, 5);
+            setTimeout(UtilsCmmn.setTableTopHorizontalScroll($dGridWrap, $dGridTopScroll), 5);
             initProfileSelect({url: 'api/trf/profile', type: 'get', param: {}}, false);
         });
 

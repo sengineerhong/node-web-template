@@ -93,8 +93,10 @@ ul.nav-second-level {
     color: rgba(246, 114, 128, 0.65);
 }
 .grid-dom-btn1 {
-    margin-right: 5px;
+    margin-right: 10px;
     background-color: #f6728059;
+    font-size: smaller;
+    padding: 0px 12px;
 }
 
 .large-table-container-3 {
@@ -158,7 +160,7 @@ ul.nav-second-level {
 [contenteditable="true"] br { display: none }
 
 
-/* td icon test */
+/* td badge icon */
 .badge-td {
     position: relative;
     float: left;
@@ -184,5 +186,53 @@ ul.nav-second-level {
     background-color: rgb(148, 148, 148);
 }
 .badge-td-off:hover{
+    background-color: rgb(186, 185, 185) !important;
+}
+
+/* for floating grid menu(button) */
+.html5buttons {
+    position: relative;
+}
+/* for floating grid menu(global search input) */
+#trfV_grid_filter {
+    position: relative;
+    float: right;
+    text-align: left !important;
+}
+#trfH_grid_filter {
+    position: relative;
+    float: right;
+    text-align: left !important;
+}
+
+/* button badge icon - for searchable at once toggle */
+.badge-btn {
+    position: relative;
+    float: left;
+    border-radius: 10rem !important;
+    color: #fff;
+    background-color: #f86c6b;
+    /*padding: 4px 7px;*/
+    line-height: 1.1em;
+    display: inline-block;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    font-size: smaller;
+    padding: 5px 10px;
+    border: 0px solid #e7eaec !important;
+    margin-right: 2px;
+}
+.badge-btn:hover{
+    border: 0px solid #e7eaec !important;
+    background-color: #f86c6ba6;
+    cursor: pointer;
+    color: #fff;
+}
+.badge-btn-off{
+    background-color: rgb(148, 148, 148);
+}
+.badge-btn-off:hover{
     background-color: rgb(186, 185, 185) !important;
 }

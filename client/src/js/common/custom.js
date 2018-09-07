@@ -295,3 +295,16 @@ function WinMove () {
         })
         .disableSelection();
 }
+// jquery function
+$(document).ready(function () {
+    // catch scrollEnd
+    $.fn.scrollEnd = function (callback, timeout) {
+        $(this).scroll(function () {
+            var $this = $(this);
+            if ($this.data('scrollTimeout')) {
+                clearTimeout($this.data('scrollTimeout'));
+            }
+            $this.data('scrollTimeout', setTimeout(callback, timeout));
+        });
+    };
+});

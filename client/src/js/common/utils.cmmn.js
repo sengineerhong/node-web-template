@@ -858,5 +858,129 @@
         return msg;
     };
 
+    UtilsCmmn.genGridSearchRegExPattern = function (searchVal) {
+        var rexPattern = searchVal.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$]/g, '\\$&');
+        return rexPattern;
+    };
+
+    UtilsCmmn.setRegExMarked = function (regEx, $target) {
+        $target.unmark({
+            done: function () {
+                $target.markRegExp(regEx, {caseSensitive: false, acrossElements: true});
+            }
+        });
+    };
+
+    UtilsCmmn.setColumnSearchable = function ($dGrid, idx, searchable) {
+        // console.log($dGrid.api().settings()[0]);
+        $dGrid.api().settings()[0].aoColumns[idx].bSearchable = searchable;
+        // console.log($dGrid.api().settings()[0]);
+        // $dGrid.api().column(idx).cells().invalidate();
+        // $dGrid.api().rows().invalidate().draw(false);
+    };
+
+    UtilsCmmn.setColumnInvalidate = function ($dGrid, idx) {
+        if (idx === -1) {
+            // $dGrid.api().rows().invalidate().draw(false);
+            $dGrid.api().rows().invalidate();
+        } else {
+            // $dGrid.api().column(idx).cells().invalidate().draw(false);
+            $dGrid.api().column(idx).cells().invalidate();
+        }
+    };
+
+    UtilsCmmn.toggleMultiSearchBadge = function ($badge, enabled) {
+        if (enabled) {
+            $badge.removeClass('badge-td-off');
+            $badge.toggleClass('fa-lock fa-unlock');
+            // enabled
+            $badge.next().prop('disabled', false);
+        } else {
+            $badge.addClass('badge-td-off');
+            $badge.toggleClass('fa-unlock fa-lock');
+            // disabled
+            $badge.next().prop('disabled', true);
+            // clear input data
+            $badge.next().val('');
+        }
+    };
+
+    UtilsCmmn.setTableTopHorizontalScroll = function ($dGridWrap, $dGridTopScroll) {
+        var tableContainer = $dGridWrap;
+        var table = $dGridWrap.find('table');
+        var fakeContainer = $dGridTopScroll;
+        var fakeDiv = $dGridTopScroll.find('div');
+
+        var tableWidth = table.width();
+        fakeDiv.width(tableWidth);
+
+        fakeContainer.scroll(function () {
+            tableContainer.scrollLeft(fakeContainer.scrollLeft());
+        });
+        tableContainer.scroll(function () {
+            fakeContainer.scrollLeft(tableContainer.scrollLeft());
+        });
+    };
+
+    UtilsCmmn.attachMouseWheelEventToTableHScroll = function ($dGridWrap) {
+        $dGridWrap.mousewheel(function (e, delta) {
+            if (e.ctrlKey === true) {
+                this.scrollLeft -= (delta * 40);
+                e.preventDefault();
+            }
+        });
+    };
+
+    UtilsCmmn.genSearchTimeHistory = function (arry, time) {
+        arry.unshift(time);
+        // keep history length (under 3)
+        if (arry.length > 3) {
+            arry.splice(3, 1);
+        }
+        var first = '<div class="pinkred inline">' + arry[0] + '</div>';
+        // 2018-04-26 11:26:21
+        return first + arry.join(', ').substring(19);
+    };
+
+    UtilsCmmn.genObjValueJoinStr = function (obj, coupler) {
+        var strArry = [];
+        $.each(obj, function (idx, val) {
+            if (val) strArry.push(val);
+        });
+        return strArry.join(coupler);
+    };
+
+    UtilsCmmn.setMultiSearchValue = function (obj) {
+        // console.log('setMultiSearchValue' + JSON.stringify(obj));
+        for (var idx in obj) {
+            if (obj.hasOwnProperty(idx)) {
+                $('#' + idx).val(obj[idx]).keyup();
+            }
+        }
+    };
+
+    UtilsCmmn.unmarkText = function ($target) {
+        $target.unmark();
+    };
+
+    UtilsCmmn.markDtGlobalSearchText = function ($dGrid, gSearchVal) {
+        if (gSearchVal !== '') {
+            // gen regEx pattern & text mark
+            UtilsCmmn.setRegExMarked(new RegExp(UtilsCmmn.genGridSearchRegExPattern(gSearchVal), 'g'), $dGrid.find('tbody'));
+        }
+    };
+
+    UtilsCmmn.markDtMultiSearchText = function ($dGrid) {
+        $dGrid.find('.grid-multi-search').each(function (idx, el) {
+            var markText = $(this).val();
+            if (markText !== '') {
+                var tdIdx = idx + 1;
+                var markTarget = $dGrid.find('tbody tr td:nth-child(' + tdIdx + ')');
+                // gen regEx pattern & text mark
+                UtilsCmmn.setRegExMarked(new RegExp(UtilsCmmn.genGridSearchRegExPattern(markText), 'g'), markTarget);
+            }
+        });
+    };
+
     UtilsCmmn.fn.init.prototype = UtilsCmmn.fn;
 })(jQuery, window);

@@ -44,7 +44,8 @@ import randomColor from 'Modules/randomcolor/randomColor';                      
 import 'select2/dist/js/select2.min';                                                           // select2
 import toastr from 'toastr/build/toastr.min';                                                   // toastr
 import Logger from 'Modules/js-logger/src/logger.min';                                          // logger
-import 'Modules/mark.js/dist/jquery.mark.es6.min';                                                        // mark.js
+import 'Modules/mark.js/dist/jquery.mark.es6.min';                                              // mark.js
+import 'Modules/jquery-mousewheel/jquery.mousewheel';
 import Dexie from 'Modules/dexie/dist/dexie.min';                                               // dexie - for indexedDB
 
 /* DevExtreme */
@@ -130,7 +131,7 @@ $(document).ready(function () {
     $('#side-menu1').metisMenu();
 
     /* left memu link event  */
-    $('body').on('click', 'ul.tab_link li.tab_go', function(e) {
+    $('body').on('click', 'ul.tab_link li.tab_go', function (e) {
         e.preventDefault();
         // var abc = $(this).attr('data-info').id;
         var menuInfo = $(this).data('info');
